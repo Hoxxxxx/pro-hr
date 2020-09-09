@@ -1,6 +1,13 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import Home from '../views/Home.vue'
+
+
+const Home = () => import('@/views/Home')
+const Login = () => import('@/views/login/login')
+const staffManage = () => import('@/views/adminManage/staffManage')
+// 组织管理
+const department = () => import('@/views/organization/department')
+const position = () => import('@/views/organization/position')
 
 Vue.use(VueRouter)
 
@@ -11,19 +18,46 @@ Vue.use(VueRouter)
     component: Home
   },
   {
-    path: '/about',
-    name: 'About',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: function () {
-      return import(/* webpackChunkName: "about" */ '../views/About.vue')
-    }
+    path: '/login',
+    name: 'Login',
+    component: Login
+  },
+  // 员工管理
+  {
+    path: '/staffManage',
+    component: Home,
+    redirect:'/staffManage',
+    children:[
+      {
+        path:'/staffManage',
+        name:'staffManage',
+        component:staffManage
+      }
+    ]
+  },
+  // 组织管理
+  {
+    path:'/organization',
+    name:'organization',
+    redirect:'/organization/department',
+    component:Home,
+    children:[
+      {
+        path:'/department',
+        name:'department',
+        component:department
+      },
+      {
+        path:'/position',
+        name:'position',
+        component:position
+      }
+    ]
   }
 ]
 
 const router = new VueRouter({
-  mode: 'history',
+  mode: 'hash',
   base: process.env.BASE_URL,
   routes
 })

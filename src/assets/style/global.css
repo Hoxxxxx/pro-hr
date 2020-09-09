@@ -1,0 +1,99 @@
+@import './base.less';
+
+*{
+    margin: 0;
+    padding: 0;
+}
+body {
+    font-family: Helvetica, Tahoma, Arial, "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    font-size: 14px;
+    color: #333;
+}
+html,body,#app{
+    height: 100%;
+    margin: 0 auto;
+   }
+ul,ol{
+    list-style: none;
+}
+img{
+    border: none;
+    vertical-align: top;
+}
+a {
+    text-decoration: none;
+    color: #333;
+}
+input,button {
+    border: none;
+    outline: none;
+}
+dl,dd,dt {
+    margin: 0;
+    padding: 0
+}
+::-webkit-input-placeholder { /* WebKit browsers */
+    color: #999999;
+    font-size: 15px;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+    color: #999999;
+    font-size: 15px;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10+ */
+    color: #999999;
+    font-size: 15px;
+}
+
+/* element ui */
+.el-card{
+    margin-bottom: 20px;
+}
+
+.el-cascader__dropdown /deep/ .el-scrollbar__wrap{
+    height: 200px;
+}
+
+.el-breadcrumb /deep/ .el-breadcrumb__inner.is-link{
+    font-weight: 400;
+    color: #606266;
+}
+
+.el-breadcrumb /deep/ .el-breadcrumb__inner.is-link:hover{
+    color: #409EFD;
+}
+
+.el-menu{
+    border: none;
+}
+
+.el-table /deep/ .cell{
+    line-height: 40px;
+}
+
+.el-table /deep/ .el-table__placeholder{
+    width: 50px !important;
+}
+
+.el-textarea /deep/ .el-textarea__inner{
+    font-family: Helvetica, Tahoma, Arial, "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+    font-family: Helvetica, Tahoma, Arial, "PingFang SC", "Hiragino Sans GB", "Heiti SC", "Microsoft YaHei", "WenQuanYi Micro Hei";
+}
+
+/* 自定义样式 */
+.box-card{
+    background: #FFFFFF;
+    box-shadow: 0 2px 4px 0 #EFF2F7;
+    border-radius: 10px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+.clearfix{
+    font-size: 18px;
+    color: #000000;
+    letter-spacing: 0;
+    line-height: 18px;
+}
