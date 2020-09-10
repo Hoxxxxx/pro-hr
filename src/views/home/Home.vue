@@ -59,7 +59,6 @@ export default {
     }
 
     .main_container {
-      background-color: #f5f5f5;
       padding-top: 56px;
       padding-left: 242px;
 

@@ -1,17 +1,16 @@
 module.exports = {
     devServer: {
-      port: '80',
       open: true,
-      // proxy: {
-      //   '/api': {
-      //     target: '',
-      //     logLevel: 'debug',
-      //     changeOrigin: true,
-      //     // ws: true,
-      //     pathRewrite: {
-      //       '^/api': ''
-      //     }
-      //   }
-      // }
+      proxy: {
+        '/baseApi': {
+          target: 'http://luxy.hr.com',
+          logLevel: 'debug',
+          changeOrigin: true,
+          // ws: true,
+          pathRewrite: {
+            '^/baseApi': ''
+          }
+        }
+      }
     }
   }

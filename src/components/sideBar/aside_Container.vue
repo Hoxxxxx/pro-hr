@@ -8,18 +8,29 @@
       :unique-opened="true"
       router
     >
-      <el-menu-item :index="item.path" v-for="(item,index) in  menuList" :key="index">
-        <span slot="title">{{item.title}}</span>
-      </el-menu-item>
-
-      <el-submenu index="1">
-        <template slot="title">
-          <span>组织管理</span>
-        </template>
-        <el-menu-item-group>
-          <el-menu-item v-for="item in department" :index="item.path" :key="item.id">{{item.title}}</el-menu-item>
-        </el-menu-item-group>
-      </el-submenu>
+      <div v-for="(item,index) in menuList" :key="index">
+        <!-- 单级菜单 -->
+        <div v-if="item.menuType == 0">
+          <el-menu-item :index="item.path">
+            <span slot="title">{{item.title}}</span>
+          </el-menu-item>
+        </div>
+        <!-- 两级菜单 -->
+        <div v-if="item.menuType == 1">
+          <el-submenu :index="item.path">
+            <template slot="title">
+              <span>{{item.title}}</span>
+            </template>
+            <el-menu-item-group>
+              <el-menu-item
+                v-for="(itm,idx) in item.children"
+                :index="itm.path"
+                :key="idx"
+              >{{itm.title}}</el-menu-item>
+            </el-menu-item-group>
+          </el-submenu>
+        </div>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -30,20 +41,28 @@ export default {
     return {
       menuList: [
         {
-          id: 0,
           title: "员工管理",
           path: "/staffManage",
+          menuType: 0,
+        },
+        {
+          title: "组织管理",
+          path: "/organization",
+          menuType: 1,
+          children: [
+            {
+              id: 0,
+              title: "部门管理",
+              path: "/department",
+            },
+            {
+              id: 1,
+              title: "职位管理",
+              path: "/position",
+            },
+          ],
         },
       ],
-      department: [{
-        id: 0,
-        title: "部门管理",
-        path: "/department",
-      },{
-        id: 1,
-        title: "职位管理",
-        path: "/position",
-      }],
     };
   },
 
