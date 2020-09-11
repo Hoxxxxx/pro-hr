@@ -14,7 +14,8 @@
         </li>
       </ul>
     </div>
-    <el-card class="formCard">
+    <!-- 基础信息 -->
+    <el-card class="formCard" v-if="curIndex == 0">
       <!-- 基本信息 -->
       <div class="baseInfo">
         <span class="title">基本信息</span>
