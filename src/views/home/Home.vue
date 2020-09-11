@@ -5,18 +5,14 @@
       <header-Container></header-Container>
     </el-header>
     <!-- 主体 -->
-    <el-container class="body_container">
-      <!-- 侧边栏 -->
-      <el-aside>
+    <div class="mainBox">
+      <div class="asideBox">
         <aside-Container></aside-Container>
-      </el-aside>
-      <!-- 内容 -->
-      <el-container class="main_container">
-        <el-main>
-          <router-view></router-view>
-        </el-main>
-      </el-container>
-    </el-container>
+      </div>
+      <div class="main">
+        <router-view></router-view>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -37,6 +33,26 @@ export default {
   min-width: 1024px;
   height: 100%;
   min-height: 768px;
+
+  .mainBox{
+    padding-top: 56px;
+    height: calc(100% - 56px);
+    min-height: 768px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .asideBox{
+      width: 260px;
+      height: 100%;
+      background: #353e56;
+      flex: 0 0 auto;
+    }
+    .main{
+      flex: 1 1 auto;
+      background: #f5f5f5;
+      overflow-y: auto;
+    }
+  }
 
   .el-header {
     position: fixed;
@@ -59,6 +75,7 @@ export default {
     }
 
     .main_container {
+      background-color: #f5f5f5;
       padding-top: 56px;
       padding-left: 242px;
 

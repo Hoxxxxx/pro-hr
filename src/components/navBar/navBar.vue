@@ -24,7 +24,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "@/../src/assets/style/base.less";
+// @import "@../../assets/style/base.less";
 
 .navBox {
   width: 100%;
@@ -38,7 +38,7 @@ export default {
   .titleBox {
     width: 100%;
     height: 20px;
-    font-family: @mac_m_bold;
+    // font-family: @mac_m_bold;
     font-size: 20px;
     color: #333333;
     letter-spacing: 0;

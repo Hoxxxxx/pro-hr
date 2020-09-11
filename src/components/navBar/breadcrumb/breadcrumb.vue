@@ -20,12 +20,12 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import "@/assets/style/base.less";
+// @import "@/assets/style/base.less";
 
 .breadcrumbBox {
   width: 100%;
   height: 12px;
-  font-family: @mac_regular;
+  // font-family: @mac_regular;
   font-size: 12px;
   color: #999999;
   letter-spacing: 0;

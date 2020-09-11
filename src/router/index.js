@@ -5,7 +5,9 @@ import VueRouter from 'vue-router'
 const Home = () => import('@/views/home/Home')
 const Welcome = () => import('@/views/home/Welcome')
 // 员工管理
-const staffManage = () => import('@/views/adminManage/staffManage')
+const staffManage = () => import('@/views/staffManage/staffManage')
+const staffAdd = () => import('@/views/staffManage/staffAdd')
+const staffMsg = () => import('@/views/staffManage/staffMsg')
 // 组织管理
 const department = () => import('@/views/organization/department')
 const position = () => import('@/views/organization/position')
@@ -35,6 +37,16 @@ const routes = [
         path: '/staffManage',
         name: 'staffManage',
         component: staffManage
+      },
+      {
+        path: '/staffAdd',
+        name: 'staffAdd',
+        component: staffAdd
+      },
+      {
+        path: '/staffMsg',
+        name: 'staffMsg',
+        component: staffMsg
       }
     ]
   },
@@ -67,11 +79,11 @@ const router = new VueRouter({
 
 
 // 挂载路由导航守卫
-router.beforeEach((to, from, next) => {
+// router.beforeEach((to, from, next) => {
 
-  const token = window.sessionStorage.getItem("token")
-  const expiresTime = window.sessionStorage.getItem("expiresTime")
-  next()
+//   const token = window.sessionStorage.getItem("token")
+//   const expiresTime = window.sessionStorage.getItem("expiresTime")
+//   next()
   // if (token && expiresTime) {
   //   if (to.name === 'login') {
   //     return next('/welcome')
@@ -89,6 +101,6 @@ router.beforeEach((to, from, next) => {
     //   return next('/login')
     // }
   // }
-})
+// })
 
 export default router
