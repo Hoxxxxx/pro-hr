@@ -6,7 +6,7 @@
   </div>
 </template>
 <script>
-import http from "../../utils/http";
+import http from "../../utils/request";
 import configUrl from "../../api/configUrl";
 export default {
   data() {

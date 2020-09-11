@@ -4,7 +4,7 @@ import { Message } from 'element-ui'
 
 // axios配置
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+// axios.defaults.baseURL = process.env.VUE_APP_BASE_API
 
 axios.interceptors.request.use(
     config => {
@@ -87,3 +87,28 @@ axios.interceptors.response.use(
         return Promise.resolve(err.response)
     }
 )
+
+export default {
+    GET(url, header = {}, params) {
+        return new Promise((resolve, reject) => {
+            axios.get(url, {
+                header,
+                params
+            }).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    },
+    POST(url, params) {
+        return new Promise((resolve, reject) => {
+            axios.post(url, params).then(res => {
+                resolve(res)
+            }).catch(err => {
+                reject(err)
+            })
+        })
+    }
+}
+
