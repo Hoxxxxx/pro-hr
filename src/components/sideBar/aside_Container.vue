@@ -46,6 +46,23 @@ export default {
           menuType: 0,
         },
         {
+          title: "管理员管理",
+          path: "/administrator",
+          menuType: 1,
+          children: [
+            {
+              id: 0,
+              title: "管理员列表",
+              path: "/admins",
+            },
+            {
+              id: 1,
+              title: "角色管理",
+              path: "/roles",
+            },
+          ],
+        },
+        {
           title: "组织管理",
           path: "/organization",
           menuType: 1,

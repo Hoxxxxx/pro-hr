@@ -11,6 +11,9 @@ const staffMsg = () => import('@/views/staffManage/staffMsg')
 // 组织管理
 const department = () => import('@/views/organization/department')
 const position = () => import('@/views/organization/position')
+// 管理员管理
+const admins = () => import('@/views/administrator/admins')
+const roles = () => import('@/views/administrator/roles')
 
 Vue.use(VueRouter)
 
@@ -50,6 +53,25 @@ const routes = [
       }
     ]
   },
+  // 管理员管理
+  {
+    path: '/administrator',
+    name: 'administrator',
+    redirect: '/administrator/admins',
+    component: Home,
+    children: [
+      {
+        path: '/admins',
+        name: 'admins',
+        component: admins
+      },
+      {
+        path: '/roles',
+        name: 'roles',
+        component: roles
+      }
+    ]
+  },
   // 组织管理
   {
     path: '/organization',
@@ -84,23 +106,23 @@ const router = new VueRouter({
 //   const token = window.sessionStorage.getItem("token")
 //   const expiresTime = window.sessionStorage.getItem("expiresTime")
 //   next()
-  // if (token && expiresTime) {
-  //   if (to.name === 'login') {
-  //     return next('/welcome')
-  //   } else {
-  //     return next()
-  //   }
-  // } 
-  // else if (!token || !expiresTime) {
-  //   return next()
-    // if (to.name === 'login') {
-    //   window.sessionStorage.clear()
-    //   return next()
-    // } else {
-    //   window.sessionStorage.clear()
-    //   return next('/login')
-    // }
-  // }
+// if (token && expiresTime) {
+//   if (to.name === 'login') {
+//     return next('/welcome')
+//   } else {
+//     return next()
+//   }
+// } 
+// else if (!token || !expiresTime) {
+//   return next()
+// if (to.name === 'login') {
+//   window.sessionStorage.clear()
+//   return next()
+// } else {
+//   window.sessionStorage.clear()
+//   return next('/login')
+// }
+// }
 // })
 
 export default router

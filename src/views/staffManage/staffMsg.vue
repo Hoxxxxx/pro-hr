@@ -290,6 +290,44 @@
         </div>
       </div>
     </el-card>
+    <!-- 离职信息 -->
+    <el-card class="formCard" v-if="curIndex == 2">
+      <div class="positiveEdit">
+        <div class="baseInfo">
+          <ul class="inputBox">
+            <!-- 离职类型/离职日期 -->
+            <li>
+              <div class="itemBox">
+                <div class="labelBox">
+                  <span class="label">离职类型</span>
+                </div>
+                <div class="elInput">具体信息</div>
+              </div>
+              <div class="itemBox">
+                <div class="labelBox">
+                  <span class="label">离职日期</span>
+                </div>
+                <div class="elInput">具体信息</div>
+              </div>
+            </li>
+          </ul>
+        </div>
+        <div class="baseInfo">
+          <!-- 离职原因 -->
+          <div class="conclusion">
+            <span class="label">离职原因</span>
+            <el-input
+              type="textarea"
+              :rows="25"
+              placeholder="请输入内容"
+              minlength="30"
+              v-model="departure"
+              :disabled="positiveStatus == 1 ? false : true"
+            ></el-input>
+          </div>
+        </div>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -323,6 +361,8 @@ export default {
       positiveTime: "", //转正时间
       conclusion: "", //工作总结
       fileList: [], //附件
+      // 离职信息
+      departure: "",
     };
   },
   mounted() {},
@@ -354,13 +394,13 @@ export default {
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     // 转正按钮点击
-    positive(){
-      this.positiveStatus = 1
+    positive() {
+      this.positiveStatus = 1;
     },
     // 保存转正信息
-    positiveSave(){
-      this.positiveStatus = 2
-    }
+    positiveSave() {
+      this.positiveStatus = 2;
+    },
   },
   components: {
     navBar,
@@ -605,9 +645,9 @@ export default {
         position: absolute;
         top: 50%;
         left: 50%;
-        transform: translate(-50%,-50%);
+        transform: translate(-50%, -50%);
       }
-      img{
+      img {
         margin-bottom: 20px;
       }
     }

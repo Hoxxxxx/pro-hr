@@ -221,7 +221,7 @@
       <div class="btnBox">
         <div class="btns">
           <el-button style="width:95px;">取消</el-button>
-          <el-button style="width:95px;" type="primary">确认添加</el-button>
+          <el-button style="width:95px;" type="primary" @click="addStaff()">确认添加</el-button>
         </div>
       </div>
     </el-card>
@@ -249,7 +249,7 @@ export default {
       //   表单数据
       //基本信息
       name: "",
-      gender: 1,
+      gender: null,
       birthday: "",
       phone: "",
       idCard: "",
@@ -287,13 +287,6 @@ export default {
       ],
       job: "",
 
-      job_options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-      ],
-      job: "",
       entryTime: "",
       positiveTime: "",
       probation_options: [
@@ -323,7 +316,49 @@ export default {
     };
   },
   mounted() {},
-  methods: {},
+  methods: {
+    addStaff() {
+      switch (true) {
+        case this.name == "":
+          this.$message.error("请填写姓名！");
+          break;
+        case this.gender == null:
+          this.$message.error("请选择性别！");
+          break;
+        case this.phone == '':
+          this.$message.error("请填写手机号！");
+          break;
+        case this.idCard == '':
+          this.$message.error("请填写身份证号码！");
+          break;
+        case this.status == '':
+          this.$message.error("请选择员工状态！");
+          break;
+        case this.company == '':
+          this.$message.error("请选择所属公司！");
+          break;
+        case this.department == '':
+          this.$message.error("请选择部门！");
+          break;
+        case this.job == '':
+          this.$message.error("请选择职位！");
+          break;
+        case this.entryTime == '':
+          this.$message.error("请填写入职时间！");
+          break;
+        case this.positiveTime == '':
+          this.$message.error("请填写转正时间！");
+          break;
+        case this.probation == '':
+          this.$message.error("请选择试用期！");
+          break;
+        default:
+          console.log(this.company)
+          this.$message("成功！");
+          break;
+      }
+    },
+  },
   components: {
     navBar,
   },
@@ -347,7 +382,6 @@ export default {
         flex-wrap: wrap;
         margin-top: 20px;
         li {
-          width: 100%;
           margin-right: 50px;
           display: flex;
           flex-direction: row;
