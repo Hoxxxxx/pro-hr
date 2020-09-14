@@ -79,22 +79,94 @@
           </el-table-column>
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
-              <!-- column -->
-              <!-- screen -->
-              <el-button
-                type="text"
-                @click="$router.push({path:'/staffMsg'})"
-              >查看</el-button>
-              <!-- edit -->
-              <el-button type="text" @click="edit(scope.row.id)">编辑</el-button>
-              <!-- use -->
-              <el-button type="text" @click="use(scope.row.id)">使用</el-button>
-              <!-- delete -->
-              <el-button type="text" @click="removeById(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="$router.push({path:'/staffMsg'})">查看</el-button>
+              <el-button type="text" @click="edit(scope.row.id)">转正</el-button>
+              <el-button type="text" @click="openDialog('departure',scope.row.id)">离职</el-button>
+              <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
+              <el-button type="text" @click="openDialog('openUse',scope.row.id)">开通账号</el-button>
+              <el-button type="text" @click="openDialog('stopUse',scope.row.id)">停用账号</el-button>
             </template>
           </el-table-column>
         </el-table>
       </div>
+
+      <!-- 新增管理员弹窗 -->
+      <el-dialog :visible.sync="showDialog" width="30%" center>
+        <div class="deleteMsg" v-if="dialogType == 'remove'">确定要删除该条数据？</div>
+        <div class="stopUse" v-if="dialogType == 'stopUse'">
+          <span>确定停用该员工的账号？</span>
+          <span>确认后该员工账号不可使用登录进入系统</span>
+        </div>
+        <div class="openUse" v-if="dialogType == 'openUse'">
+          <ul class="popExtraList">
+            <li>
+              <span>账号名称：</span>
+              <el-input style="width:300px" placeholder="请输入账号名称" v-model="name_openUse"></el-input>
+            </li>
+            <li>
+              <span>密码：</span>
+              <el-input style="width:300px" placeholder="请输入密码" v-model="pwd_openUse"></el-input>
+            </li>
+            <li>
+              <span>职位：</span>
+              <el-input style="width:300px" v-model="job_openUse" :disabled="true"></el-input>
+            </li>
+            <li>
+              <span>部门：</span>
+              <el-input style="width:300px" v-model="depart_openUse" :disabled="true"></el-input>
+            </li>
+            <li>
+              <span>公司：</span>
+              <el-input style="width:300px" v-model="company_openUse" :disabled="true"></el-input>
+            </li>
+          </ul>
+        </div>
+        <div class="departure" v-if="dialogType == 'departure'">
+          <ul class="popExtraList">
+            <li>
+              <span>离职类型：</span>
+              <el-select style="width:300px" v-model="depart" placeholder="请选择离职类型" class="elInput">
+                <el-option
+                  v-for="item in depart_options"
+                  :key="item.value"
+                  :label="item.label"
+                  :value="item.value"
+                ></el-option>
+              </el-select>
+            </li>
+            <li>
+              <span>离职日期：</span>
+              <el-date-picker
+                v-model="departTime"
+                type="date"
+                placeholder="选择离职日期："
+                class="elInput"
+                style="width:300px"
+              ></el-date-picker>
+            </li>
+            <li>
+              <span>薪资结算日：</span>
+              <el-date-picker
+                v-model="departMoneyTime"
+                type="date"
+                placeholder="选择薪资结算日"
+                class="elInput"
+                style="width:300px"
+              ></el-date-picker>
+            </li>
+            <li>
+              <span>离职原因：</span>
+              <el-input type="textarea" style="width:300px" autosize placeholder="请输入离职原因" v-model="departReason"></el-input>
+            </li>
+          </ul>
+        </div>
+        <div class="extraBtns">
+          <div>
+            <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
+            <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+          </div>
+        </div>
+      </el-dialog>
 
       <!-- 分页区域 -->
       <el-pagination
@@ -114,7 +186,7 @@
 <script>
 import http from "../../utils/request";
 import configUrl from "../../api/configUrl";
-import navBar from '@/components/navBar/navBar'
+import navBar from "@/components/navBar/navBar";
 export default {
   filters: {
     color(val) {
@@ -134,7 +206,7 @@ export default {
   data() {
     return {
       // 面包屑
-      breadList:[
+      breadList: [
         {
           path: "/",
           title: "首页",
@@ -146,7 +218,7 @@ export default {
           title: "员工列表",
         },
       ],
-      title:'员工管理',
+      title: "员工管理",
       menuList: [
         { name: "在职", val: 0, status: 0 },
         { name: "离职", val: 0, status: 3 },
@@ -211,17 +283,27 @@ export default {
           proof_state: 2,
           id: 2,
         },
+      ],
+      showDialog: false,
+      dialogType: "",
+      // 开通账号相关数据
+      name_openUse: "",
+      pwd_openUse: "",
+      job_openUse: "",
+      depart_openUse: "",
+      company_openUse: "",
+      // 离职相关数据
+      depart_options: [
         {
-          proof_num: "2019第四期",
-          proof_font: "号 98765",
-          proof_person: "赵六",
-          proof_entry_time: "2016-06-06",
-          proof_last_change_time: "2016-09-09",
-          proof_amount: 123.12,
-          proof_state: 3,
-          id: 3,
+          value: "选项1",
+          label: "黄金糕",
         },
       ],
+      depart: "", //离职类型
+      departTime: "", //离职时间
+      departMoneyTime: "", //薪资结算日
+      departReason:'',//离职原因
+      // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
@@ -245,10 +327,32 @@ export default {
       });
     },
     // 新增员工
-    addStaff(){
+    addStaff() {
       this.$router.push({
-        path:'/staffAdd'
-      })
+        path: "/staffAdd",
+      });
+    },
+    openDialog(type, val) {
+      this.showDialog = true;
+      switch (type) {
+        case "remove":
+          this.dialogType = type;
+          break;
+        case "stopUse":
+          this.dialogType = type;
+          break;
+        case "openUse":
+          this.dialogType = type;
+          break;
+        case "departure":
+          this.dialogType = type;
+          break;
+        default:
+          break;
+      }
+    },
+    extraBtnClick() {
+      this.showDialog = false;
     },
     // watch pagesize change
     handleSizeChange(newSize) {},
@@ -257,7 +361,7 @@ export default {
     handleCurrentChange(newPage) {},
   },
   components: {
-    navBar
+    navBar,
   },
 };
 </script>
@@ -265,8 +369,8 @@ export default {
 <style lang="less" scoped>
 .staffManage {
   height: 100%;
-  .navBox{
-    margin-bottom: 0!important;
+  .navBox {
+    margin-bottom: 0 !important;
   }
   .menuList {
     width: 100%;
@@ -326,7 +430,7 @@ export default {
   }
   .searchCard {
     height: 80px;
-    margin: 20px 20px 0 20px;
+    margin: 20px;
     .btnBox {
       width: 180px;
       float: right;
@@ -344,7 +448,7 @@ export default {
 }
 
 .listCard {
-  margin: 20px 20px 0 20px;
+  margin: 20px;
   .clearfix {
     display: flex;
     align-items: center;
@@ -366,6 +470,61 @@ export default {
       .p40 {
         padding: 12px 40px;
       }
+    }
+  }
+  .deleteMsg {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .stopUse {
+    span {
+      display: block;
+      text-align: center;
+      &:first-child {
+        font-size: 16px;
+        color: #000;
+        font-weight: 600;
+      }
+      &:last-child {
+        font-size: 14px;
+        color: #333;
+        margin-top: 10px;
+      }
+    }
+  }
+  .openUse,
+  .departure {
+    padding-right: 30px;
+    .popExtraList {
+      > li {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-around;
+        align-items: center;
+        margin-bottom: 20px;
+        span {
+          display: inline-block;
+          width: 120px;
+          font-size: 16px;
+          color: #333333;
+          font-weight: 600;
+          text-align: right;
+        }
+      }
+    }
+  }
+  .extraBtns {
+    width: 100%;
+    margin-top: 30px;
+    div {
+      width: 240px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
     }
   }
 }
