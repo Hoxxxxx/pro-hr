@@ -24,7 +24,6 @@
           placeholder="请输入员工姓名"
           clearable
           style="width: 360px;margin-right: 20px;border-radius: 4px;"
-          @clear="getAdmins()"
         ></el-input>
         <el-select v-model="status" placeholder="请选择状态" style="width: 360px;border-radius: 4px;">
           <el-option

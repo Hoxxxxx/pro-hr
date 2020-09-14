@@ -57,7 +57,7 @@ const routes = [
   {
     path: '/administrator',
     name: 'administrator',
-    redirect: '/administrator/admins',
+    redirect: '/admins',
     component: Home,
     children: [
       {
