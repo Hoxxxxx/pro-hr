@@ -106,9 +106,9 @@
               <el-select v-model="department" multiple  placeholder="请选择部门" class="elInput">
                 <el-option
                   v-for="item in department_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </div>
@@ -254,34 +254,49 @@ export default {
       phone: "",
       idCard: "",
       email: "",
-      // 职位信息
+      // 员工状态
       status_options: [
         {
-          value: "选项1",
-          label: "黄金糕",
+          value: 0,
+          label: "在职",
+        },
+        {
+          value: 1,
+          label: "试用",
+        },
+        {
+          value: 2,
+          label: "正式",
+        },
+        {
+          value: 3,
+          label: "离职",
         },
       ],
       status: "",
-
+      // 公司
       company_options: [
         {
-          value: "选项1",
-          label: "黄金糕",
+          value: 0,
+          label: "成都公司",
+        },
+        {
+          value: 1,
+          label: "北京公司",
+        },
+        {
+          value: 2,
+          label: "上海公司",
         },
       ],
       company: "",
-
-      department_options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
-      ],
+      // 部门
+      department_options: [],
       department: "",
 
       job_options: [
         {
-          value: "选项1",
+          value: 0,
           label: "黄金糕",
         },
       ],
@@ -289,33 +304,73 @@ export default {
 
       entryTime: "",
       positiveTime: "",
+      // 试用期
       probation_options: [
         {
-          value: "选项1",
-          label: "黄金糕",
+          value: 0,
+          label: "无",
+        },
+        {
+          value: 1,
+          label: "1个月",
+        },
+        {
+          value: 2,
+          label: "2个月",
+        },
+        {
+          value: 3,
+          label: "3个月",
+        },
+        {
+          value: 4,
+          label: "4个月",
+        },
+        {
+          value: 5,
+          label: "5个月",
+        },
+        {
+          value: 6,
+          label: "6个月",
         },
       ],
       probation: "",
+      // 工号
       workNum: "",
       //   其他信息
       marrige_options: [
         {
-          value: "选项1",
-          label: "黄金糕",
+          value: 0,
+          label: "未婚",
+        },
+        {
+          value: 1,
+          label: "已婚",
         },
       ],
       marrige: "",
       study_options: [
         {
-          value: "选项1",
-          label: "黄金糕",
+          value: 0,
+          label: "专科",
+        },
+        {
+          value: 1,
+          label: "本科",
+        },
+        {
+          value: 2,
+          label: "硕士",
         },
       ],
       study: "",
       emergency: "",
     };
   },
-  mounted() {},
+  mounted() {
+    this.getDepart()
+  },
   methods: {
     addStaff() {
       switch (true) {
@@ -357,28 +412,39 @@ export default {
           break;
       }
     },
+    //保存添加
     saveAdd(){
       let params = {
         name:this.name,
         sex:this.gender,
-        status:1,
-        mobile:'18696530232',
-        position_id:[1],
-        department_id:1,
-        card:'123456789987654321',
+        status:this.status,
+        mobile:this.phone,
+        position_id:this.job,
+        department_id:this.department,
+        card:this.idCard,
         birthday:this.birthday,
-        entry_time:this.entry_time,
+        entry_time:this.entryTime,
         positive_time:this.positiveTime,
-        job_number:'1',
+        job_number:this.workNum,
         emergency_contact:this.emergency,
-        trial_period:2,
-        education:1,
+        trial_period:this.probation,
+        education:this.study,
         marrige:this.marrige,
         email:this.email,
-        company_id:[1]
+        company_id:this.company
       }
+      console.log(params)
       http.POST(configUrl.addStaff,params).then(res=>{
         console.log(res)
+      })
+    },
+    // 获取部门列表
+    getDepart(){
+      let params={
+        page:1
+      }
+      http.GET(configUrl.getDepartments,params).then(res=>{
+        this.department_options = res.data
       })
     }
   },

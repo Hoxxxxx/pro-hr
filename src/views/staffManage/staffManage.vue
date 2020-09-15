@@ -62,39 +62,64 @@
           <el-table-column align="center" type="selection" width="55"></el-table-column>
           <el-table-column align="center" label="姓名" prop="name"></el-table-column>
           <el-table-column align="center" label="工号" prop="job_number"></el-table-column>
-          <el-table-column align="center" label="部门" prop="de_name"></el-table-column>
-          <el-table-column align="center" label="职位" prop="position">
+          <el-table-column align="center" label="部门" prop="department">
             <template slot-scope="scope">
-              <span v-for="(i,index) in scope.row.position" :key="index">{{i.name}}</span>
+              <span
+                v-for="(i,index) in scope.row.department"
+                :key="index"
+                style="margin:0 10px;"
+              >{{i.name}}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="员工状态" prop="status"></el-table-column>
+          <el-table-column align="center" label="职位" prop="position">
+            <template slot-scope="scope">
+              <span
+                v-for="(i,index) in scope.row.position"
+                :key="index"
+                style="margin:0 10px;"
+              >{{i.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="员工状态" prop="status">
+            <template slot-scope="scope">
+              <span>{{scope.row.status == 1 ? '试用': (scope.row.status == 2 ? '正式' : (scope.row.status == 3 ? '离职':'在职'))}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="手机号" prop="mobile"></el-table-column>
           <el-table-column align="center" label="入职日期" prop="entry_time"></el-table-column>
           <el-table-column align="center" label="转正日期" prop="positive_time"></el-table-column>
-          <!-- <el-table-column
-            v-for="(item,index) in tHeadList"
-            :key="index"
-            :label="item.label"
-            :prop="item.prop"
-            align="center"
-          ></el-table-column> -->
-          <el-table-column label="OA账号" prop="proof_state" align="center">
+          <el-table-column label="账号状态" prop="ac_open_status" align="center">
             <template slot-scope="scope">
-              <span v-if="scope.row.proof_state === 0" :style="scope.row.proof_state | color">已开通</span>
               <span
-                v-else-if="scope.row.proof_state === 1"
-                :style="scope.row.proof_state | color"
+                v-if="scope.row.ac_open_status === 0"
+                :style="scope.row.ac_open_status | color"
+              >已开通</span>
+              <span
+                v-else-if="scope.row.ac_open_status === 1"
+                :style="scope.row.ac_open_status | color"
               >未开通</span>
-              <span v-else :style="scope.row.proof_state | color">已停用</span>
+              <span v-else :style="scope.row.ac_open_status | color">已停用</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="$router.push({path:'/staffMsg'})">查看</el-button>
-              <el-button type="text" @click="edit(scope.row.id)">转正</el-button>
-              <el-button type="text" @click="openDialog('departure',scope.row.id)">离职</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status == 1 && scope.row.status !=3"
+                @click="openDialog('positive',scope.row.id)"
+              >转正</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status !=3"
+                @click="openDialog('departure',scope.row.id)"
+              >离职</el-button>
               <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
-              <el-button type="text" @click="openDialog('openUse',scope.row.id)">开通账号</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status !=3"
+                @click="openDialog('openUse',scope.row.id)"
+              >开通账号</el-button>
               <el-button type="text" @click="openDialog('stopUse',scope.row.id)">停用账号</el-button>
             </template>
           </el-table-column>
@@ -157,7 +182,13 @@
             </li>
             <li>
               <span>离职原因：</span>
-              <el-input type="textarea" style="width:300px" autosize placeholder="请输入离职原因" v-model="departReason"></el-input>
+              <el-input
+                type="textarea"
+                style="width:300px"
+                autosize
+                placeholder="请输入离职原因"
+                v-model="departReason"
+              ></el-input>
             </li>
           </ul>
         </div>
@@ -188,6 +219,7 @@
 import http from "../../utils/request";
 import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
+import { Message } from "element-ui";
 export default {
   filters: {
     color(val) {
@@ -244,15 +276,6 @@ export default {
           value: 1,
         },
       ],
-      tHeadList: [
-        { label: "员工姓名", prop: "name" },
-        { label: "工号", prop: "job_number" },
-        { label: "部门", prop: "de_name" },
-        { label: "职位", prop: "position_id" },
-        { label: "员工状态", prop: "status" },
-        { label: "入职日期", prop: "entry_time" },
-        { label: "转正日期", prop: "positive_time" },
-      ],
       viewsList: [],
       showDialog: false,
       dialogType: "",
@@ -271,34 +294,32 @@ export default {
       ],
       depart: "", //离职类型
       departTime: "", //离职时间
-      departReason:'',//离职原因
+      departReason: "", //离职原因
+      tempId: "", //存放列表中需要执行某个操作时点击的某一项
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
   },
   mounted() {
-    this.getUserInfo();
     this.getStaffList();
+    this.staffCount();
   },
   methods: {
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
     },
-    getUserInfo() {
-      http.GET(configUrl.getUserInfo).then((res) => {});
-    },
     // 获取员工列表
     getStaffList() {
       let params = {
-        page:1,
-        type:0
-      }
-      http.GET(configUrl.getStaffList,params).then((res) => {
+        page: 1,
+        type: 0,
+      };
+      http.GET(configUrl.getStaffList, params).then((res) => {
         console.log(res.data);
-        this.viewsList = res.data.users.data
-        this.total = res.data.users.total
+        this.viewsList = res.data.users.data;
+        this.total = res.data.users.total;
       });
     },
     // 新增员工
@@ -309,25 +330,60 @@ export default {
     },
     openDialog(type, val) {
       this.showDialog = true;
-      switch (type) {
-        case "remove":
-          this.dialogType = type;
-          break;
-        case "stopUse":
-          this.dialogType = type;
-          break;
-        case "openUse":
-          this.dialogType = type;
-          break;
-        case "departure":
-          this.dialogType = type;
-          break;
-        default:
-          break;
-      }
+      this.dialogType = type;
+      this.tempId = val;
     },
-    extraBtnClick() {
+    extraBtnClick(type) {
+      if (type == 1) {
+        switch (this.dialogType) {
+          case "remove":
+            console.log(this.tempId);
+            this.deleteStaff();
+            break;
+          case "stopUse":
+            break;
+          case "openUse":
+            break;
+          case "departure":
+            break;
+          default:
+            break;
+        }
+      }
       this.showDialog = false;
+    },
+    // 删除员工
+    deleteStaff() {
+      let params = {
+        id: this.tempId,
+      };
+      http.DELETE(configUrl.deleteStaff, params.id).then((res) => {
+        console.log(res);
+        if (res.status == 0) {
+          this.$message({
+            message: "删除成功！",
+            type: "success",
+          });
+          this.getStaffList();
+        } else {
+          this.$message.error(res.msg);
+        }
+      });
+    },
+    // 分类人数统计
+    staffCount() {
+      http.GET(configUrl.staffCount).then((res) => {
+        for (let i = 0, len = this.menuList.length; i < len; i++) {
+          let item=this.menuList[i]
+          for(let j=0,jlen=res.data.length;j<jlen;j++)
+          if(item.status == j){
+            item.val = res.data[j]
+          }else{
+            item.val = 0
+          }
+        }
+        console.log(this.menuList)
+      });
     },
     // watch pagesize change
     handleSizeChange(newSize) {},
