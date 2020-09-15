@@ -21,7 +21,7 @@ export default {
         code: "abcdef",
       };
       http.POST(configUrl.getToken, params).then(res => {
-        let token = res.data.data.token
+        let token = res.data.token
         sessionStorage.setItem("token", token);
       });
     },

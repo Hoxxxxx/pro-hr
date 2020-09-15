@@ -59,14 +59,25 @@
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666'}"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column
+          <el-table-column align="center" type="selection" width="55"></el-table-column>
+          <el-table-column align="center" label="姓名" prop="name"></el-table-column>
+          <el-table-column align="center" label="工号" prop="job_number"></el-table-column>
+          <el-table-column align="center" label="部门" prop="de_name"></el-table-column>
+          <el-table-column align="center" label="职位" prop="position">
+            <template slot-scope="scope">
+              <span v-for="(i,index) in scope.row.position" :key="index">{{i.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column align="center" label="员工状态" prop="status"></el-table-column>
+          <el-table-column align="center" label="入职日期" prop="entry_time"></el-table-column>
+          <el-table-column align="center" label="转正日期" prop="positive_time"></el-table-column>
+          <!-- <el-table-column
             v-for="(item,index) in tHeadList"
             :key="index"
             :label="item.label"
             :prop="item.prop"
             align="center"
-          ></el-table-column>
+          ></el-table-column> -->
           <el-table-column label="OA账号" prop="proof_state" align="center">
             <template slot-scope="scope">
               <span v-if="scope.row.proof_state === 0" :style="scope.row.proof_state | color">已开通</span>
@@ -140,16 +151,6 @@
                 v-model="departTime"
                 type="date"
                 placeholder="选择离职日期："
-                class="elInput"
-                style="width:300px"
-              ></el-date-picker>
-            </li>
-            <li>
-              <span>薪资结算日：</span>
-              <el-date-picker
-                v-model="departMoneyTime"
-                type="date"
-                placeholder="选择薪资结算日"
                 class="elInput"
                 style="width:300px"
               ></el-date-picker>
@@ -246,44 +247,13 @@ export default {
       tHeadList: [
         { label: "员工姓名", prop: "name" },
         { label: "工号", prop: "job_number" },
-        { label: "部门", prop: "department_id" },
+        { label: "部门", prop: "de_name" },
         { label: "职位", prop: "position_id" },
         { label: "员工状态", prop: "status" },
         { label: "入职日期", prop: "entry_time" },
         { label: "转正日期", prop: "positive_time" },
       ],
-      viewsList: [
-        {
-          proof_num: "2019第一期",
-          proof_font: "借 12198",
-          proof_person: "张三",
-          proof_entry_time: "2015-06-06",
-          proof_last_change_time: "2015-09-09",
-          proof_amount: 19008.0,
-          proof_state: 0,
-          id: 0,
-        },
-        {
-          proof_num: "2019第二期",
-          proof_font: "字 12198",
-          proof_person: "李四",
-          proof_entry_time: "2015-09-06",
-          proof_last_change_time: "2015-11-09",
-          proof_amount: 12008.98,
-          proof_state: 1,
-          id: 1,
-        },
-        {
-          proof_num: "2019第三期",
-          proof_font: "号 12345",
-          proof_person: "晚五",
-          proof_entry_time: "2018-06-06",
-          proof_last_change_time: "2019-09-09",
-          proof_amount: 9800.12,
-          proof_state: 2,
-          id: 2,
-        },
-      ],
+      viewsList: [],
       showDialog: false,
       dialogType: "",
       // 开通账号相关数据
@@ -301,25 +271,17 @@ export default {
       ],
       depart: "", //离职类型
       departTime: "", //离职时间
-      departMoneyTime: "", //薪资结算日
       departReason:'',//离职原因
       // 分页
-      total: 4,
+      total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
   },
   mounted() {
     this.getUserInfo();
-    // this.getStaffList();
-    this.getMusic()
+    this.getStaffList();
   },
   methods: {
-    getMusic(){
-      console.log('start')
-      http.GET(configUrl.getMusic).then(res=>{
-        console.log(res)
-      })
-    },
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
@@ -329,8 +291,14 @@ export default {
     },
     // 获取员工列表
     getStaffList() {
-      http.POST(configUrl.getStaffList).then((res) => {
-        console.log(res);
+      let params = {
+        page:1,
+        type:0
+      }
+      http.GET(configUrl.getStaffList,params).then((res) => {
+        console.log(res.data);
+        this.viewsList = res.data.users.data
+        this.total = res.data.users.total
       });
     },
     // 新增员工

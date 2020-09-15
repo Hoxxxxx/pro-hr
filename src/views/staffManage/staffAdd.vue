@@ -86,7 +86,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">所属公司</span>
               </div>
-              <el-select v-model="company" placeholder="请选择所属公司" class="elInput">
+              <el-select v-model="company" multiple  placeholder="请选择所属公司" class="elInput">
                 <el-option
                   v-for="item in company_options"
                   :key="item.value"
@@ -103,7 +103,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">部门</span>
               </div>
-              <el-select v-model="department" placeholder="请选择部门" class="elInput">
+              <el-select v-model="department" multiple  placeholder="请选择部门" class="elInput">
                 <el-option
                   v-for="item in department_options"
                   :key="item.value"
@@ -117,7 +117,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">职位</span>
               </div>
-              <el-select v-model="job" placeholder="请选择职位" class="elInput">
+              <el-select v-model="job" multiple  placeholder="请选择职位" class="elInput">
                 <el-option
                   v-for="item in job_options"
                   :key="item.value"
@@ -343,21 +343,44 @@ export default {
         case this.job == '':
           this.$message.error("请选择职位！");
           break;
-        case this.entryTime == '':
+        case !this.entryTime:
           this.$message.error("请填写入职时间！");
           break;
-        case this.positiveTime == '':
+        case !this.positiveTime:
           this.$message.error("请填写转正时间！");
           break;
         case this.probation == '':
           this.$message.error("请选择试用期！");
           break;
         default:
-          console.log(this.company)
-          this.$message("成功！");
+          this.saveAdd()
           break;
       }
     },
+    saveAdd(){
+      let params = {
+        name:this.name,
+        sex:this.gender,
+        status:1,
+        mobile:'18696530232',
+        position_id:[1],
+        department_id:1,
+        card:'123456789987654321',
+        birthday:this.birthday,
+        entry_time:this.entry_time,
+        positive_time:this.positiveTime,
+        job_number:'1',
+        emergency_contact:this.emergency,
+        trial_period:2,
+        education:1,
+        marrige:this.marrige,
+        email:this.email,
+        company_id:[1]
+      }
+      http.POST(configUrl.addStaff,params).then(res=>{
+        console.log(res)
+      })
+    }
   },
   components: {
     navBar,

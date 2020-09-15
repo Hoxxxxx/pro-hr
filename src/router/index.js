@@ -76,7 +76,7 @@ const routes = [
   {
     path: '/organization',
     name: 'organization',
-    redirect: '/organization/department',
+    redirect: '/department',
     component: Home,
     children: [
       {

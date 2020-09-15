@@ -89,13 +89,10 @@ axios.interceptors.response.use(
 )
 
 export default {
-    GET(url, header = {}, params) {
+    GET(url, params) {
         return new Promise((resolve, reject) => {
-            axios.get(url, {
-                header,
-                params
-            }).then(res => {
-                resolve(res)
+            axios.get(url, { params: params }).then(res => {
+                resolve(res.data)
             }).catch(err => {
                 reject(err)
             })
@@ -104,7 +101,7 @@ export default {
     POST(url, params) {
         return new Promise((resolve, reject) => {
             axios.post(url, params).then(res => {
-                resolve(res)
+                resolve(res.data)
             }).catch(err => {
                 reject(err)
             })
