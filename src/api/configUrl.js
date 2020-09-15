@@ -2,9 +2,9 @@
 let configUrl = {
     // 获取token
     getToken: '/api/authorizations',
-    getUserInfo:'/api/auth/show',
+    getUserInfo:'/api/users/current/show',
     // 员工列表
-    getStaffList:'/api/user/list'
+    getStaffList:'/api/users'
 }
 
 export default configUrl
