@@ -95,7 +95,7 @@
         <div class="deleteMsg" v-if="dialogType == 'remove'">确定要删除该条数据？</div>
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
-          <span>确认后该员工账号不可使用登录进入系统</span>
+          <span>确认后该员工不可使用账号登录进入系统</span>
         </div>
         <div class="openUse" v-if="dialogType == 'openUse'">
           <ul class="popExtraList">
@@ -309,10 +309,17 @@ export default {
     };
   },
   mounted() {
-    // this.getUserInfo();
+    this.getUserInfo();
     // this.getStaffList();
+    this.getMusic()
   },
   methods: {
+    getMusic(){
+      console.log('start')
+      http.GET(configUrl.getMusic).then(res=>{
+        console.log(res)
+      })
+    },
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
