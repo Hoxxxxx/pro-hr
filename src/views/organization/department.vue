@@ -4,18 +4,12 @@
     <!-- 搜索框 -->
     <el-card class="searchCard">
       <div class="serchBox">
-        <el-select
-          v-model="roleChoosed"
-          placeholder="请选择角色"
-          style="width: 360px;border-radius: 4px;"
-        >
-          <el-option
-            v-for="item in roleType"
-            :key="item.value"
-            :label="item.lable"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+        <el-input
+          v-model="deName"
+          placeholder="请输入部门名称"
+          clearable
+          style="width: 360px;margin-right: 20px;border-radius: 4px;"
+        ></el-input>
       </div>
       <div class="btnBox">
         <el-button type="primary" size="medium">搜索</el-button>
@@ -29,7 +23,7 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">角色列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="addStaff()">新增部门</el-button>
+          <el-button type="primary" class="p40" @click="openDialog('add',0)">新增部门</el-button>
           <el-button class="btn p40">批量删除</el-button>
         </div>
       </div>
@@ -52,9 +46,9 @@
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <!-- edit -->
-              <el-button type="text" @click="edit(scope.row.id)">编辑</el-button>
+              <el-button type="text" @click="openDialog('add',scope.row.id)">编辑</el-button>
               <!-- delete -->
-              <el-button type="text" @click="removeById(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="openDialog('delete',scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -74,7 +68,7 @@
 
       <!-- 新增管理员弹窗 -->
       <el-dialog :visible.sync="showAddPop" width="26%" top="20vh" center>
-        <div class="departure">
+        <div class="departure" v-if="dialogType == 'add'">
           <ul class="popExtraList">
             <li>
               <span>部门名称：</span>
@@ -107,6 +101,7 @@
             </li>
           </ul>
         </div>
+        <div class="deleteMsg" v-if="dialogType == 'delete'">确定要删除该条数据？</div>
         <div class="extraBtns">
           <div>
             <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
@@ -141,22 +136,7 @@ export default {
       title: "部门管理",
 
       // 搜索框
-      adminName: "",
-      roleChoosed: "",
-      roleType: [
-        {
-          lable: "离职",
-          value: 3,
-        },
-        {
-          lable: "正式",
-          value: 2,
-        },
-        {
-          lable: "试用",
-          value: 1,
-        },
-      ],
+      deName: "",
       tHeadList: [
         { label: "部门名称", prop: "name" },
         { label: "部门主管", prop: "job_number" },
@@ -196,6 +176,7 @@ export default {
       ],
       depart: "", //上级部门
       departMsg:'',//部门描述
+      dialogType:'',
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -216,8 +197,10 @@ export default {
       });
     },
     // 新增管理员
-    addStaff() {
+    openDialog(type,val) {
       this.showAddPop = true;
+      this.dialogType = type;
+
     },
     extraBtnClick(type) {
       this.showAddPop = false;
@@ -303,6 +286,13 @@ export default {
         }
       }
     }
+  }
+  .deleteMsg {
+    font-size: 16px;
+    color: #333;
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 20px;
   }
   .popExtraList {
     > li {
