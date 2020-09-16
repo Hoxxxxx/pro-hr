@@ -26,7 +26,7 @@
               <div class="labelBox">
                 <span class="label">姓名</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.name}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
@@ -44,13 +44,13 @@
               <div class="labelBox">
                 <span class="label">手机号</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.mobile}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">身份证号</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.card}}</div>
             </div>
           </li>
           <!-- 出生日期/邮箱 -->
@@ -60,13 +60,13 @@
                 <span class="redPot"></span>
                 <span class="label">出生日期</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.birthday}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">邮箱</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.email}}</div>
             </div>
           </li>
         </ul>
@@ -81,13 +81,15 @@
               <div class="labelBox">
                 <span class="label">员工状态</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.status | status}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">所属公司</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput msgInput">
+                <span v-for="(i,idx) in staffInfo.company" :key="idx">{{i}}</span>
+              </div>
             </div>
           </li>
           <!-- 部门/职位 -->
@@ -96,13 +98,17 @@
               <div class="labelBox">
                 <span class="label">部门</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput msgInput">
+                <span v-for="(i,idx) in staffInfo.department" :key="idx">{{i.name}}</span>
+              </div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">职位</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput msgInput">
+                <span v-for="(i,idx) in staffInfo.position" :key="idx">{{i.name}}</span>
+              </div>
             </div>
           </li>
           <!-- 入职时间/转正时间 -->
@@ -111,13 +117,13 @@
               <div class="labelBox">
                 <span class="label">入职时间</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.entry_time}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">转正时间</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.positive_time}}</div>
             </div>
           </li>
           <!-- 试用期/工号 -->
@@ -126,13 +132,13 @@
               <div class="labelBox">
                 <span class="label">试用期</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.trial_period | trial}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">工号</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.job_number}}</div>
             </div>
           </li>
         </ul>
@@ -147,13 +153,13 @@
               <div class="labelBox">
                 <span class="label">婚姻状况</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.marriage | marriage}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">学历</span>
               </div>
-              <div class="elInput">具体信息</div>
+              <div class="elInput">{{staffInfo.education | education}}</div>
             </div>
           </li>
           <!-- 紧急联系人 -->
@@ -336,6 +342,47 @@ import http from "../../utils/request";
 import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 export default {
+  filters: {
+    status(val) {
+      switch (val) {
+        case 0:
+          return "在职";
+          break;
+        case 1:
+          return "试用";
+          break;
+        case 2:
+          return "正式";
+          break;
+        default:
+          return "离职";
+          break;
+      }
+    },
+    trial(val){
+      if(val == 0){
+        return '无'
+      }else{
+        return `${val}个月`
+      }
+    },
+    marriage(val){
+      if(val==0){
+        return '未婚'
+      }else{
+        return '已婚'
+      }
+    },
+    education(val){
+      if(val == 0){
+        return '专科'
+      }else if(val ==1){
+        return '本科'
+      }else{
+        return '硕士'
+      }
+    }
+  },
   data() {
     return {
       // 面包屑
@@ -356,6 +403,8 @@ export default {
       ],
       curIndex: 0,
       gender: 1,
+      staffInfo: {}, //员工信息
+      staffId: "", //员工id
       // 转正信息填写部分数据
       positiveStatus: 0,
       positiveTime: "", //转正时间
@@ -365,7 +414,12 @@ export default {
       departure: "",
     };
   },
-  mounted() {},
+  created() {
+    this.staffId = this.$route.query.id;
+  },
+  mounted() {
+    this.getStaffInfo();
+  },
   methods: {
     // 顶部菜单选择
     changeStatus(index, status) {
@@ -392,6 +446,21 @@ export default {
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    // 获取员工信息
+    getStaffInfo() {
+      http.GET(`${configUrl.getStaffList}/${this.staffId}`).then((res) => {
+        if (res.status == 0) {
+          this.staffInfo = res.data;
+          this.gender = res.data.sex;
+          console.log(this.staffInfo);
+        } else {
+          this.$message({
+            message: "获取员工信息失败！",
+            type: "warning",
+          });
+        }
+      });
     },
     // 转正按钮点击
     positive() {
@@ -511,6 +580,14 @@ export default {
               box-sizing: border-box;
               color: #909399;
               font-weight: 400;
+            }
+            .msgInput {
+              span {
+                margin-right: 20px;
+                &:last-child {
+                  margin-right: 0;
+                }
+              }
             }
             .genderBox {
               flex: 1 1 auto;

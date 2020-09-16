@@ -120,9 +120,9 @@
               <el-select v-model="job" multiple  placeholder="请选择职位" class="elInput">
                 <el-option
                   v-for="item in job_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </div>
@@ -293,15 +293,9 @@ export default {
       // 部门
       department_options: [],
       department: "",
-
-      job_options: [
-        {
-          value: 0,
-          label: "黄金糕",
-        },
-      ],
+      // 职位
+      job_options: [],
       job: "",
-
       entryTime: "",
       positiveTime: "",
       // 试用期
@@ -370,6 +364,7 @@ export default {
   },
   mounted() {
     this.getDepart()
+    this.getJobs()
   },
   methods: {
     addStaff() {
@@ -445,6 +440,14 @@ export default {
       }
       http.GET(configUrl.getDepartments,params).then(res=>{
         this.department_options = res.data
+      })
+    },
+    getJobs(){
+      let params={
+        page:1
+      }
+      http.GET(configUrl.getJobs,params).then(res=>{
+        this.job_options = res.data.positions.data
       })
     }
   },
