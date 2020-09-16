@@ -38,12 +38,7 @@ axios.interceptors.response.use(
         }
     }, err => {
         if (err && err.response) {
-            console.log(err)
-            Message.warning({
-                message: err,
-                type: 'warning'
-            })
-            // switch (err.response.status) {
+            switch (err.response.status) {
             // case 400:
             //     console.log('错误请求')
             //     break;
@@ -65,9 +60,12 @@ axios.interceptors.response.use(
             // case 408:
             //     console.log('请求超时')
             //     break;
-            // case 500:
-            //     console.log(`服务器端出错：${err.response.data.message}`)
-            //     break;
+            case 500:
+                Message.warning({
+                    message: '服务器端出错',
+                    type: 'warning'
+                })
+                break;
             // case 501:
             //     console.log('网络未实现')
             //     break;
@@ -83,9 +81,9 @@ axios.interceptors.response.use(
             // case 505:
             //     console.log('http版本不支持该请求')
             //     break;
-            // default:
-            //     console.log(`连接错误${err.response.status}`)
-            // }
+            default:
+                console.log(`连接错误${err.response.status}`)
+            }
         } else {
             console.log('连接到服务器失败')
         }
