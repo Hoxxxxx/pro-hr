@@ -86,7 +86,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">所属公司</span>
               </div>
-              <el-select v-model="company" multiple  placeholder="请选择所属公司" class="elInput">
+              <el-select v-model="company" multiple placeholder="请选择所属公司" class="elInput">
                 <el-option
                   v-for="item in company_options"
                   :key="item.value"
@@ -103,7 +103,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">部门</span>
               </div>
-              <el-select v-model="department" multiple  placeholder="请选择部门" class="elInput">
+              <el-select v-model="department" multiple placeholder="请选择部门" class="elInput">
                 <el-option
                   v-for="item in department_options"
                   :key="item.id"
@@ -117,7 +117,7 @@
                 <span class="redPot">&#10052;</span>
                 <span class="label">职位</span>
               </div>
-              <el-select v-model="job" multiple  placeholder="请选择职位" class="elInput">
+              <el-select v-model="job" multiple placeholder="请选择职位" class="elInput">
                 <el-option
                   v-for="item in job_options"
                   :key="item.id"
@@ -220,8 +220,12 @@
       </div>
       <div class="btnBox">
         <div class="btns">
-          <el-button style="width:95px;">取消</el-button>
-          <el-button style="width:95px;" type="primary" @click="addStaff()">确认添加</el-button>
+          <el-button style="width:95px;" @click="addStaff(0)">取消</el-button>
+          <el-button
+            style="width:95px;"
+            type="primary"
+            @click="addStaff(1)"
+          >{{saveType == 'edit' ? '保存编辑' :'确认添加'}}</el-button>
         </div>
       </div>
     </el-card>
@@ -248,6 +252,7 @@ export default {
       title: "新增员工",
       //   表单数据
       //基本信息
+      staffId: "", //员工id（从员工信息页面跳转过来会有此值）
       name: "",
       gender: null,
       birthday: "",
@@ -273,7 +278,7 @@ export default {
           label: "离职",
         },
       ],
-      status: "",
+      status: null,
       // 公司
       company_options: [
         {
@@ -360,96 +365,174 @@ export default {
       ],
       study: "",
       emergency: "",
+      saveType: "", //保存类型（编辑保存/新增保存）
     };
   },
+  created() {
+    this.staffId = this.$route.query.id;
+    this.saveType = this.$route.query.saveType;
+    if (this.staffId && this.staffId != "") {
+      this.getStaffInfo();
+      this.title = "编辑员工";
+    } else {
+      console.log("从新增页面跳转过来");
+    }
+  },
   mounted() {
-    this.getDepart()
-    this.getJobs()
+    this.getDepart();
+    this.getJobs();
   },
   methods: {
-    addStaff() {
-      switch (true) {
-        case this.name == "":
-          this.$message.error("请填写姓名！");
-          break;
-        case this.gender == null:
-          this.$message.error("请选择性别！");
-          break;
-        case this.phone == '':
-          this.$message.error("请填写手机号！");
-          break;
-        case this.idCard == '':
-          this.$message.error("请填写身份证号码！");
-          break;
-        case this.status == '':
-          this.$message.error("请选择员工状态！");
-          break;
-        case this.company == '':
-          this.$message.error("请选择所属公司！");
-          break;
-        case this.department == '':
-          this.$message.error("请选择部门！");
-          break;
-        case this.job == '':
-          this.$message.error("请选择职位！");
-          break;
-        case !this.entryTime:
-          this.$message.error("请填写入职时间！");
-          break;
-        case !this.positiveTime:
-          this.$message.error("请填写转正时间！");
-          break;
-        case this.probation == '':
-          this.$message.error("请选择试用期！");
-          break;
-        default:
-          this.saveAdd()
-          break;
+    addStaff(type) {
+      if (type == 0) {
+        history.go(-1);
+      } else {
+        switch (true) {
+          case this.name == "":
+            this.$message.error("请填写姓名！");
+            break;
+          case this.gender == null:
+            this.$message.error("请选择性别！");
+            break;
+          case this.phone == "":
+            this.$message.error("请填写手机号！");
+            break;
+          case this.idCard == "":
+            this.$message.error("请填写身份证号码！");
+            break;
+          case this.status == null:
+            this.$message.error("请选择员工状态！");
+            break;
+          case this.company == "":
+            this.$message.error("请选择所属公司！");
+            break;
+          case this.department == "":
+            this.$message.error("请选择部门！");
+            break;
+          case this.job == "":
+            this.$message.error("请选择职位！");
+            break;
+          case !this.entryTime:
+            this.$message.error("请填写入职时间！");
+            break;
+          case !this.positiveTime:
+            this.$message.error("请填写转正时间！");
+            break;
+          case this.probation == "":
+            this.$message.error("请选择试用期！");
+            break;
+          default:
+            this.saveAdd();
+            break;
+        }
       }
     },
     //保存添加
-    saveAdd(){
+    saveAdd() {
+      let that = this;
       let params = {
-        name:this.name,
-        sex:this.gender,
-        status:this.status,
-        mobile:this.phone,
-        position_id:this.job,
-        department_id:this.department,
-        card:this.idCard,
-        birthday:this.birthday,
-        entry_time:this.entryTime,
-        positive_time:this.positiveTime,
-        job_number:this.workNum,
-        emergency_contact:this.emergency,
-        trial_period:this.probation,
-        education:this.study,
-        marrige:this.marrige,
-        email:this.email,
-        company_id:this.company
+        name: this.name,
+        sex: this.gender,
+        status: this.status,
+        mobile: this.phone,
+        position_id: this.job,
+        department_id: this.department,
+        card: this.idCard,
+        birthday: this.birthday,
+        entry_time: this.entryTime,
+        positive_time: this.positiveTime,
+        job_number: String(this.workNum),
+        emergency_contact: this.emergency,
+        trial_period: this.probation,
+        education: this.study,
+        marrige: this.marrige,
+        email: this.email,
+        company_id: this.company,
+      };
+      if (this.saveType == "edit") {
+        http.PUT(`/api/users/${this.staffId}`, params).then((res) => {
+          if (res.status == 0) {
+            this.$message({
+              message: "保存成功！",
+              type: "success",
+            });
+            setTimeout(function () {
+              history.go(-1);
+            }, 500);
+          } else {
+            this.$message({
+              message: res.msg,
+              type: "warning",
+            });
+          }
+        });
+      } else {
+        http.POST(configUrl.addStaff, params).then((res) => {
+          if (res.status == 0) {
+            this.$message({
+              message: "添加成功！",
+              type: "success",
+            });
+            setTimeout(function () {
+              history.go(-1);
+            }, 500);
+          } else {
+            this.$message({
+              message: res.msg,
+              type: "warning",
+            });
+          }
+        });
       }
-      console.log(params)
-      http.POST(configUrl.addStaff,params).then(res=>{
-        console.log(res)
-      })
     },
     // 获取部门列表
-    getDepart(){
-      let params={
-        page:1
-      }
-      http.GET(configUrl.getDepartments,params).then(res=>{
-        this.department_options = res.data
-      })
+    getDepart() {
+      let params = {
+        page: 1,
+      };
+      http.GET(configUrl.getDepartments, params).then((res) => {
+        this.department_options = res.data;
+      });
     },
-    getJobs(){
-      let params={
-        page:1
-      }
-      http.GET(configUrl.getJobs,params).then(res=>{
-        this.job_options = res.data.positions.data
-      })
-    }
+    // 获取职位列表
+    getJobs() {
+      let params = {
+        page: 1,
+      };
+      http.GET(configUrl.getJobs, params).then((res) => {
+        this.job_options = res.data.positions.data;
+      });
+    },
+    // 获取员工信息
+    getStaffInfo() {
+      http.GET(`${configUrl.getStaffList}/${this.staffId}`).then((res) => {
+        if (res.status == 0) {
+          let info = res.data;
+          this.name = info.name;
+          this.gender = info.sex;
+          this.phone = info.mobile;
+          this.idCard = info.card;
+          this.birthday = info.birthday;
+          this.email = info.email;
+          this.status = info.status;
+          this.company = JSON.parse(info.company_id);
+          this.department = JSON.parse(info.department_id);
+          this.job = JSON.parse(info.position_id);
+          this.entryTime = info.entry_time;
+          this.positiveTime = info.positive_time;
+          this.probation = info.trial_period;
+          this.workNum = info.job_number;
+          this.marrige = info.marriage;
+          this.study = info.education;
+          this.emergency = info.emergency_contact;
+        } else {
+          this.$message({
+            message: "获取员工信息失败！",
+            type: "warning",
+          });
+        }
+      });
+    },
   },
   components: {
     navBar,
