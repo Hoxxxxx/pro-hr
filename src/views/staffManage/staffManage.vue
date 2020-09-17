@@ -35,8 +35,8 @@
         </el-select>
       </div>
       <div class="btnBox">
-        <el-button type="primary" size="medium" @click="search()">搜索</el-button>
-        <el-button id="secondary" class="secondary" size="medium">重置</el-button>
+        <el-button type="primary" size="medium" @click="search(0)">搜索</el-button>
+        <el-button class="secondary" size="medium" @click="search(1)">重置</el-button>
       </div>
     </el-card>
 
@@ -317,8 +317,14 @@ export default {
       this.getStaffList();
     },
     // 搜索
-    search() {
-      this.getStaffList(this.adminName, this.status);
+    search(type) {
+      if(type == 0){
+        this.getStaffList(this.adminName, this.status);
+      }else{
+        this.status = null;
+        this.adminName = ''
+        this.getStaffList();
+      }
     },
     // 获取员工列表
     getStaffList(adminName, status) {
@@ -440,6 +446,7 @@ export default {
             });
           }, 500);
           this.getStaffList();
+          this.staffCount();
         } else {
           setTimeout(function () {
             that.$message({
