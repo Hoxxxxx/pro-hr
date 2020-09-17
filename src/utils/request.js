@@ -42,10 +42,12 @@ axios.interceptors.response.use(
                 // case 400:
                 //     console.log('错误请求')
                 //     break;
-                // case 401:
-                //     sessionStorage.clear();
-                //     window.location = '/login'
-                //     break;
+                case 401:
+                    Message.warning({
+                        message: 'token已过期,请重新登录！',
+                        type: 'warning'
+                    })
+                    break;
                 // case 403:
                 //     window.location = '/403'
                 //     console.log('无权限访问')
