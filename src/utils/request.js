@@ -114,7 +114,7 @@ export default {
     },
     DELETE(url, params) {
         return new Promise((resolve, reject) => {
-            axios.delete(`${url}/${params}`).then(response => {
+            axios.delete(url,{params:params}).then(response => {
                 resolve(response.data);
             }).catch(err => {
                 reject(err)

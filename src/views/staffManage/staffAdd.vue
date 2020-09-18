@@ -10,14 +10,14 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">姓名</span>
               </div>
               <el-input class="elInput" v-model="name" placeholder="请输入姓名"></el-input>
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">姓别</span>
               </div>
               <div class="genderBox">
@@ -30,14 +30,14 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">手机号</span>
               </div>
               <el-input class="elInput" v-model="phone" placeholder="请输入手机号"></el-input>
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">身份证号</span>
               </div>
               <el-input class="elInput" v-model="idCard" placeholder="请输入身份证号"></el-input>
@@ -69,7 +69,7 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">员工状态</span>
               </div>
               <el-select v-model="status" placeholder="请选择员工状态" class="elInput">
@@ -83,7 +83,7 @@
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">所属公司</span>
               </div>
               <el-select v-model="company" multiple placeholder="请选择所属公司" class="elInput">
@@ -100,7 +100,7 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">部门</span>
               </div>
               <el-select v-model="department" multiple placeholder="请选择部门" class="elInput">
@@ -114,7 +114,7 @@
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">职位</span>
               </div>
               <el-select v-model="job" multiple placeholder="请选择职位" class="elInput">
@@ -131,14 +131,14 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <!-- <span class="redPot">*</span> -->
                 <span class="label">入职时间</span>
               </div>
               <el-date-picker v-model="entryTime" type="date" placeholder="选择入职时间" class="elInput"></el-date-picker>
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <!-- <span class="redPot">*</span> -->
                 <span class="label">转正时间</span>
               </div>
               <el-date-picker
@@ -153,7 +153,7 @@
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="redPot">&#10052;</span>
+                <span class="redPot">*</span>
                 <span class="label">试用期</span>
               </div>
               <el-select v-model="probation" placeholder="请选择试用期" class="elInput">
@@ -334,7 +334,7 @@ export default {
           label: "6个月",
         },
       ],
-      probation: "",
+      probation: null,
       // 工号
       workNum: "",
       //   其他信息
@@ -412,13 +412,13 @@ export default {
           case this.job == "":
             this.$message.error("请选择职位！");
             break;
-          case !this.entryTime:
-            this.$message.error("请填写入职时间！");
-            break;
-          case !this.positiveTime:
-            this.$message.error("请填写转正时间！");
-            break;
-          case this.probation == "":
+          // case !this.entryTime:
+          //   this.$message.error("请填写入职时间！");
+          //   break;
+          // case !this.positiveTime:
+          //   this.$message.error("请填写转正时间！");
+          //   break;
+          case this.probation == null:
             this.$message.error("请选择试用期！");
             break;
           default:
@@ -583,13 +583,14 @@ export default {
               .label {
                 letter-spacing: 1px;
                 color: #f56c6c;
-                font-size: 16px;
+                font-size: 20px;
                 font-weight: bold;
                 margin-right: 2px;
               }
               .label {
                 color: #333333;
                 margin-right: 0;
+                font-size: 16px;
               }
             }
           }

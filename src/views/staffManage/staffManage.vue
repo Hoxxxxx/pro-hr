@@ -48,7 +48,7 @@
         <div class="btns">
           <el-button type="primary" class="p40" @click="addStaff()">新增员工</el-button>
           <el-button class="btn p40">批量导入</el-button>
-          <el-button class="btn p40">批量删除</el-button>
+          <el-button class="btn p40" @click="deleteSelected()">批量删除</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -58,6 +58,7 @@
           style="width: 100%"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          @selection-change="handleSelectionChange"
         >
           <el-table-column align="center" type="selection" width="55"></el-table-column>
           <el-table-column align="center" label="姓名" prop="name"></el-table-column>
@@ -104,11 +105,27 @@
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="view(scope.row.id)">查看</el-button>
-              <el-button type="text" v-if="scope.row.status == 1 && scope.row.ac_open_status !=2" @click="positive(scope.row.id)">转正</el-button>
-              <el-button type="text" v-if="scope.row.status !=3 && scope.row.ac_open_status !=2" @click="openDialog('departure',scope.row.id)">离职</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status == 1 && scope.row.ac_open_status !=2"
+                @click="positive(scope.row.id)"
+              >转正</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status !=3 && scope.row.ac_open_status !=2"
+                @click="openDialog('departure',scope.row.id)"
+              >离职</el-button>
               <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
-              <el-button type="text" v-if="scope.row.status !=3 && scope.row.ac_open_status ==0" @click="openDialog('openUse',scope.row.id)">开通账号</el-button>
-              <el-button type="text" v-if="scope.row.ac_open_status == 1" @click="openDialog('stopUse',scope.row.id)">停用账号</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.status !=3 && scope.row.ac_open_status ==0"
+                @click="openDialog('openUse',scope.row.id)"
+              >开通账号</el-button>
+              <el-button
+                type="text"
+                v-if="scope.row.ac_open_status == 1"
+                @click="openDialog('stopUse',scope.row.id)"
+              >停用账号</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -300,6 +317,7 @@ export default {
       departTime: "", //离职时间
       departReason: "", //离职原因
       tempId: "", //存放列表中需要执行某个操作时点击的某一项
+      multipleSelection: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -318,11 +336,14 @@ export default {
     },
     // 搜索
     search(type) {
-      if(type == 0){
+      if (type == 0) {
+        console.log(this.status);
         this.getStaffList(this.adminName, this.status);
-      }else{
+      } else {
         this.status = null;
-        this.adminName = ''
+        this.adminName = "";
+        this.listParams.page = 1;
+        this.listType = 0;
         this.getStaffList();
       }
     },
@@ -334,7 +355,7 @@ export default {
       };
       if (adminName) {
         params.name = adminName;
-      } else if (status) {
+      } else if (status != null) {
         params.status = status;
       }
       http.GET(configUrl.getStaffList, params).then((res) => {
@@ -391,31 +412,36 @@ export default {
             }
             break;
           case "departure":
-            this.departure()
+            this.departure();
             this.showDialog = false;
             break;
           default:
             break;
         }
-      }else{
+      } else {
         this.showDialog = false;
       }
     },
     // 查看
-    view(val){
+    view(val) {
       this.$router.push({
-        path:'/staffMsg',
-        query:{
-          id:val
-        }
-      })
+        path: "/staffMsg",
+        query: {
+          id: val,
+        },
+      });
     },
     // 删除员工
-    deleteStaff() {
-      let params = {
-        id: this.tempId,
-      };
-      http.DELETE(configUrl.deleteStaff, params.id).then((res) => {
+    deleteStaff(val) {
+      let url = "",
+        params = {};
+      if (val) {
+        params.ids = val;
+        url = configUrl.deleteStaff;
+      } else {
+        url = `${configUrl.deleteStaff}/${this.tempId}`;
+      }
+      http.DELETE(url, params).then((res) => {
         console.log(res);
         if (res.status == 0) {
           this.$message({
@@ -424,20 +450,20 @@ export default {
           });
           this.getStaffList();
         } else {
-          this.$message.error(res.msg);
+          this.$message.error(res.error_msg[0]);
         }
       });
     },
     // 离职
-    departure(){
+    departure() {
       let that = this;
-      let params={
-        uid:this.tempId,
-        turnover_type:this.depart,
-        turnover_time:this.departTime,
-        turnover_reason:this.departReason
-      }
-      http.POST(configUrl.departure,params).then(res=>{
+      let params = {
+        uid: this.tempId,
+        turnover_type: this.depart,
+        turnover_time: this.departTime,
+        turnover_reason: this.departReason,
+      };
+      http.POST(configUrl.departure, params).then((res) => {
         if (res.status == 0) {
           setTimeout(function () {
             that.$message({
@@ -455,11 +481,18 @@ export default {
             });
           }, 500);
         }
-      })
+      });
     },
     // 转正
-    positive(val){
-      
+    positive(val) {
+      this.$router.push({
+        path: "/staffMsg",
+        query: {
+          id: val,
+          index: 1,
+          status: 0,
+        },
+      });
     },
     // 开通账号
     openAccount() {
@@ -489,9 +522,9 @@ export default {
       });
     },
     // 停用账号
-    closeAccount(){
+    closeAccount() {
       let that = this;
-      http.PUT(`/api/users/${this.tempId}/forbidAccount`).then(res=>{
+      http.PUT(`/api/users/${this.tempId}/forbidAccount`).then((res) => {
         if (res.status == 0) {
           setTimeout(function () {
             that.$message({
@@ -508,7 +541,7 @@ export default {
             });
           }, 500);
         }
-      })
+      });
     },
     // 分类人数统计
     staffCount() {
@@ -532,11 +565,23 @@ export default {
         }
       });
     },
-    // watch pagesize change
+    // 分页数据变化处理
     handleSizeChange(newSize) {},
-
-    // watch page change
-    handleCurrentChange(newPage) {},
+    handleCurrentChange(newPage) {
+      this.listParams.page = newPage;
+      this.getStaffList();
+    },
+    // 批量删除
+    handleSelectionChange(val) {
+      let temp = [];
+      val.forEach((item) => {
+        temp.push(item.id);
+      });
+      this.multipleSelection = temp;
+    },
+    deleteSelected() {
+      this.deleteStaff(this.multipleSelection);
+    },
   },
   components: {
     navBar,
@@ -695,7 +740,7 @@ export default {
           font-weight: 600;
           text-align: right;
         }
-        .tips{
+        .tips {
           font-size: 12px;
           color: red;
           position: absolute;

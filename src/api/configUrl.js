@@ -10,6 +10,7 @@ let configUrl = {
     getDepartments: '/api/departmentsAll',//新增员工页面获取所有部门列表
     getJobs:'/api/positions',//新增员工页面获取所有职位列表
     positiveSave:'/api/positives',//转正保存
+    fileDownload:'/api/downfiles/index',//文件下载
 }
 
 export default configUrl
