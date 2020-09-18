@@ -247,15 +247,14 @@
               <span class="label">附件</span>
               <el-upload
                 class="upload-demo"
-                :action="uploadUrl"
-                :on-preview="handlePreview"
+                action
                 :on-remove="handleRemove"
                 :before-remove="beforeRemove"
                 :before-upload="beforeUpload"
                 :on-change="handleChange"
                 :headers="header"
+                :auto-upload="false"
                 multiple
-                :on-exceed="handleExceed"
                 :file-list="fileList"
               >
                 <el-button size="small" type="primary" style="width:120px;">新增附件</el-button>
@@ -287,16 +286,18 @@
               <li>
                 <div class="itemBox">
                   <div class="labelBox">
-                    <span class="label">申请时间</span>
+                    <span class="label">转正时间</span>
                   </div>
-                  <div class="elInput">{{staffInfo.positive ? staffInfo.positive.positive_time :'暂无'}}</div>
+                  <div
+                    class="elInput"
+                  >{{staffInfo.positive ? staffInfo.positive.positive_time :'暂无'}}</div>
                 </div>
-                <div class="itemBox">
+                <!-- <div class="itemBox">
                   <div class="labelBox">
                     <span class="label">试用期</span>
                   </div>
                   <div class="elInput">{{staffInfo.positive ? staffInfo.positive.id+'个月' :'暂无'}}</div>
-                </div>
+                </div>-->
               </li>
             </ul>
           </div>
@@ -308,12 +309,17 @@
             </div>
             <div class="upload">
               <span class="label">附件</span>
-              <ul class="fileList" v-if="positiveStatus == 2">
-                <li v-for="(item,index) in fileList" :key="index">
-                  <span class="fileName">文件名</span>
-                  <span class="fileDownload">下载</span>
+              <ul class="fileList" v-if="staffInfo.positive && staffInfo.positive.attachment_url">
+                <li
+                  v-for="(item,index) in JSON.parse(staffInfo.positive.attachment_url)"
+                  :key="index"
+                >
+                  <span class="fileName">{{item}}</span>
+                  <span class="fileDownload" @click="download(item)">下载</span>
+                  <a :href="`http://luxy.hr.com/api/downfiles/index?file_name=${item}`">下载</a>
                 </li>
               </ul>
+              <span class="tips" v-else>无附件</span>
             </div>
           </div>
         </div>
@@ -448,7 +454,7 @@ export default {
       if (val == 0) {
         return "无";
       } else {
-        return `${val}个月`;
+        return val ? `${val}个月` : "暂无";
       }
     },
     marriage(val) {
@@ -547,6 +553,7 @@ export default {
   },
   created() {
     this.staffId = this.$route.query.id;
+    this.curIndex = this.$route.query.index ? this.$route.query.index : 0;
   },
   mounted() {
     this.getStaffInfo();
@@ -570,28 +577,15 @@ export default {
     handleRemove(file, fileList) {
       console.log(file, fileList);
     },
-    handlePreview(file) {
-      console.log(file);
-    },
-    handleExceed(files, fileList) {
-      this.$message.warning(
-        `当前限制选择 3 个文件，本次选择了 ${files.length} 个文件，共选择了 ${
-          files.length + fileList.length
-        } 个文件`
-      );
-    },
-    handleChange(file,fileList){
-      console.log(fileList)
-      this.fileList = fileList
+    handleChange(file, fileList) {
+      this.fileList = fileList;
     },
     beforeRemove(file, fileList) {
-      console.log(fileList)
+      console.log(fileList);
       return this.$confirm(`确定移除 ${file.name}？`);
     },
-    beforeUpload(file,fileList) {
-      console.log(file)
-      console.log(fileList)
-      return false
+    beforeUpload(file, fileList) {
+      return false;
     },
     // 获取员工信息
     getStaffInfo() {
@@ -620,10 +614,29 @@ export default {
         uid: this.staffId,
         positive_time: this.positiveTime,
         summary: this.conclusion,
-        attachment:this.fileList
       };
-      console.log(params)
-          http.POST(configUrl.positiveSave,params).then(res=>{
+      let formData = new FormData(); //  用FormData存放上传文件
+      this.fileList.forEach((item) => {
+        formData.append("attachment[]", item.raw);
+      });
+      formData.append("uid", params.uid);
+      formData.append("positive_time", "2020-09-18");
+      formData.append("summary", params.summary);
+      switch (true) {
+        case params.positive_time == "":
+          this.$message({
+            message: "请填写转正时间！",
+            type: "warning",
+          });
+          break;
+        case params.summary == "":
+          this.$message({
+            message: "请填写工作总结！",
+            type: "warning",
+          });
+          break;
+        default:
+          http.POST(configUrl.positiveSave, formData).then((res) => {
             if (res.status == 0) {
               this.getStaffInfo();
               this.curIndex = 1;
@@ -641,42 +654,23 @@ export default {
                 });
               }, 500);
             }
-          })
-      // switch (true) {
-      //   case params.positive_time == "":
-      //     this.$message({
-      //       message: "请填写转正时间！",
-      //       type: "warning",
-      //     });
-      //     break;
-      //   case params.summary == "":
-      //     this.$message({
-      //       message: "请填写工作总结！",
-      //       type: "warning",
-      //     });
-      //     break;
-      //   default:
-      //     http.POST(configUrl.positiveSave,params).then(res=>{
-      //       if (res.status == 0) {
-      //         this.getStaffInfo();
-      //         this.curIndex = 1;
-      //         setTimeout(function () {
-      //           that.$message({
-      //             message: "转正成功！",
-      //             type: "success",
-      //           });
-      //         }, 500);
-      //       } else {
-      //         setTimeout(function () {
-      //           that.$message({
-      //             message: res.msg,
-      //             type: "warning",
-      //           });
-      //         }, 500);
-      //       }
-      //     })
-      //     break;
-      // }
+          });
+          break;
+      }
+    },
+    // 转正文件下载
+    download(val) {
+      console.log(val);
+      let params = {
+        file_name: val,
+      };
+      http.GET(configUrl.fileDownload, params).then((res) => {
+          a.download = params.file_name;
+          a.href = `http://luxy.hr.com/${params.file_name}`;
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+      });
     },
     // 离职按钮点击val
     turnover(val) {
@@ -948,6 +942,12 @@ export default {
         justify-content: flex-start;
         .label {
           margin-right: 0;
+          line-height: 32px;
+        }
+        .tips {
+          font-size: 14px;
+          color: #909399;
+          font-weight: 400;
           line-height: 32px;
         }
         .fileList {
