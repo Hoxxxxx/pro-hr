@@ -88,7 +88,7 @@
                 <span class="label">所属公司</span>
               </div>
               <div class="elInput msgInput">
-                <span v-for="(i,idx) in staffInfo.company" :key="idx">{{i}}</span>
+                <span>{{staffInfo.company}}</span>
               </div>
             </div>
           </li>
@@ -117,13 +117,13 @@
               <div class="labelBox">
                 <span class="label">入职时间</span>
               </div>
-              <div class="elInput">{{staffInfo.entry_time}}</div>
+              <div class="elInput">{{staffInfo.entry_time ? staffInfo.entry_time : '暂无'}}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">转正时间</span>
               </div>
-              <div class="elInput">{{staffInfo.positive_time}}</div>
+              <div class="elInput">{{staffInfo.positive_time ? staffInfo.positive_time :'暂无'}}</div>
             </div>
           </li>
           <!-- 试用期/工号 -->
@@ -199,7 +199,7 @@
                   <div class="labelBox">
                     <span class="label">入职日期</span>
                   </div>
-                  <div class="elInput">{{staffInfo.entry_time}}</div>
+                  <div class="elInput">{{staffInfo.entry_time ? staffInfo.entry_time :'暂无'}}</div>
                 </div>
               </li>
               <!-- 手机号 -->
@@ -520,7 +520,6 @@ export default {
       positiveStatus: 0,
       positiveTime: "", //转正时间
       conclusion: "", //工作总结
-      uploadUrl: "http://luxy.hr.com/api/positives",
       fileList: [], //附件
       // 离职数据
       turnoverStatus: 0,

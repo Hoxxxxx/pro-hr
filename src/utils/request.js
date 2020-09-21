@@ -87,7 +87,10 @@ axios.interceptors.response.use(
                     console.log(`连接错误${err.response.status}`)
             }
         } else {
-            console.log('连接到服务器失败')
+            Message.warning({
+                message: '连接到服务器失败',
+                type: 'warning'
+            })
         }
         return Promise.resolve(err.response)
     }
@@ -114,7 +117,7 @@ export default {
     },
     DELETE(url, params) {
         return new Promise((resolve, reject) => {
-            axios.delete(url,{params:params}).then(response => {
+            axios.delete(url, { params: params }).then(response => {
                 resolve(response.data);
             }).catch(err => {
                 reject(err)
