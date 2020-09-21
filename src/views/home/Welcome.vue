@@ -8,6 +8,7 @@
 <script>
 import http from "../../utils/request";
 import configUrl from "../../api/configUrl";
+import { mapMutations } from "vuex";
 export default {
   data() {
     return {};
@@ -16,13 +17,18 @@ export default {
     this.getToken();
   },
   methods: {
-    getToken() {
+    ...mapMutations(["SAVE_USER_INFO"]),
+
+    async getToken() {
       let params = {
         code: "abcdef",
       };
-      http.POST(configUrl.getToken, params).then(res => {
-        let token = res.data.token
+      await http.POST(configUrl.getToken, params).then((res) => {
+        let token = res.data.token;
         sessionStorage.setItem("token", token);
+      });
+      http.GET(configUrl.getUserInfo).then((res) => {
+        this.SAVE_USER_INFO(res.data);
       });
     },
   },

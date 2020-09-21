@@ -9,7 +9,10 @@
     <!-- 功能区 -->
     <div class="opration">
       <div class="more">
-        <el-dropdown trigger="click" @command="userOption">
+        <span class="tips">
+          欢迎您,{{userInfo.name}}
+        </span>
+        <!-- <el-dropdown trigger="click" @command="userOption">
           <span class="el-dropdown-link">
             <i class="el-icon-s-operation"></i>
           </span>
@@ -17,7 +20,7 @@
             <el-dropdown-item command="settings">设置</el-dropdown-item>
             <el-dropdown-item command="logout">退出</el-dropdown-item>
           </el-dropdown-menu>
-        </el-dropdown>
+        </el-dropdown> -->
       </div>
     </div>
 
@@ -69,7 +72,7 @@
 
 <script>
 // API
-
+import {mapState} from 'vuex'
 export default {
   data() {
     return {
@@ -85,7 +88,9 @@ export default {
       passwordEdit: false,
     };
   },
-
+  computed:{
+    ...mapState(['userInfo'])
+  },
   methods: {
     // 获取用户信息
     getUserInfo() {
@@ -222,9 +227,9 @@ export default {
     position: absolute;
     right: 40px;
 
-    div:hover {
-      cursor: pointer;
-    }
+    // div:hover {
+    //   cursor: pointer;
+    // }
 
     .userBox {
       width: 44px;
@@ -238,6 +243,11 @@ export default {
     }
 
     .more {
+      .tips{
+        font-size: 14px;
+        color: #fff;
+        letter-spacing: 1px;
+      }
       .el-icon-s-operation {
         font-size: 24px;
       }
