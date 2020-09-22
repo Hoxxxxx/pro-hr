@@ -70,6 +70,10 @@ dl,dd,dt {
     border: none;
 }
 
+.el-dialog{
+    border-radius: 10px!important;
+}
+
 .el-table /deep/ .cell{
     line-height: 40px;
 }
