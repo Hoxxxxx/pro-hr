@@ -11,6 +11,13 @@ let configUrl = {
     getJobs: '/api/positionsAll',//新增员工页面获取所有职位列表
     positiveSave: '/api/positives',//转正保存
     fileDownload: '/api/downfiles/index',//文件下载
+    // 管理员管理
+    adminsList:'/api/admins',//管理员列表
+    rolesList:'/api/roles',//角色列表
+    // 组织管理
+    departmentList:'/api/departments',//部门列表
+    positionsList:'/api/positions',//职位列表
+
 }
 
 export default configUrl

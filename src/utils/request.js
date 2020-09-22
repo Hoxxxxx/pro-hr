@@ -97,9 +97,9 @@ axios.interceptors.response.use(
 )
 
 export default {
-    GET(url, params) {
+    GET(url, params, header) {
         return new Promise((resolve, reject) => {
-            axios.get(url, { params: params }).then(res => {
+            axios.get(url, { params: params, headers: header }).then(res => {
                 resolve(res.data)
             }).catch(err => {
                 reject(err)

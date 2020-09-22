@@ -132,7 +132,7 @@
       </div>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showDialog" width="30%" center>
+      <el-dialog :visible.sync="showDialog" width="25%" center>
         <div class="deleteMsg" v-if="dialogType == 'remove'">确定要删除该条数据？</div>
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
@@ -165,7 +165,7 @@
             <li>
               <span>公司：</span>
               <div class="msgInput">
-                <span v-for="(i,idx) in company_openUse" :key="idx">{{i}}</span>
+                <span >{{company_openUse}}</span>
               </div>
             </li>
           </ul>
@@ -746,6 +746,7 @@ export default {
           position: absolute;
           left: 120px;
           bottom: -22px;
+          text-align: left;
         }
         .msgInput {
           width: 300px;

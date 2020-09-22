@@ -415,7 +415,7 @@ export default {
           params.positive_time = this.positiveTime;
         }
         if (this.workNum != "") {
-          params.job_number = this.workNum;
+          params.job_number = String(this.workNum);
         }
         if (this.emergency != "") {
           params.emergency_contact = this.emergency;
