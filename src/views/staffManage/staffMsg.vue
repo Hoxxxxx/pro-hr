@@ -316,7 +316,7 @@
                 >
                   <span class="fileName">{{item}}</span>
                   <span class="fileDownload" @click="download(item)">下载</span>
-                  <a :href="`http://luxy.hr.com/api/downfiles/index?file_name=${item}`">下载</a>
+                  <!-- <a :href="`http://luxy.hr.com/api/downfiles/index?file_name=${item}`">下载</a> -->
                 </li>
               </ul>
               <span class="tips" v-else>无附件</span>
@@ -659,17 +659,31 @@ export default {
     },
     // 转正文件下载
     download(val) {
-      console.log(val);
       let params = {
         file_name: val,
       };
-      http.GET(configUrl.fileDownload, params).then((res) => {
-          a.download = params.file_name;
-          a.href = `http://luxy.hr.com/${params.file_name}`;
-          document.body.appendChild(a);
-          a.click();
-          document.body.removeChild(a);
+      http
+        .GET(configUrl.fileDownload, params, { responseType: "blob" })
+        .then((res) => {
+          this.downloadfile(res, val);
+        });
+    },
+    downloadfile(data, fileName) {
+      if (!data) {
+        return;
+      }
+      let blob = new Blob([data],{
+        type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=UTF-8'
       });
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();   
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     },
     // 离职按钮点击val
     turnover(val) {
