@@ -136,31 +136,10 @@ export default {
       ],
       tHeadList: [
         { label: "角色名称", prop: "name" },
-        { label: "创建时间", prop: "job_number" },
-        { label: "修改时间", prop: "department_id" },
+        { label: "创建时间", prop: "created_time" },
+        { label: "修改时间", prop: "updated_time" },
       ],
-      viewsList: [
-        {
-          name: "tom",
-          job_number: "主管",
-          department_id: "研发",
-        },
-        {
-          name: "lisa",
-          job_number: "主管",
-          department_id: "研发",
-        },
-        {
-          name: "paul",
-          job_number: "主管",
-          department_id: "研发",
-        },
-        {
-          name: "jerry",
-          job_number: "主管",
-          department_id: "研发",
-        },
-      ],
+      viewsList: [],
       // 新增角色的弹窗中的数据
       roleName: "",
       showAddPop: false, //是否显示弹窗
@@ -219,17 +198,21 @@ export default {
         label: "label",
       },
       // 分页
-      total: 4,
+      total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
   },
   mounted() {
-    // this.getUserInfo();
+    this.rolesList();
     // this.getStaffList();
   },
   methods: {
-    getUserInfo() {
-      http.GET(configUrl.getUserInfo).then((res) => {});
+    // 获取角色列表
+    rolesList(){
+      http.GET(configUrl.rolesList).then(res=>{
+        this.viewsList = res.data.data
+        this.total = res.data.total;
+      })
     },
     // 获取员工列表
     getStaffList() {

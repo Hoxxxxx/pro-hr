@@ -44,16 +44,29 @@
           :cell-style="{background:'#FCFDFF',color:'#666666'}"
         >
           <el-table-column type="selection" width="55"></el-table-column>
-          <el-table-column
-            v-for="(item,index) in tHeadList"
-            :key="index"
-            :label="item.label"
-            :prop="item.prop"
-            align="center"
-          ></el-table-column>
-          <el-table-column label="状态" align="center">
+          <el-table-column label="用户名称" prop="name" align="center"></el-table-column>
+          <el-table-column label="职位" prop="position" align="center">
             <template slot-scope="scope">
-              <el-switch v-model="scope.row.switchStatus"></el-switch>
+              <span
+                v-for="(i,index) in scope.row.position"
+                :key="index"
+                style="margin:0 10px;"
+              >{{i.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="部门" prop="department" align="center">
+            <template slot-scope="scope">
+              <span
+                v-for="(i,index) in scope.row.department"
+                :key="index"
+                style="margin:0 10px;"
+              >{{i.name}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column label="角色" prop="ro_name" align="center"></el-table-column>
+          <el-table-column label="状态" align="center" prop="admin_status">
+            <template slot-scope="scope">
+              <el-switch v-model="scope.row.admin_status" :active-value=1 :inactive-value=0></el-switch>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="300px" align="center">
@@ -80,18 +93,18 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="30%" top="35vh" center>
+      <el-dialog :visible.sync="showAddPop" width="25%" top="35vh" center>
         <ul class="popExtraList">
           <li>
             <span>选择员工</span>
-            <el-select v-model="staff" placeholder="请选择员工" style="width:300px">
-              <el-option v-for="i in staffList" :key="i.value" :label="i.label" :value="i.value"></el-option>
+            <el-select v-model="staff" placeholder="请选择员工" style="flex:1 1 auto;">
+              <el-option v-for="i in staffList" :key="i.value" :label="i.name" :value="i.id"></el-option>
             </el-select>
           </li>
           <li>
             <span>选择角色</span>
-            <el-select v-model="role" placeholder="请选择角色" style="width:300px">
-              <el-option v-for="i in roles" :key="i.value" :label="i.label" :value="i.value"></el-option>
+            <el-select v-model="role" placeholder="请选择角色" style="flex:1 1 auto;">
+              <el-option v-for="i in roles" :key="i.value" :label="i.name" :value="i.value"></el-option>
             </el-select>
           </li>
         </ul>
@@ -130,92 +143,56 @@ export default {
       status: "",
       adStatus: [
         {
-          lable: "离职",
-          value: 3,
-        },
-        {
-          lable: "正式",
-          value: 2,
-        },
-        {
-          lable: "试用",
+          lable: "正常",
           value: 1,
         },
+        {
+          lable: "禁用",
+          value: 0,
+        }
       ],
-      tHeadList: [
-        { label: "用户名称", prop: "name" },
-        { label: "职位", prop: "job_number" },
-        { label: "部门", prop: "department_id" },
-        { label: "角色", prop: "position_id" },
-        { label: "状态", prop: "status" },
-      ],
-      viewsList: [
-        {
-          name: "tom",
-          job_number: "主管",
-          department_id: "研发",
-          position_id: "管理员",
-          status: "在职",
-          switchStatus: false,
-        },
-        {
-          name: "lisa",
-          job_number: "主管",
-          department_id: "研发",
-          position_id: "管理员",
-          status: "在职",
-          switchStatus: true,
-        },
-        {
-          name: "paul",
-          job_number: "主管",
-          department_id: "研发",
-          position_id: "管理员",
-          status: "在职",
-          switchStatus: false,
-        },
-        {
-          name: "jerry",
-          job_number: "主管",
-          department_id: "研发",
-          position_id: "管理员",
-          status: "在职",
-          switchStatus: true, //状态 按钮
-        },
-      ],
+      viewsList: [],
       // 新增管理员的弹窗中的数据
       showAddPop: false, //是否显示弹窗
-      staffList: [
-        {
-          value: 0,
-          label: "黄金糕",
-        },
-      ],
+      staffList: [],
       staff: "",
-      roles: [
-        {
-          value: 0,
-          label: "黄金糕",
-        },
-      ],
+      roles: [],
       role: "",
       // 分页
-      total: 4,
+      total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
   },
   mounted() {
-    // this.getUserInfo();
-    // this.getStaffList();
+    this.getUsers();
+    this.rolesList()
+    this.getAdminsList();
   },
   methods: {
-    getUserInfo() {
-      http.GET(configUrl.getUserInfo).then((res) => {});
+    // 获取所有员工
+    getUsers() {
+      let params = {
+        page: this.listParams.page,
+        type: 2,
+      };
+      http.GET(configUrl.getStaffList,params).then(res => {
+        this.staffList = res.data.users.data
+      });
     },
-    // 获取员工列表
-    getStaffList() {
-      http.POST(configUrl.getStaffList).then((res) => {
-        console.log(res);
+    // 获取角色列表
+    rolesList(){
+      http.GET(configUrl.rolesList).then(res=>{
+        this.roles = res.data.data
+      })
+    },
+    // 获取管理员列表
+    getAdminsList() {
+      let params={
+        page:1
+      }
+      http.GET(configUrl.adminsList,params).then((res) => {
+        this.viewsList = res.data.data
+        this.total = res.data.total;
       });
     },
     // 新增管理员
@@ -298,6 +275,7 @@ export default {
         font-size: 16px;
         color: #333333;
         font-weight: 600;
+        margin-right: 40px;
       }
     }
   }

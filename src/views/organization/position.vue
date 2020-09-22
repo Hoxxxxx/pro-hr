@@ -76,7 +76,12 @@
             </li>
             <li>
               <span>上级职位：</span>
-              <el-select style="width:300px" v-model="position" placeholder="请选择上级职位" class="elInput">
+              <el-select
+                style="width:300px"
+                v-model="position"
+                placeholder="请选择上级职位"
+                class="elInput"
+              >
                 <el-option
                   v-for="item in position_options"
                   :key="item.value"
@@ -137,31 +142,10 @@ export default {
         { label: "职位名称", prop: "name" },
         { label: "上级职位", prop: "job_number" },
         { label: "创建人", prop: "department_id" },
-        { label: "创建时间", prop: "department_id" },
-        { label: "描述", prop: "department_id" },
+        { label: "创建时间", prop: "created_time" },
+        { label: "描述", prop: "description" },
       ],
-      viewsList: [
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-      ],
+      viewsList: [],
       // 新增角色的弹窗中的数据
       positionName: "",
       showAddPop: false, //是否显示弹窗
@@ -172,8 +156,8 @@ export default {
         },
       ],
       position: "", //上级部门
-      positionMsg:'',//部门描述
-      dialogType:'',
+      positionMsg: "", //部门描述
+      dialogType: "",
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -181,23 +165,25 @@ export default {
   },
   mounted() {
     // this.getUserInfo();
-    // this.getStaffList();
+    this.getPositionsList();
   },
   methods: {
     getUserInfo() {
       http.GET(configUrl.getUserInfo).then((res) => {});
     },
-    // 获取员工列表
-    getStaffList() {
-      http.POST(configUrl.getStaffList).then((res) => {
-        console.log(res);
+    // 获取职位列表
+    getPositionsList() {
+      let params = {
+        page: this.listParams.page,
+      };
+      http.GET(configUrl.positionsList,params).then((res) => {
+        this.viewsList = res.data.positions.data
       });
     },
     // 新增管理员
-    openDialog(type,val) {
+    openDialog(type, val) {
       this.showAddPop = true;
       this.dialogType = type;
-
     },
     extraBtnClick(type) {
       this.showAddPop = false;

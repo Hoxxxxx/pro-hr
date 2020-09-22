@@ -142,28 +142,7 @@ export default {
         { label: "部门主管", prop: "job_number" },
         { label: "人数", prop: "department_id" },
       ],
-      viewsList: [
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-        {
-          name: "研发部",
-          job_number: "主管",
-          department_id: "10",
-        },
-      ],
+      viewsList: [],
       // 新增角色的弹窗中的数据
       departName: "",
       chargerName:'',
@@ -184,16 +163,19 @@ export default {
   },
   mounted() {
     // this.getUserInfo();
-    // this.getStaffList();
+    this.getDepartmentList();
   },
   methods: {
     getUserInfo() {
       http.GET(configUrl.getUserInfo).then((res) => {});
     },
-    // 获取员工列表
-    getStaffList() {
-      http.POST(configUrl.getStaffList).then((res) => {
-        console.log(res);
+    // 获取部门列表
+    getDepartmentList() {
+      let params = {
+        page:this.listParams.page
+      }
+      http.GET(configUrl.departmentList,params).then((res) => {
+        this.viewsList = res.data.departments.data
       });
     },
     // 新增管理员
