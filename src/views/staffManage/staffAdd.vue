@@ -240,7 +240,7 @@
 
 <script>
 import http from "../../utils/request";
-import configUrl from "../../api/configUrl";
+// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 import { mapState } from "vuex";
 export default {
@@ -375,9 +375,9 @@ export default {
     ...mapState(["userInfo"]),
   },
   created() {
-    this.staffId = this.$route.query.id;
-    this.saveType = this.$route.query.saveType;
-    this.company = this.userInfo.company_id;
+    // this.staffId = this.$route.query.id;
+    // this.saveType = this.$route.query.saveType;
+    // this.company = this.userInfo.company_id;
     if (this.staffId && this.staffId != "") {
       this.getStaffInfo();
       this.title = "编辑员工";

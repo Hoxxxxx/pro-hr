@@ -6,8 +6,8 @@
   </div>
 </template>
 <script>
-import { mapMutations } from "vuex";
-import  BASE_API  from "@/api/configUrl"
+// import { mapMutations } from "vuex";
+// import  {BASE_API}  from "@/api/baseApi"
 export default {
   data() {
     return {};
@@ -16,19 +16,19 @@ export default {
     // this.getToken()
   },
   methods: {
-    ...mapMutations(["SAVE_USER_INFO"]),
-    async getToken() {
-      let params = {
-        code: "abcdef",
-      };
-      await BASE_API.getToken(params).then(res=>{
-        let token = res.data.token;
-        sessionStorage.setItem("token", token);
-      })
-      http.GET(configUrl.getUserInfo).then((res) => {
-        this.SAVE_USER_INFO(res.data);
-      });
-    },
+    // ...mapMutations(["SAVE_USER_INFO"]),
+    // async getToken() {
+    //   let params = {
+    //     code: "abcdef",
+    //   };
+    //   await BASE_API.getToken(params).then(res=>{
+    //     let token = res.data.token;
+    //     sessionStorage.setItem("token", token);
+    //   })
+    //   http.GET(configUrl.getUserInfo).then((res) => {
+    //     this.SAVE_USER_INFO(res.data);
+    //   });
+    // },
   },
 };
 </script>

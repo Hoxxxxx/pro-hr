@@ -430,7 +430,7 @@
 
 <script>
 import http from "../../utils/request";
-import configUrl from "../../api/configUrl";
+// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 export default {
   filters: {
@@ -555,7 +555,7 @@ export default {
     this.curIndex = this.$route.query.index ? this.$route.query.index : 0;
   },
   mounted() {
-    this.getStaffInfo();
+    // this.getStaffInfo();
   },
   methods: {
     // 顶部菜单选择

@@ -6,8 +6,9 @@ function ApiFuns(URLS) {
     let caller = item.caller
     switch (item.requstType) {
       case 'get':
-        API[caller] = params => {
-          return request.GET(item.url, {}, {
+        API[caller] = (params = {}, carrys) => {
+          let url = carrys ? `${item.url}/${carrys}` : item.url
+          return request.GET(url, {}, {
             params
           })
         }
@@ -25,4 +26,6 @@ function ApiFuns(URLS) {
   })
   return API
 }
-export {ApiFuns}
+export {
+  ApiFuns
+}

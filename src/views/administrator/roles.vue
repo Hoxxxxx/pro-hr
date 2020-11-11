@@ -100,7 +100,7 @@
 
 <script>
 import http from "../../utils/request";
-import configUrl from "../../api/configUrl";
+// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 export default {
   data() {
@@ -203,7 +203,7 @@ export default {
     };
   },
   mounted() {
-    this.rolesList();
+    // this.rolesList();
     // this.getStaffList();
   },
   methods: {

@@ -230,7 +230,7 @@
 
 <script>
 import http from "../../utils/request";
-import configUrl from "../../api/configUrl";
+// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 export default {
   filters: {
@@ -324,8 +324,8 @@ export default {
     };
   },
   mounted() {
-    this.getStaffList();
-    this.staffCount();
+    // this.getStaffList();
+    // this.staffCount();
   },
   methods: {
     // 顶部菜单选择

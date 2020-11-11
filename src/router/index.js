@@ -103,7 +103,7 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-import BASE_API from "@/api/configUrl"
+import {BASE_API} from "@/api/baseApi"
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {

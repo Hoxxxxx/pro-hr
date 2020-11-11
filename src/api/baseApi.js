@@ -9,7 +9,7 @@ import {
   ApiFuns
 } from './requestFuns'
 
-const configUrl = [
+const baseUrl = [
   // 获取token
   {
     requstType: 'post',
@@ -19,6 +19,8 @@ const configUrl = [
 
 ]
 
-const BASE_API = ApiFuns(configUrl)
+const BASE_API = ApiFuns(baseUrl)
 
-export default BASE_API
+export {
+  BASE_API
+}
