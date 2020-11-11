@@ -6,27 +6,25 @@
   </div>
 </template>
 <script>
-import http from "../../utils/request";
-import configUrl from "../../api/configUrl";
 import { mapMutations } from "vuex";
+import  BASE_API  from "@/api/configUrl"
 export default {
   data() {
     return {};
   },
   mounted() {
-    this.getToken();
+    // this.getToken()
   },
   methods: {
     ...mapMutations(["SAVE_USER_INFO"]),
-
     async getToken() {
       let params = {
         code: "abcdef",
       };
-      await http.POST(configUrl.getToken, params).then((res) => {
+      await BASE_API.getToken(params).then(res=>{
         let token = res.data.token;
         sessionStorage.setItem("token", token);
-      });
+      })
       http.GET(configUrl.getUserInfo).then((res) => {
         this.SAVE_USER_INFO(res.data);
       });

@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 
 const Home = () => import('@/views/home/Home')
 const Welcome = () => import('@/views/home/Welcome')
+const error = () => import('@/components/error')
 // 员工管理
 const staffManage = () => import('@/views/staffManage/staffManage')
 const staffAdd = () => import('@/views/staffManage/staffAdd')
@@ -17,26 +18,26 @@ const roles = () => import('@/views/administrator/roles')
 
 Vue.use(VueRouter)
 
-const routes = [
-  {
+const routes = [{
     path: '/',
     component: Home,
     redirect: '/welcome',
-    children: [
-      {
-        path: '/welcome',
-        name: 'welcome',
-        component: Welcome
-      }
-    ]
+    children: [{
+      path: '/welcome',
+      name: 'welcome',
+      component: Welcome
+    }]
+  },
+  {
+    path: '/error',
+    component: error,
   },
   // 员工管理
   {
     path: '/staffManage',
     component: Home,
     redirect: '/staffManage',
-    children: [
-      {
+    children: [{
         path: '/staffManage',
         name: 'staffManage',
         component: staffManage
@@ -59,8 +60,7 @@ const routes = [
     name: 'administrator',
     redirect: '/admins',
     component: Home,
-    children: [
-      {
+    children: [{
         path: '/admins',
         name: 'admins',
         component: admins
@@ -78,8 +78,7 @@ const routes = [
     name: 'organization',
     redirect: '/department',
     component: Home,
-    children: [
-      {
+    children: [{
         path: '/department',
         name: 'department',
         component: department
@@ -99,30 +98,44 @@ const router = new VueRouter({
   routes
 })
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
+import BASE_API from "@/api/configUrl"
 
 // 挂载路由导航守卫
-// router.beforeEach((to, from, next) => {
+router.beforeEach((to, from, next) => {
+  const token = window.sessionStorage.getItem("token")
+  if (token) { 
+    next()
+  } else {
+    if (window.location.pathname == '/welcome' && window.location.href.split('?')[1]) {
+      let id = window.location.href.split('?')[1].split('=')[1];
+      let params = {
+        code: id
+      }
+      BASE_API.getToken(params).then(res => {
+        if (res.status == 200) {
+          let token = res.data.token
+          sessionStorage.setItem('token', token)
+          next('/welcome')
+        } else {
+          console.log(res.error)
+        }
+      })
+    } else {
+      window.sessionStorage.clear()
+      // 通过判断path防止出现死循环
+      if (to.path === '/error') {
+        next()
+      } else {
+        next('/error')
+      }
+    }
+  }
+})
 
-//   const token = window.sessionStorage.getItem("token")
-//   const expiresTime = window.sessionStorage.getItem("expiresTime")
-//   next()
-// if (token && expiresTime) {
-//   if (to.name === 'login') {
-//     return next('/welcome')
-//   } else {
-//     return next()
-//   }
-// } 
-// else if (!token || !expiresTime) {
-//   return next()
-// if (to.name === 'login') {
-//   window.sessionStorage.clear()
-//   return next()
-// } else {
-//   window.sessionStorage.clear()
-//   return next('/login')
-// }
-// }
-// })
 
 export default router
