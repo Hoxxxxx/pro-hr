@@ -371,7 +371,7 @@ export default {
       if (this.filterList.name != "") {
         params.name = this.filterList.name;
       }
-      if (this.filterList.status == 0 || this.filterList.status == 1) {
+      if (this.filterList.status != '') {
         params.status = this.filterList.status;
       }
       ADMINS_API.getAdmins(params).then((res) => {

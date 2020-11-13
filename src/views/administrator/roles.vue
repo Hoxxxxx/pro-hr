@@ -74,7 +74,7 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
+      <el-dialog :visible.sync="showAddPop" :close-on-click-modal="false" width="600px" top="20vh" center>
         <div class="nameInput">
           <span>角色名称</span>
           <el-input v-model="roleName" placeholder="请输入角色名称" class="elInput"></el-input>
@@ -93,6 +93,30 @@
           <div>
             <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
             <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+          </div>
+        </div>
+      </el-dialog>
+
+      <!-- 编辑管理员弹窗 -->
+      <el-dialog :visible.sync="showEditPop" :close-on-click-modal="false" width="600px" top="20vh" center>
+        <div class="nameInput">
+          <span>角色名称</span>
+          <el-input v-model="roleName" placeholder="请输入角色名称" class="elInput"></el-input>
+        </div>
+        <div class="permissions">
+          <div class="title">角色权限</div>
+          <el-tree
+            :data="permissionsData"
+            show-checkbox
+            node-key="id"
+            :props="defaultProps"
+            :label="title"
+          ></el-tree>
+        </div>
+        <div class="extraBtns">
+          <div>
+            <el-button style="width:95px;" @click="extraBtnClick(2)">取 消</el-button>
+            <el-button style="width:95px;" @click="extraBtnClick(3)" type="primary">确 定</el-button>
           </div>
         </div>
       </el-dialog>
@@ -175,6 +199,8 @@ export default {
       },
       // 批量删除的角色id
       ids:[],
+      // 编辑角色弹窗
+      showEditPop:false,
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -212,6 +238,10 @@ export default {
           this.permissionsData = res.data
         }
       })
+    },
+    // 编辑角色
+    edit(){
+      this.showEditPop = true
     },
     // 新增角色
     addStaff() {
@@ -276,7 +306,22 @@ export default {
       this.ids = temp;
     },
     extraBtnClick(type) {
-      this.showAddPop = false;
+      switch (type) {
+        case 0:
+          this.showAddPop = false;
+          break;
+        case 1:
+          this.showAddPop = false;
+          break;
+        case 2:
+          this.showEditPop = false;
+          break;
+        case 3:
+          this.showEditPop = false;
+          break;
+        default:
+          break;
+      }
     },
     // watch pagesize change
     handleSizeChange(newSize) {},
