@@ -46,13 +46,13 @@ export default {
           menuType: 0,
         },
         {
-          title: "管理员管理",
+          title: "权限管理",
           path: "/administrator",
           menuType: 1,
           children: [
             {
               id: 0,
-              title: "管理员列表",
+              title: "管理员管理",
               path: "/admins",
             },
             {

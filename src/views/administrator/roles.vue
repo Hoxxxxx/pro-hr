@@ -30,7 +30,7 @@
         <span class="tableTitle">角色列表</span>
         <div class="btns">
           <el-button type="primary" class="p40" @click="addStaff()">新增角色</el-button>
-          <el-button class="btn p40">批量删除</el-button>
+          <el-button class="btn p40" @click="deleteMore()">批量删除</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -38,6 +38,7 @@
         <el-table
           :data="viewsList"
           style="width: 100%"
+          @selection-change="handleSelectionChange"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666'}"
         >
@@ -73,10 +74,10 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="26%" top="20vh" center>
+      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
         <div class="nameInput">
           <span>角色名称</span>
-          <el-input v-model="roleName" placeholder="请输入角色名称" style="width:350px"></el-input>
+          <el-input v-model="roleName" placeholder="请输入角色名称" class="elInput"></el-input>
         </div>
         <div class="permissions">
           <div class="title">角色权限</div>
@@ -85,6 +86,7 @@
             show-checkbox
             node-key="id"
             :props="defaultProps"
+            :label="title"
           ></el-tree>
         </div>
         <div class="extraBtns">
@@ -99,9 +101,11 @@
 </template>
 
 <script>
-import http from "../../utils/request";
-// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
+import {renderTime} from '@/utils/function.js'
+// api
+import { PERMISSION_API } from "@/api/permission";
+import { ROLES_API } from "@/api/rolesApi";
 export default {
   data() {
     return {
@@ -109,7 +113,7 @@ export default {
       breadList: [
         {
           path: "/administrator",
-          title: "管理员管理",
+          title: "权限管理",
         },
         {
           title: "角色管理",
@@ -136,83 +140,65 @@ export default {
       ],
       tHeadList: [
         { label: "角色名称", prop: "name" },
-        { label: "创建时间", prop: "created_time" },
-        { label: "修改时间", prop: "updated_time" },
+        { label: "创建时间", prop: "created_at" },
+        { label: "修改时间", prop: "updated_at" },
       ],
       viewsList: [],
       // 新增角色的弹窗中的数据
       roleName: "",
       showAddPop: false, //是否显示弹窗
       permissionsData: [
-        {
-          id: 1,
-          label: "一级 1",
-          children: [
-            {
-              id: 4,
-              label: "二级 1-1",
-              children: [
-                {
-                  id: 9,
-                  label: "三级 1-1-1",
-                },
-                {
-                  id: 10,
-                  label: "三级 1-1-2",
-                },
-              ],
-            },
-          ],
-        },
-        {
-          id: 2,
-          label: "一级 2",
-          children: [
-            {
-              id: 5,
-              label: "二级 2-1",
-            },
-            {
-              id: 6,
-              label: "二级 2-2",
-            },
-          ],
-        },
-        {
-          id: 3,
-          label: "一级 3",
-          children: [
-            {
-              id: 7,
-              label: "二级 3-1",
-            },
-            {
-              id: 8,
-              label: "二级 3-2",
-            },
-          ],
-        },
+        // {
+        //   id: 1,
+        //   label: "一级 1",
+        //   children: [
+        //     {
+        //       id: 4,
+        //       label: "二级 1-1",
+        //       children: [
+        //         {
+        //           id: 9,
+        //           label: "三级 1-1-1",
+        //         },
+        //         {
+        //           id: 10,
+        //           label: "三级 1-1-2",
+        //         },
+        //       ],
+        //     },
+        //   ],
+        // }
       ],
       defaultProps: {
-        children: "children",
-        label: "label",
+        children: "sub",
+        label: "title",
       },
+      // 批量删除的角色id
+      ids:[],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
     };
   },
   mounted() {
-    // this.rolesList();
+    this.rolesList();
     // this.getStaffList();
+    this.getPermissions()
   },
   methods: {
     // 获取角色列表
-    rolesList(){
-      http.GET(configUrl.rolesList).then(res=>{
-        this.viewsList = res.data.data
-        this.total = res.data.total;
-      })
+    rolesList() {
+      ROLES_API.getRoles().then((res) => {
+        if (res.status == 200) {
+          res.data.forEach(item=>{
+            item.created_at=renderTime(item.created_at)
+            item.updated_at=renderTime(item.updated_at)
+          })
+          this.viewsList = res.data;
+        } else {
+          this.$message.error(res.error);
+        }
+      });
     },
     // 获取员工列表
     getStaffList() {
@@ -220,9 +206,74 @@ export default {
         console.log(res);
       });
     },
-    // 新增管理员
+    getPermissions(){
+      PERMISSION_API.getPermission().then(res=>{
+        if(res.status == 200){
+          this.permissionsData = res.data
+        }
+      })
+    },
+    // 新增角色
     addStaff() {
       this.showAddPop = true;
+    },
+    // 删除角色
+    removeById(val) {
+      this.$confirm("确认删除此角色?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          ROLES_API.deleteRoles({}, val).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("删除成功！");
+              this.rolesList();
+            } else {
+              this.$message.error(res.error.message);
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    // 批量删除角色
+    deleteMore() {
+      let params = {
+        ids: this.ids,
+      };
+      this.$confirm("确认删除选中的角色?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          ROLES_API.deleteRoles(params).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("删除成功！");
+              this.rolesList();
+            } else {
+              this.$message.error(res.error.message);
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
+    },
+    handleSelectionChange(val) {
+      let temp = [];
+      val.forEach((ele) => {
+        temp.push(ele.id);
+      });
+      this.ids = temp;
     },
     extraBtnClick(type) {
       this.showAddPop = false;
@@ -240,6 +291,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
+@import url('../../assets/style/public.less');
 .staffManage {
   height: 100%;
   .navBox {

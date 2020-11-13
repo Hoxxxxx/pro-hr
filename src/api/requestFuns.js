@@ -20,6 +20,22 @@ function ApiFuns(URLS) {
           )
         }
         break;
+      case 'put':
+        API[caller] = (params = {}, carrys) => {
+          let url = carrys ? `${item.url}/${carrys}` : item.url
+          return request.PUT(url,
+            params
+          )
+        }
+        break;
+      case 'delete':
+        API[caller] = (params = {}, carrys) => {
+          let url = carrys ? `${item.url}/${carrys}` : item.url
+          return request.DELETE(url,
+            params
+          )
+        }
+        break;
       default:
         break;
     }

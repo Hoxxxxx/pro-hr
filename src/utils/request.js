@@ -6,7 +6,7 @@ import {
 
 // axios配置
 axios.defaults.timeout = 5000;
-axios.defaults.baseURL = process.env.VUE_APP_BASE_API
+axios.defaults.baseURL = 'http://test.o.hualumedia.com/api/v2/'
 
 axios.interceptors.request.use(
     config => {

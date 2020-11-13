@@ -9,6 +9,18 @@ const rolesUrl = [
     url: 'hr/roles',
     caller: 'getRoles',
   },
+  // 删除角色
+  {
+    requstType: 'delete',
+    url: 'hr/roles',
+    caller: 'deleteRoles',
+  },
+  // 新建角色
+  {
+    requstType: 'post',
+    url: 'hr/roles',
+    caller: 'addRoles',
+  },
 
 ]
 
