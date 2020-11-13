@@ -103,24 +103,39 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-import {BASE_API} from "@/api/baseApi"
+import {
+  BASE_API
+} from "@/api/baseApi"
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
-  if (token) { 
+  if (token) {
     next()
   } else {
     if (window.location.href.includes('code')) {
-      let id = window.location.href.split('code')[1].split('&')[0].split('=')[1]
+      // let id = window.location.href.split('code')[1].split('&')[0].split('=')[1]
+      // let params = {
+      //   code: id
+      // }
+      let urlParams = window.location.href.split('?')[1].split('&')
+      let allParams = {}
+      urlParams.forEach(item => {
+        let key = item.split('=')[0]
+        let val = item.split('=')[1]
+        allParams[key] = val
+      })
       let params = {
-        code: id
+        code: allParams.code
       }
       BASE_API.getToken(params).then(res => {
         if (res.status == 200) {
           let token = res.data.token
           sessionStorage.setItem('token', token)
-          next('/welcome')
+          next({
+            path: to.path,
+            query: allParams
+          })
         } else {
           console.log(res.error)
         }
