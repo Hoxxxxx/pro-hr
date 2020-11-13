@@ -21,6 +21,12 @@ const rolesUrl = [
     url: 'hr/roles',
     caller: 'addRoles',
   },
+  // 编辑角色
+  {
+    requstType: 'put',
+    url: 'hr/roles',
+    caller: 'editRoles',
+  },
 
 ]
 

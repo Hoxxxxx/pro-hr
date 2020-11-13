@@ -2,35 +2,48 @@
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
     <!-- 搜索框 -->
-    <el-card class="searchCard">
-      <div class="serchBox">
-        <el-input
-          v-model="filterList.name"
-          placeholder="请输入员工姓名"
-          @clear="reset"
-          clearable
-          style="width: 360px; margin-right: 20px; border-radius: 4px"
-        ></el-input>
-        <el-select
-          v-model="filterList.status"
-          placeholder="请选择状态"
-          style="width: 360px; border-radius: 4px"
-        >
-          <el-option
-            v-for="item in adStatus"
-            :key="item.value"
-            :label="item.lable"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
+          <div class="serchBox">
+            <el-input
+              v-model="filterList.name"
+              placeholder="请输入员工姓名"
+              @clear="reset"
+              clearable
+              style="width: 360px; margin-right: 20px; border-radius: 4px"
+            ></el-input>
+            <el-select
+              v-model="filterList.status"
+              placeholder="请选择状态"
+              style="width: 360px; border-radius: 4px"
+            >
+              <el-option
+                v-for="item in adStatus"
+                :key="item.value"
+                :label="item.lable"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+          </div>
+          <div class="btnBox">
+            <el-button type="primary" size="medium" @click="search()"
+              >搜索</el-button
+            >
+            <el-button class="secondary" size="medium" @click="reset()"
+              >重置</el-button
+            >
+          </div>
+        </el-card>
       </div>
-      <div class="btnBox">
-        <el-button type="primary" size="medium" @click="search()"
-          >搜索</el-button
-        >
-        <el-button class="secondary" size="medium" @click="reset()">重置</el-button>
-      </div>
-    </el-card>
+    </el-collapse-transition>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -117,6 +130,8 @@
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
         :current-page="listParams.page"
+        @next-click="nextPage"
+        @prev-click="prevPage"
         :page-sizes="[10, 20, 50]"
         :page-size="listParams.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
@@ -276,6 +291,7 @@ export default {
       ],
       title: "管理员管理",
       // 搜索框
+      showSearch: false,
       adStatus: [
         {
           lable: "正常",
@@ -364,14 +380,14 @@ export default {
     },
     // 搜索列表
     search() {
-      console.log(this.filterList)
+      console.log(this.filterList);
       let params = {
-        page: this.listParams.page
+        page: this.listParams.page,
       };
       if (this.filterList.name != "") {
         params.name = this.filterList.name;
       }
-      if (this.filterList.status != '') {
+      if (this.filterList.status != "") {
         params.status = this.filterList.status;
       }
       ADMINS_API.getAdmins(params).then((res) => {
@@ -384,10 +400,10 @@ export default {
       });
     },
     // 重置
-    reset(){
-      this.filterList.name = ''
-      this.filterList.status = ''
-      this.search()
+    reset() {
+      this.filterList.name = "";
+      this.filterList.status = "";
+      this.search();
     },
     // 新增管理员
     addStaff() {
@@ -520,8 +536,18 @@ export default {
     // watch pagesize change
     handleSizeChange(newSize) {},
 
-    // watch page change
-    handleCurrentChange(newPage) {},
+    handleCurrentChange(newPage) {
+      this.listParams.page = newPage
+      this.getAdminsList()
+    },
+    nextPage() {
+      this.listParams.page ++;
+      this.getAdminsList()
+    },
+    prevPage() {
+      this.listParams.page --;
+      this.getAdminsList()
+    },
   },
   components: {
     navBar,
@@ -530,11 +556,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url('../../assets/style/public.less');
+@import url("../../assets/style/public.less");
 .staffManage {
   height: 100%;
   .navBox {
     margin-bottom: 0 !important;
+  }
+  .showSearch {
+    margin-left: 20px;
   }
   .searchCard {
     height: 80px;

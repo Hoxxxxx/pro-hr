@@ -2,26 +2,36 @@
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
     <!-- 搜索框 -->
-    <el-card class="searchCard">
-      <div class="serchBox">
-        <el-select
-          v-model="roleChoosed"
-          placeholder="请选择角色"
-          style="width: 360px;border-radius: 4px;"
-        >
-          <el-option
-            v-for="item in roleType"
-            :key="item.value"
-            :label="item.lable"
-            :value="item.value"
-          ></el-option>
-        </el-select>
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
+          <div class="serchBox">
+            <el-input
+              v-model="adminName"
+              placeholder="请输入角色名称"
+              class="elInput"
+              @clear="reset"
+              clearable
+            ></el-input>
+          </div>
+          <div class="btnBox">
+            <el-button type="primary" size="medium" @click="search"
+              >搜索</el-button
+            >
+            <el-button class="secondary" size="medium" @click="reset"
+              >重置</el-button
+            >
+          </div>
+        </el-card>
       </div>
-      <div class="btnBox">
-        <el-button type="primary" size="medium">搜索</el-button>
-        <el-button id="secondary" class="secondary" size="medium">重置</el-button>
-      </div>
-    </el-card>
+    </el-collapse-transition>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -29,7 +39,9 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">角色列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="addStaff()">新增角色</el-button>
+          <el-button type="primary" class="p40" @click="addStaff()"
+            >新增角色</el-button
+          >
           <el-button class="btn p40" @click="deleteMore()">批量删除</el-button>
         </div>
       </div>
@@ -39,12 +51,12 @@
           :data="viewsList"
           style="width: 100%"
           @selection-change="handleSelectionChange"
-          :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
         >
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column
-            v-for="(item,index) in tHeadList"
+            v-for="(item, index) in tHeadList"
             :key="index"
             :label="item.label"
             :prop="item.prop"
@@ -53,9 +65,11 @@
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <!-- edit -->
-              <el-button type="text" @click="edit(scope.row.id)">编辑</el-button>
+              <el-button type="text" @click="edit(scope.row)">编辑</el-button>
               <!-- delete -->
-              <el-button type="text" @click="removeById(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="removeById(scope.row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -65,6 +79,8 @@
       <el-pagination
         @size-change="handleSizeChange"
         @current-change="handleCurrentChange"
+        @next-click="nextPage"
+        @prev-click="prevPage"
         :current-page="listParams.page"
         :page-sizes="[10, 20, 50]"
         :page-size="listParams.pageSize"
@@ -74,49 +90,87 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" :close-on-click-modal="false" width="600px" top="20vh" center>
+      <el-dialog
+        :visible.sync="showAddPop"
+        :close-on-click-modal="false"
+        width="600px"
+        top="20vh"
+        center
+      >
         <div class="nameInput">
           <span>角色名称</span>
-          <el-input v-model="roleName" placeholder="请输入角色名称" class="elInput"></el-input>
+          <el-input
+            v-model="addParams.roleName"
+            placeholder="请输入角色名称"
+            class="elInput"
+          ></el-input>
         </div>
         <div class="permissions">
           <div class="title">角色权限</div>
           <el-tree
-            :data="permissionsData"
+            :data="addParams.permissions"
             show-checkbox
             node-key="id"
+            @getCurrentNode="getCurrentAddNode"
             :props="defaultProps"
+            ref="addCodeTree"
             :label="title"
           ></el-tree>
         </div>
         <div class="extraBtns">
           <div>
-            <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
-            <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+            <el-button style="width: 95px" @click="extraBtnClick(0)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="extraBtnClick(1)"
+              type="primary"
+              >确 定</el-button
+            >
           </div>
         </div>
       </el-dialog>
 
       <!-- 编辑管理员弹窗 -->
-      <el-dialog :visible.sync="showEditPop" :close-on-click-modal="false" width="600px" top="20vh" center>
+      <el-dialog
+        :visible.sync="showEditPop"
+        :close-on-click-modal="false"
+        width="600px"
+        top="20vh"
+        center
+      >
         <div class="nameInput">
           <span>角色名称</span>
-          <el-input v-model="roleName" placeholder="请输入角色名称" class="elInput"></el-input>
+          <el-input
+            v-model="editParams.roleName"
+            placeholder="请输入角色名称"
+            class="elInput"
+          ></el-input>
         </div>
         <div class="permissions">
           <div class="title">角色权限</div>
           <el-tree
-            :data="permissionsData"
+            :data="editParams.permissions"
             show-checkbox
             node-key="id"
+            @getCurrentNode="getCurrentEditNode"
+            ref="editCodeTree"
             :props="defaultProps"
             :label="title"
           ></el-tree>
         </div>
         <div class="extraBtns">
           <div>
-            <el-button style="width:95px;" @click="extraBtnClick(2)">取 消</el-button>
-            <el-button style="width:95px;" @click="extraBtnClick(3)" type="primary">确 定</el-button>
+            <el-button style="width: 95px" @click="extraBtnClick(2)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="extraBtnClick(3)"
+              type="primary"
+              >确 定</el-button
+            >
           </div>
         </div>
       </el-dialog>
@@ -126,7 +180,7 @@
 
 <script>
 import navBar from "@/components/navBar/navBar";
-import {renderTime} from '@/utils/function.js'
+import { renderTime } from "@/utils/function.js";
 // api
 import { PERMISSION_API } from "@/api/permission";
 import { ROLES_API } from "@/api/rolesApi";
@@ -146,22 +200,8 @@ export default {
       title: "角色管理",
 
       // 搜索框
+      showSearch:false,
       adminName: "",
-      roleChoosed: "",
-      roleType: [
-        {
-          lable: "离职",
-          value: 3,
-        },
-        {
-          lable: "正式",
-          value: 2,
-        },
-        {
-          lable: "试用",
-          value: 1,
-        },
-      ],
       tHeadList: [
         { label: "角色名称", prop: "name" },
         { label: "创建时间", prop: "created_at" },
@@ -169,38 +209,25 @@ export default {
       ],
       viewsList: [],
       // 新增角色的弹窗中的数据
-      roleName: "",
+      addParams: {
+        roleName: "",
+        permissions: [],
+      },
+      editParams: {
+        roleName: "",
+        permissions: [],
+      },
       showAddPop: false, //是否显示弹窗
-      permissionsData: [
-        // {
-        //   id: 1,
-        //   label: "一级 1",
-        //   children: [
-        //     {
-        //       id: 4,
-        //       label: "二级 1-1",
-        //       children: [
-        //         {
-        //           id: 9,
-        //           label: "三级 1-1-1",
-        //         },
-        //         {
-        //           id: 10,
-        //           label: "三级 1-1-2",
-        //         },
-        //       ],
-        //     },
-        //   ],
-        // }
-      ],
+      permissionsData: [],
       defaultProps: {
         children: "sub",
         label: "title",
       },
       // 批量删除的角色id
-      ids:[],
+      ids: [],
       // 编辑角色弹窗
-      showEditPop:false,
+      showEditPop: false,
+      editId: "", //当前编辑时选中的项
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -208,43 +235,64 @@ export default {
   },
   mounted() {
     this.rolesList();
-    // this.getStaffList();
-    this.getPermissions()
+    this.getPermissions();
   },
   methods: {
     // 获取角色列表
     rolesList() {
-      ROLES_API.getRoles().then((res) => {
+      let params = {
+        name: this.adminName,
+        page:this.listParams.page
+      };
+      ROLES_API.getRoles(params).then((res) => {
         if (res.status == 200) {
-          res.data.forEach(item=>{
-            item.created_at=renderTime(item.created_at)
-            item.updated_at=renderTime(item.updated_at)
-          })
+          res.data.forEach((item) => {
+            item.created_at = renderTime(item.created_at);
+            item.updated_at = renderTime(item.updated_at);
+          });
           this.viewsList = res.data;
+          this.total = res.pagination.total;
         } else {
           this.$message.error(res.error);
         }
       });
     },
-    // 获取员工列表
-    getStaffList() {
-      http.POST(configUrl.getStaffList).then((res) => {
-        console.log(res);
+    // 获取权限列表
+    getPermissions() {
+      PERMISSION_API.getPermission().then((res) => {
+        if (res.status == 200) {
+          this.permissionsData = res.data;
+        }
       });
     },
-    getPermissions(){
-      PERMISSION_API.getPermission().then(res=>{
-        if(res.status == 200){
-          this.permissionsData = res.data
-        }
-      })
+    // 搜索角色
+    search() {
+      this.rolesList();
+    },
+    // 重置
+    reset() {
+      this.adminName = "";
+      this.rolesList();
     },
     // 编辑角色
-    edit(){
-      this.showEditPop = true
+    edit(val) {
+      this.showEditPop = true;
+      this.editParams = {
+        roleName: val.name,
+        permissions: this.permissionsData,
+      };
+      this.editId = val.id;
+      this.$nextTick(function () {
+        this.$refs.editCodeTree.setCheckedNodes(val.permissions);
+      });
     },
     // 新增角色
     addStaff() {
+      this.addParams = {
+        roleName: "",
+        permissions: this.permissionsData,
+      };
+      console.log(this.addParams);
       this.showAddPop = true;
     },
     // 删除角色
@@ -298,6 +346,7 @@ export default {
           });
         });
     },
+    // 批量删除时选中
     handleSelectionChange(val) {
       let temp = [];
       val.forEach((ele) => {
@@ -311,23 +360,76 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          this.showAddPop = false;
+          let params = {
+            name: this.addParams.roleName,
+            permission: this.getCurrentAddNode(),
+          };
+          console.log(params);
+          ROLES_API.addRoles(params).then((res) => {
+            if (res.status == 200) {
+              this.showAddPop = false;
+              this.$message.success("添加成功");
+              this.rolesList();
+            }
+            // 新增成功过后需要清空已选中的节点
+            this.$refs.addCodeTree.setCheckedNodes([]);
+          });
           break;
         case 2:
           this.showEditPop = false;
           break;
         case 3:
-          this.showEditPop = false;
+          let params_edit = {
+            name: this.editParams.roleName,
+            permission: this.getCurrentEditNode(),
+          };
+          ROLES_API.editRoles(params_edit, this.editId).then((res) => {
+            if (res.status == 200) {
+              this.showEditPop = false;
+              this.$message.success("修改成功");
+              this.rolesList();
+            }
+            // 新增成功过后需要清空已选中的节点
+            this.$refs.editCodeTree.setCheckedNodes([]);
+          });
           break;
         default:
           break;
       }
     },
+    // 新增时获取已选中的节点
+    getCurrentAddNode() {
+      let data = this.$refs.addCodeTree.getCheckedNodes();
+      let temp = [];
+      data.forEach((item) => {
+        temp.push(item.id);
+      });
+      return temp;
+    },
+    //编辑时获取已选中的节点
+    getCurrentEditNode() {
+      let data = this.$refs.editCodeTree.getCheckedNodes();
+      let temp = [];
+      data.forEach((item) => {
+        temp.push(item.id);
+      });
+      return temp;
+    },
     // watch pagesize change
     handleSizeChange(newSize) {},
-
     // watch page change
-    handleCurrentChange(newPage) {},
+    handleCurrentChange(newPage) {
+      this.listParams.page = newPage
+      this.rolesList()
+    },
+    nextPage() {
+      this.listParams.page ++;
+      this.rolesList()
+    },
+    prevPage() {
+      this.listParams.page --;
+      this.rolesList()
+    },
   },
   components: {
     navBar,
@@ -336,11 +438,14 @@ export default {
 </script>
 
 <style lang="less" scoped>
-@import url('../../assets/style/public.less');
+@import url("../../assets/style/public.less");
 .staffManage {
   height: 100%;
   .navBox {
     margin-bottom: 0 !important;
+  }
+  .showSearch {
+    margin-left: 20px;
   }
   .searchCard {
     height: 80px;

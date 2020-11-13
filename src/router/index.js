@@ -111,8 +111,8 @@ router.beforeEach((to, from, next) => {
   if (token) { 
     next()
   } else {
-    if (window.location.pathname == '/welcome' && window.location.href.split('?')[1]) {
-      let id = window.location.href.split('?')[1].split('=')[1];
+    if (window.location.href.includes('code')) {
+      let id = window.location.href.split('code')[1].split('&')[0].split('=')[1]
       let params = {
         code: id
       }

@@ -3,7 +3,7 @@ import {
 } from './requestFuns'
 
 const permissionUrl = [
-  // 获取角色列表
+  // 获取权限列表
   {
     requstType: 'get',
     url: 'hr/permissions',
