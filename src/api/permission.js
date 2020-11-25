@@ -9,7 +9,24 @@ const permissionUrl = [
     url: 'hr/permissions',
     caller: 'getPermission',
   },
-
+  // 新增权限
+  {
+    requstType: 'post',
+    url: 'hr/permissions',
+    caller: 'addPermission',
+  },
+  // 修改权限
+  {
+    requstType: 'put',
+    url: 'hr/permissions',
+    caller: 'editPermission',
+  },
+  // 删除权限
+  {
+    requstType: 'delete',
+    url: 'hr/permissions',
+    caller: 'deletePermission',
+  },
 ]
 
 const PERMISSION_API = ApiFuns(permissionUrl)

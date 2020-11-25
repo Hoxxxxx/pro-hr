@@ -22,6 +22,7 @@ const depReceivable = () => import('@/views/finance/depRec')
 // 回款单
 const backPayment = () => import('@/views/backPayMent/index')
 const payAdd = () => import('@/views/backPayMent/add')
+const permissions = () => import('@/views/administrator/permissions')
 
 Vue.use(VueRouter)
 
@@ -61,7 +62,7 @@ const routes = [{
       }
     ]
   },
-  // 管理员管理
+  // 权限管理
   {
     path: '/administrator',
     name: 'administrator',
@@ -76,6 +77,11 @@ const routes = [{
         path: '/roles',
         name: 'roles',
         component: roles
+      },
+      {
+        path: '/permissions',
+        name: 'permissions',
+        component: permissions
       }
     ]
   },
