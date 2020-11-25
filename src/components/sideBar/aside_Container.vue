@@ -5,6 +5,7 @@
       background-color="#353E56"
       text-color="#fff"
       active-text-color="#409EFD"
+      :default-active="$route.path"
       :unique-opened="true"
       router
     >
@@ -78,6 +79,33 @@ export default {
               path: "/position",
             },
           ],
+        },
+        {
+          title: "财务管理",
+          path: "/reconciliation",
+          menuType: 1,
+          children: [
+            {
+              id: 0,
+              title: "收入费用情况",
+              path: "/finance/income",
+            },
+            {
+              id: 1,
+              title: "应收账款核对",
+              path: "/finance/receivable",
+            },
+            {
+              id: 2,
+              title: "部门应收账款",
+              path: "/finance/depReceivable",
+            },
+          ],
+        },
+        {
+          title: "回款单",
+          path: "/backPayment",
+          menuType: 0,
         },
       ],
     };
