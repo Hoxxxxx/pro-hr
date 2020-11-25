@@ -60,6 +60,11 @@ export default {
               title: "角色管理",
               path: "/roles",
             },
+            {
+              id: 1,
+              title: "权限配置",
+              path: "/permissions",
+            },
           ],
         },
         {

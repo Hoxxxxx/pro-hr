@@ -15,6 +15,7 @@ const position = () => import('@/views/organization/position')
 // 管理员管理
 const admins = () => import('@/views/administrator/admins')
 const roles = () => import('@/views/administrator/roles')
+const permissions = () => import('@/views/administrator/permissions')
 
 Vue.use(VueRouter)
 
@@ -54,7 +55,7 @@ const routes = [{
       }
     ]
   },
-  // 管理员管理
+  // 权限管理
   {
     path: '/administrator',
     name: 'administrator',
@@ -69,6 +70,11 @@ const routes = [{
         path: '/roles',
         name: 'roles',
         component: roles
+      },
+      {
+        path: '/permissions',
+        name: 'permissions',
+        component: permissions
       }
     ]
   },
