@@ -420,7 +420,6 @@ export default {
 
 .listCard {
   margin: 20px;
-  height: 100%;
   .clearfix {
     display: flex;
     align-items: center;

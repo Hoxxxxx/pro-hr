@@ -30,7 +30,7 @@
           </el-select>
         </div>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="openDialog()">上传收入费用</el-button>
+          <el-button type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -163,10 +163,10 @@ export default {
           title: "财务管理",
         },
         {
-          title: "收入费用情况",
+          title: "部门应收账款",
         },
       ],
-      title: "收入费用情况",
+      title: "部门应收账款",
       tableHeight: 500,
       searchData: {
         searchLoading: true,

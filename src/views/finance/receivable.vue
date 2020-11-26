@@ -219,10 +219,10 @@ export default {
           title: "财务管理",
         },
         {
-          title: "应收账款列表",
+          title: "应收账款核对",
         },
       ],
-      title: "应收账款列表",
+      title: "应收账款核对",
       tableHeight: 500,
       searchData: {
         searchLoading: true,
