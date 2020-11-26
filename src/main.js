@@ -8,7 +8,9 @@ import '../src/assets/style/global.css'
 
 import element from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css';
+import Fragment from 'vue-fragment'
 Vue.use(element)
+Vue.use(Fragment.Plugin)
 
 Vue.config.productionTip = false
 

@@ -113,7 +113,8 @@ export default {
     },
     POST(url, params) {
         return new Promise((resolve, reject) => {
-            axios.post(url, params).then(res => {
+            axios.post(url, params)
+            .then(res => {
                 resolve(res.data)
             }).catch(err => {
                 reject(err)
@@ -134,11 +135,11 @@ export default {
     PUT(url, params) {
         return new Promise((resolve, reject) => {
             axios.put(url, params)
-                .then(response => {
-                    resolve(response.data);
-                }, err => {
-                    reject(err)
-                })
+            .then(response => {
+                resolve(response.data);
+            }, err => {
+                reject(err)
+            })
         })
     },
 }

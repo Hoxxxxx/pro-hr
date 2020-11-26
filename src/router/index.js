@@ -15,6 +15,13 @@ const position = () => import('@/views/organization/position')
 // 管理员管理
 const admins = () => import('@/views/administrator/admins')
 const roles = () => import('@/views/administrator/roles')
+// 对账单
+const income = () => import('@/views/finance/income')
+const receivable = () => import('@/views/finance/receivable')
+const depReceivable = () => import('@/views/finance/depRec')
+// 回款单
+const backPayment = () => import('@/views/backPayMent/index')
+const payAdd = () => import('@/views/backPayMent/add')
 const permissions = () => import('@/views/administrator/permissions')
 
 Vue.use(VueRouter)
@@ -95,7 +102,47 @@ const routes = [{
         component: position
       }
     ]
-  }
+  },
+  // 收入费用
+  {
+    path: '/finance',
+    component: Home,
+    redirect: '/finance/income',
+    children: [
+      {
+        path: 'income',
+        name: 'income',
+        component: income
+      },
+      {
+        path: 'receivable',
+        name: 'receivable',
+        component: receivable
+      },
+      {
+        path: 'depReceivable',
+        name: 'depReceivable',
+        component: depReceivable
+      },
+    ]
+  },
+  // 回款单
+  {
+    path: '/backPayment',
+    component: Home,
+    redirect: '/backPayment/index',
+    children: [{
+        path: 'index',
+        name: 'backPayment',
+        component: backPayment
+      },
+      {
+        path: 'payAdd',
+        name: 'payAdd',
+        component: payAdd
+      },
+    ]
+  },
 ]
 
 const router = new VueRouter({
