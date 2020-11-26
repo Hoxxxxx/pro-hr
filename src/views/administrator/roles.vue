@@ -184,6 +184,7 @@ import { renderTime } from "@/utils/function.js";
 // api
 import { PERMISSION_API } from "@/api/permission";
 import { ROLES_API } from "@/api/rolesApi";
+import { MENUS_API } from "@/api/menus";
 export default {
   data() {
     return {
@@ -200,7 +201,7 @@ export default {
       title: "角色管理",
 
       // 搜索框
-      showSearch:false,
+      showSearch: false,
       adminName: "",
       tHeadList: [
         { label: "角色名称", prop: "name" },
@@ -236,13 +237,14 @@ export default {
   mounted() {
     this.rolesList();
     this.getPermissions();
+    this.getMenus();
   },
   methods: {
     // 获取角色列表
     rolesList() {
       let params = {
         name: this.adminName,
-        page:this.listParams.page
+        page: this.listParams.page,
       };
       ROLES_API.getRoles(params).then((res) => {
         if (res.status == 200) {
@@ -262,6 +264,14 @@ export default {
       PERMISSION_API.getPermission().then((res) => {
         if (res.status == 200) {
           this.permissionsData = res.data;
+        }
+      });
+    },
+    // 获取菜单列表
+    getMenus() {
+      MENUS_API.getMenus().then((res) => {
+        if (res.status == 200) {
+          console.log(res.data);
         }
       });
     },
@@ -419,16 +429,16 @@ export default {
     handleSizeChange(newSize) {},
     // watch page change
     handleCurrentChange(newPage) {
-      this.listParams.page = newPage
-      this.rolesList()
+      this.listParams.page = newPage;
+      this.rolesList();
     },
     nextPage() {
-      this.listParams.page ++;
-      this.rolesList()
+      this.listParams.page++;
+      this.rolesList();
     },
     prevPage() {
-      this.listParams.page --;
-      this.rolesList()
+      this.listParams.page--;
+      this.rolesList();
     },
   },
   components: {
@@ -497,7 +507,7 @@ export default {
     justify-content: space-between;
     align-items: center;
     padding-bottom: 20px;
-    border-bottom: 1px solid #DCDFE6;
+    border-bottom: 1px solid #dcdfe6;
     span {
       font-size: 16px;
       color: #333333;

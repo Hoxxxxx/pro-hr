@@ -230,8 +230,9 @@
 
 <script>
 import http from "../../utils/request";
-// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
+// api
+import { STAFFS_API } from "@/api/staffs";
 export default {
   filters: {
     color(val) {
@@ -324,7 +325,7 @@ export default {
     };
   },
   mounted() {
-    // this.getStaffList();
+    this.getStaffList();
     // this.staffCount();
   },
   methods: {
@@ -336,31 +337,32 @@ export default {
     },
     // 搜索
     search(type) {
-      if (type == 0) {
-        console.log(this.status);
-        this.getStaffList(this.adminName, this.status);
-      } else {
-        this.status = null;
-        this.adminName = "";
-        this.listParams.page = 1;
-        this.listType = 0;
-        this.getStaffList();
+      let params = {
+        page:1,
+        type:type,
+        name:this.adminName
       }
+      this.getStaffList(params);
+      // if (type == 0) {
+      //   console.log(this.status);
+      //   this.getStaffList();
+      // } else {
+      //   this.status = null;
+      //   this.adminName = "";
+      //   this.listParams.page = 1;
+      //   this.listType = 0;
+      //   let params = {
+      //     page:this.listParams.page,
+      //     type:this.listType
+      //   }
+      //   this.getStaffList();
+      // }
     },
     // 获取员工列表
-    getStaffList(adminName, status) {
-      let params = {
-        page: this.listParams.page,
-        type: this.listType,
-      };
-      if (adminName) {
-        params.name = adminName;
-      } else if (status != null) {
-        params.status = status;
-      }
-      http.GET(configUrl.getStaffList, params).then((res) => {
-        this.viewsList = res.data.users.data;
-        this.total = res.data.users.total;
+    getStaffList(params) {
+      STAFFS_API.getStaffs(params).then((res) => {
+        this.viewsList = res.data[0].data;
+        this.total = res.data[0].total;
       });
     },
     // 新增员工

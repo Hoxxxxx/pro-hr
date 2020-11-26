@@ -275,7 +275,7 @@ import navBar from "@/components/navBar/navBar";
 // api
 import { ADMINS_API } from "@/api/adminsApi";
 import { ROLES_API } from "@/api/rolesApi";
-import { STAFFS_API } from "@/api/staffsApi";
+import { STAFFS_API } from "@/api/staffs";
 export default {
   data() {
     return {

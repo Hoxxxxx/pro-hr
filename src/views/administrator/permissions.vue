@@ -87,8 +87,8 @@
             placeholder="请选择上级权限"
           >
             <el-option
-              v-for="item in fixedData.pers"
-              :key="item.id"
+              v-for="(item,index) in fixedData.pers"
+              :key="index"
               :label="item.title"
               :value="item.id"
             >
@@ -142,8 +142,8 @@
             placeholder="请选择上级权限"
           >
             <el-option
-              v-for="item in fixedData.pers"
-              :key="item.id"
+              v-for="(item,index) in fixedData.pers"
+              :key="index"
               :label="item.title"
               :value="item.id"
             >
@@ -205,12 +205,18 @@ export default {
       viewsList: [],
       // 新增权限的弹窗中的数据
       fixedData: {
-        pers: [],
+        pers: [
+          {
+            name: "无", //标题（权限）
+            title: "无", //权限名称
+            id: 0, //上级权限id
+          },
+        ],
       },
       addParams: {
         name: "", //标题（权限）
         title: "", //权限名称
-        pid: "", //上级权限id
+        pid: 0, //上级权限id
       },
       showAddPop: false, //是否显示弹窗
       permissionsData: [],
@@ -240,7 +246,7 @@ export default {
           this.permissionsData = res.data;
           let resArr = [];
           this.recursive(res.data, resArr);
-          this.fixedData.pers = resArr;
+          this.fixedData.pers = [...this.fixedData.pers, ...resArr];
           this.viewsList = res.data;
         }
       });
@@ -276,22 +282,17 @@ export default {
     },
     // 删除权限
     removeById(val) {
-      let temp = [];
-      temp.push(val.id);
-      if (val.sub.length > 0) {
-        val.sub.forEach((item) => {
-          temp.push(item.id);
-        });
-      }
-      let message = val.sub.length > 0 ? '删除此权限，其子权限也会删除，确认删除？' :'确认删除此权限?'
+      let message = val.sub.length > 0
+          ? "删除此权限，其子权限也会删除，确认删除？"
+          : "确认删除此权限?";
       this.$confirm(message, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
-        closeOnClickModal:false
+        closeOnClickModal: false,
       })
         .then(() => {
-          PERMISSION_API.deletePermission({}, val).then((res) => {
+          PERMISSION_API.deletePermission({}, val.id).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
               this.getPermissions();
@@ -307,7 +308,7 @@ export default {
           });
         });
     },
-    // 批量删除角色
+    // 批量删除权限
     deleteMore() {
       let params = {
         ids: this.ids,
