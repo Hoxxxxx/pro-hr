@@ -33,8 +33,8 @@
           <el-button type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
           <el-button v-if="!StartRec" type="primary" class="p40" :disabled="!can_StartRec" @click="startReceive()">发起对账</el-button>
           <el-button v-if="StartRec" type="info" class="p40" @click="cancelReceive()">取消对账</el-button>
-          <el-button v-if="StartRec" type="warning" class="p40" @click="addReceive_arr()">批量对账</el-button>
           <el-button v-if="StartRec" type="success" class="p40" @click="addReceive()">完成对账</el-button>
+          <el-button v-if="!StartRec" type="warning" class="p40" @click="addReceive_arr()">批量对账</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
