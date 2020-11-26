@@ -6,8 +6,12 @@
     </el-header>
     <!-- 主体 -->
     <div class="mainBox">
-      <div class="asideBox">
-        <aside-Container></aside-Container>
+      <div :class="isCollapse==false?'asideBox':'coll_Box'">
+        <div class="collBtn" @click="changeSize">
+          <i v-if="!isCollapse" class="el-icon-d-arrow-left"></i>
+          <i v-if="isCollapse" class="el-icon-d-arrow-right"></i>
+        </div>
+        <aside-Container :isCollapse="isCollapse"></aside-Container>
       </div>
       <div class="main">
         <router-view></router-view>
@@ -21,9 +25,19 @@ import headerContainer from "@/components/headBar/header_container";
 import asideContainer from "@/components/sideBar/aside_Container";
 export default {
   name: "Home",
+  data() {
+    return {
+      isCollapse: false,
+    }
+  },
   components: {
     headerContainer,
     asideContainer,
+  },
+  methods: {
+    changeSize() {
+      this.isCollapse = !this.isCollapse
+    }
   },
 };
 </script>
@@ -32,25 +46,44 @@ export default {
   width: 100%;
   min-width: 1024px;
   height: 100%;
-  min-height: 768px;
+  // min-height: 768px;
 
   .mainBox{
     padding-top: 56px;
     height: calc(100% - 56px);
-    min-height: 768px;
+    // min-height: 768px;
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     .asideBox{
+      position: relative;
       width: 260px;
-      height: 100%;
       background: #353e56;
-      flex: 0 0 auto;
+    }
+    .coll_Box{
+      position: relative;
+      width: 70px;
+      background: #353e56;
+    }
+    .collBtn {
+      background: #3c7db6;
+      width: 100%;
+      height: 35px;
+      padding: 0;
+      z-index: 999;
+      text-align: center;
+      line-height: 35px;
+      cursor: pointer;
+      color: #FFFFFF;
     }
     .main{
       flex: 1 1 auto;
       background: #f5f5f5;
       overflow-y: auto;
+      margin-top: 86px;
+      .staffManage{
+        height: calc(100% - 56px);
+      }
     }
   }
 

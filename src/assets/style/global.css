@@ -90,6 +90,7 @@ dl,dd,dt {
 /* 自定义样式 */
 .listCard{
     border-radius: 10px !important;
+    margin-bottom: 20px;
 }
 .box-card{
     background: #FFFFFF;

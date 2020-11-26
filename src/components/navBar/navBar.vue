@@ -27,13 +27,15 @@ export default {
 // @import "@../../assets/style/base.less";
 
 .navBox {
+  position: fixed;
+  top: 56px;
   width: 100%;
   height: 76px;
   background: #ffffff;
   box-sizing: border-box;
   padding-top: 15px;
   padding-left: 20px;
-  margin-bottom: 20px;
+  z-index: 99;
 
   .titleBox {
     width: 100%;

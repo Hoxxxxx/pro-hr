@@ -36,31 +36,33 @@
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
+          ref="table"
           :data="tableData"
           v-loading = "searchData.searchLoading"
           element-loading-background = "rgba(0, 0, 0, 0.5)"
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
           style="width: 100%"
+          :height="tableHeight"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666'}"
         >
           <el-table-column align="center" label="id" prop="id" fixed="left" min-width="50px"></el-table-column>
-          <el-table-column align="center" label="年" prop="year" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="月" prop="month" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="客户编号" prop="customer_id	" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="客户名称" prop="customer_name" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="上期金额（万元）" prop="last_period_amount" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="本期增加（万元）" prop="current_period_increase" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="本期减少（万元）" prop="current_period_decrease" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="期末余额（万元）" prop="ending_balance" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="0-90天" prop="day_0_90" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="90-180天" prop="day_90_180	" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="180-270天" prop="day_180_270" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="270-365天" prop="day_270_365" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="1年以上" prop="over_year_1" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="1-2年" prop="over_year_1_2" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="2年以上" prop="over_year_2" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="年" prop="year" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="月" prop="month" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户编号" prop="customer_id	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户名称" prop="customer_name" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="上期金额（万元）" prop="last_period_amount" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="本期增加（万元）" prop="current_period_increase" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="本期减少（万元）" prop="current_period_decrease" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="期末余额（万元）" prop="ending_balance" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="0-90天" prop="day_0_90" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="90-180天" prop="day_90_180	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="180-270天" prop="day_180_270" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="270-365天" prop="day_270_365" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="1年以上" prop="over_year_1" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="1-2年" prop="over_year_1_2" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="2年以上" prop="over_year_2" min-width="100px"></el-table-column>
         </el-table>
       </div>
     </el-card>
@@ -165,7 +167,7 @@ export default {
         },
       ],
       title: "收入费用情况",
-      curIndex: 0,
+      tableHeight: 500,
       searchData: {
         searchLoading: true,
         de_Options: [],
@@ -236,6 +238,19 @@ export default {
   components: {
     navBar,
     SelectData,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 50;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 50
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
   },
   created() {
     this.getSearchList()

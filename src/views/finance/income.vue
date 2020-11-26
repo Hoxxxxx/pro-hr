@@ -36,23 +36,26 @@
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
+          ref="table"
+          class="tableRef"
           :data="tableData"
           v-loading = "searchData.searchLoading"
           element-loading-background = "rgba(0, 0, 0, 0.5)"
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
           style="width: 100%"
+          :height="tableHeight"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="项目" prop="item" fixed="left" min-width="160px"></el-table-column>
-          <el-table-column align="center" :label="theadData.month + '月'" prop="current_period" min-width="160px"></el-table-column>
-          <el-table-column align="center" :label="'1-' + theadData.month + '月'" prop="current_year" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="同比" prop="year_over_year	" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="环比" prop="chain" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="预算数据" prop="budget_data" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="预算完成率" prop="budget_complete" min-width="160px"></el-table-column>
-          <el-table-column align="center" label="费用预警" min-width="160px">
+          <el-table-column align="center" label="项目" prop="item" fixed="left" min-width="100px"></el-table-column>
+          <el-table-column align="center" :label="theadData.month + '月'" prop="current_period" min-width="100px"></el-table-column>
+          <el-table-column align="center" :label="'1-' + theadData.month + '月'" prop="current_year" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="同比" prop="year_over_year	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="环比" prop="chain" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="预算数据" prop="budget_data" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="预算完成率" prop="budget_complete" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="费用预警" min-width="100px">
             <template slot-scope="scope">
               <span style="color: #F56C6C">{{scope.row.warning}}</span>
             </template>
@@ -161,7 +164,7 @@ export default {
         },
       ],
       title: "收入费用情况",
-      curIndex: 0,
+      tableHeight: 500,
       searchData: {
         searchLoading: true,
         de_Options: [],
@@ -232,6 +235,19 @@ export default {
   components: {
     navBar,
     SelectData,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 50;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 50
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
   },
   created() {
     this.getSearchList()
@@ -404,6 +420,7 @@ export default {
 
 .listCard {
   margin: 20px;
+  height: 100%;
   .clearfix {
     display: flex;
     align-items: center;
@@ -441,4 +458,5 @@ export default {
     padding: 0 15px;
   }
 }
+
 </style>

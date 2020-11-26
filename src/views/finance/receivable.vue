@@ -33,11 +33,13 @@
           <el-button type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
           <el-button v-if="!StartRec" type="primary" class="p40" :disabled="!can_StartRec" @click="startReceive()">发起对账</el-button>
           <el-button v-if="StartRec" type="info" class="p40" @click="cancelReceive()">取消对账</el-button>
+          <el-button v-if="StartRec" type="warning" class="p40" @click="addReceive_arr()">批量对账</el-button>
           <el-button v-if="StartRec" type="success" class="p40" @click="addReceive()">完成对账</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
       <el-table
+        ref="table"
         :data="tableData"
         class="recTable"
         v-loading = "searchData.searchLoading"
@@ -45,23 +47,24 @@
         element-loading-text = "数据正在加载中"
         element-loading-spinner = "el-icon-loading"
         style="width: 100%"
+        :height="tableHeight"
         :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
         :cell-style="{background:'#FCFDFF',color:'#666666',padding:'0','line-height':'24px'}"
         :header-row-style="{height:'24px','font-size':'12px'}"
         :row-style="{height:'24px','font-size':'12px'}"
       >
         <el-table-column align="center" label="id" prop="id" fixed="left" min-width="50px"></el-table-column>
-        <el-table-column align="center" label="客户/厂商简称" prop="name" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="客户/厂商全称" prop="full_name" min-width="200px"></el-table-column>
-        <el-table-column align="center" label="期末余额" prop="ending_balance" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="开票时间" prop="invoice_date" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="账龄（1-3月）" prop="aging_1_3" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="账龄（4-6月）" prop="aging_4_6" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="账龄（7-9月）" prop="aging_7_9" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="账龄（10-12月）" prop="aging_10_12" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="账龄（1年以上）" prop="aging_over_year" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="备注" prop="remark" min-width="160px"></el-table-column>
-        <el-table-column align="center" label="对账结果" min-width="120px">
+        <el-table-column align="center" label="客户/厂商简称" prop="name" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="客户/厂商全称" prop="full_name" min-width="150px"></el-table-column>
+        <el-table-column align="center" label="期末余额" prop="ending_balance" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="开票时间" prop="invoice_date" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="账龄（1-3月）" prop="aging_1_3" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="账龄（4-6月）" prop="aging_4_6" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="账龄（7-9月）" prop="aging_7_9" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="账龄（10-12月）" prop="aging_10_12" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="账龄（1年以上）" prop="aging_over_year" min-width="100px"></el-table-column>
+        <el-table-column align="center" label="备注" prop="remark" min-width="150px"></el-table-column>
+        <el-table-column align="center" label="对账结果" width="120px"  fixed="right">
           <template slot-scope="scope">
             <div>
               <!-- 未对账 -->
@@ -79,11 +82,11 @@
                     </div>
                   </div>
                   <div v-if="checked_suc.includes(scope.row.id) || checked_den.includes(scope.row.id)" class="nowStatus">
-                    <div v-if="scope.row.check_res == '2'" class="sucess">
+                    <div v-if="scope.row.check_res == '正确'" class="sucess">
                       正确
                       <i class="return el-icon-refresh-left" @click="returnRec(scope.row.id)"></i>
                     </div>
-                    <div v-if="scope.row.check_res == '1'" class="deny">
+                    <div v-if="scope.row.check_res == '有误'" class="deny">
                       有误
                       <i class="return el-icon-refresh-left" @click="returnRec(scope.row.id)"></i>
                     </div>
@@ -161,6 +164,21 @@
       </div>
     </el-dialog>
 
+    <!-- 批量对账弹窗 -->
+    <el-dialog 
+      title="提示"
+      :visible.sync="addDialogVisiable"
+      width="478px">
+      <div class="warning_img"></div>
+      <div class="info">
+        <span>是否确认所有应收账款数据核对一致？</span>
+      </div>
+      <div class="extraBtns">
+          <el-button style="width:95px;" @click="arr_Cancel()">取 消</el-button>
+          <el-button style="width:95px;" @click="arr_Sure()" type="primary">确 认</el-button>
+      </div>
+    </el-dialog>
+
     <!-- 数据选择弹出框 -->
     <SelectData
       :isLoading="dataSelect.selectLoading"
@@ -205,6 +223,7 @@ export default {
         },
       ],
       title: "应收账款列表",
+      tableHeight: 500,
       searchData: {
         searchLoading: true,
         de_Options: [],
@@ -275,11 +294,25 @@ export default {
       StartRec: false, // 0：未发起；1：发起
       checked_suc: [], // 通过列表
       checked_den: [], // 有误列表
+      addDialogVisiable: false, //批量弹窗
     };
   },
   components: {
     navBar,
     SelectData,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 50;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 50
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
   },
   created() {
     this.getSearchList()
@@ -457,12 +490,12 @@ export default {
     },
     // 通过
     agreeRec(index) {
-      this.tableData[index].check_res = '2'
+      this.tableData[index].check_res = '正确'
       this.checked_suc.push(this.tableData[index].id)
     },
     // 拒绝
     denyRec(index) {
-      this.tableData[index].check_res = '1'
+      this.tableData[index].check_res = '有误'
       this.checked_den.push(this.tableData[index].id)
     },
     returnRec(id) {
@@ -474,6 +507,35 @@ export default {
       this.checked_den.forEach((item, index) => {
         if (item == id) {
           this.checked_den.splice(index,1)
+        }
+      })
+    },
+    addReceive_arr() {
+      this.addDialogVisiable = true
+    },
+    arr_Cancel() {
+      this.addDialogVisiable = false
+    },
+    arr_Sure() {
+      this.addDialogVisiable = false
+      this.searchData.searchLoading = true
+      const params = []
+      this.tableData.forEach(item => {
+        if (item.status == '未对账') {
+          params.push({
+            id: item.id,
+            check_res: 2
+          })
+        }
+      })
+      checkReceivables(params)
+      .then(res=> {
+        this.searchData.searchLoading = false
+        if (res.status == 200) {
+          this.$message.success('对账成功！')
+          this.getRecList()
+        } else {
+          this.$message.error("对账失败：" + res.error.message);
         }
       })
     },
@@ -493,11 +555,15 @@ export default {
         })
       })
       if (params.length !== 0) {
+        this.searchData.searchLoading = true
         checkReceivables(params)
         .then(res=> {
+          this.searchData.searchLoading = false
           if (res.status == 200) {
             this.$message.success('对账成功！')
             this.getRecList()
+          } else {
+            this.$message.error("对账失败：" + res.error.message);
           }
         })
       } else {
@@ -559,6 +625,7 @@ export default {
   }
   .basic {
     display: flex;
+    width: 100%;
     .right,
     .wrong {
       width: 60px;
@@ -580,12 +647,12 @@ export default {
     }
   }
   .sucess {
-    width: 120px;
+    width: 100%;
     color: #FFFFFF;
     background: #6DD400;
   }
   .deny {
-    width: 120px;
+    width: 100%;
     color: #FFFFFF;
     background: #F56C6C;
   }
@@ -604,5 +671,23 @@ export default {
     box-sizing: border-box;
     padding: 0 15px;
   }
+}
+.el-table /deep/ .cell {
+  padding: 0;
+}
+// 批量弹窗
+.warning_img {
+  width: 40px;
+  height: 40px;
+  background: url(../../assets/img/warning.png);
+  background-size: 40px 40px;
+  margin: 0 auto;
+}
+.info {
+  color: #7E8187;
+  font-size: 16px;
+  margin-top: 40px;
+  margin-bottom: 40px;
+  text-align: center;
 }
 </style>
