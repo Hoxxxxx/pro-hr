@@ -306,6 +306,8 @@ export default {
     },
     // 获取收入列表
     getRecList() {
+      this.can_StartRec = false
+      this.cancelReceive()
       this.searchData.searchLoading = true
       let params = {
         department_id: this.theadData.department_id,
@@ -449,7 +451,7 @@ export default {
     },
     // 取消对账
     cancelReceive() {
-      this.StartRec = !this.StartRec
+      this.StartRec = 0
       this.checked_suc = []
       this.checked_den = []
     },
@@ -495,15 +497,11 @@ export default {
         .then(res=> {
           if (res.status == 200) {
             this.$message.success('对账成功！')
-            this.can_StartRec = false
-            this.cancelReceive()
             this.getRecList()
           }
         })
       } else {
         this.$message.info('未变更对账信息！')
-        this.can_StartRec = false
-        this.cancelReceive()
         this.getRecList()
       }
     },
