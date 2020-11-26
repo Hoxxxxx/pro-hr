@@ -359,7 +359,12 @@ export default {
     // 0：取消； 1：确定
     extraBtnClick(type) {
       if (type == 0) {
-        this.uploadData.file_path = ''
+        this.uploadData = {
+          month: '',
+          department: '',
+          department_id: '',
+          file_path: ''
+        },
         this.fileList = []
         this.showDialog = false;
       } else if (type == 1) {

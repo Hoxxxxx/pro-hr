@@ -412,7 +412,12 @@ export default {
     // 0：取消； 1：确定
     extraBtnClick(type) {
       if (type == 0) {
-        this.uploadData.file_path = ''
+        this.uploadData = {
+          quarter: '',
+          department: '',
+          department_id: '',
+          file_path: ''
+        },
         this.fileList = []
         this.showDialog = false;
       } else if (type == 1) {
@@ -485,15 +490,22 @@ export default {
           check_res: 1
         })
       })
-      checkReceivables(params)
-      .then(res=> {
-        if (res.status == 200) {
-          this.$message.success('对账成功！')
-          this.can_StartRec = false
-          this.cancelReceive()
-          this.getRecList()
-        }
-      })
+      if (params.length !== 0) {
+        checkReceivables(params)
+        .then(res=> {
+          if (res.status == 200) {
+            this.$message.success('对账成功！')
+            this.can_StartRec = false
+            this.cancelReceive()
+            this.getRecList()
+          }
+        })
+      } else {
+        this.$message.info('未变更对账信息！')
+        this.can_StartRec = false
+        this.cancelReceive()
+        this.getRecList()
+      }
     },
 
   },
