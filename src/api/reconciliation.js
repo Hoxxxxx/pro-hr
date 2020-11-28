@@ -98,9 +98,27 @@ export const deliverList = (params) => {
     })
 }
 
-// 获取发货单列表
+// 获取发票列表
 export const invoiceList = (params) => {
     return request.GET('finance/oa/invoices',
+    {},
+    {
+        params
+    })
+}
+
+// 获取付款冲账单列表
+export const strikeList = (params) => {
+    return request.GET('finance/receivable-write-off-documents',
+    {},
+    {
+        params
+    })
+}
+
+// 获取付款冲账单详情
+export const strikeDetail = (params) => {
+    return request.GET(`finance/receivable-write-off-documents/${params.id}`,
     {},
     {
         params
