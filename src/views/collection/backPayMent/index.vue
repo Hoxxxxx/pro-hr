@@ -49,30 +49,53 @@
         <el-table
           ref="table"
           class="tableRef"
-          :data="tableData"
+          :data="collectionList"
           v-loading = "searchData.searchLoading"
           element-loading-background = "rgba(0, 0, 0, 0.5)"
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
           style="width: 100%"
-          :height="tableHeight"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="项目" prop="item" fixed="left" min-width="100px"></el-table-column>
-          <el-table-column align="center" :label="theadData.month + '月'" prop="current_period" min-width="100px"></el-table-column>
-          <el-table-column align="center" :label="'1-' + theadData.month + '月'" prop="current_year" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="同比" prop="year_over_year	" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="环比" prop="chain" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="预算数据" prop="budget_data" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="预算完成率" prop="budget_complete" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="费用预警" min-width="100px">
+          <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="50px"></el-table-column>
+          <el-table-column align="center" label="流水号" prop="ssn" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="银行编号" prop="bank" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户编号" prop="customer" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户名称" prop="customer_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="日期" prop="date" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="币种编号" prop="currency" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="币种名称" prop="currency_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="金额" prop="amount" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="摘要" prop="summary" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="用途" prop="purpose" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="集团凭证号" prop="jt_number" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="图片URL" prop="pic_url" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
+          <!-- <el-table-column align="center" label="费用预警" min-width="100px">
             <template slot-scope="scope">
               <span style="color: #F56C6C">{{scope.row.warning}}</span>
             </template>
-          </el-table-column>
+          </el-table-column> -->
         </el-table>
       </div>
+
+      <!-- 分页区域 -->
+      <el-pagination
+        @size-change="handleSizeChange"
+        @current-change="handleCurrentChange"
+        :current-page="listParams.page"
+        :page-sizes="[10, 20, 50]"
+        :page-size="listParams.pageSize"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="total"
+        style="margin-top: 20px; margin-bottom: 20px; float: right"
+      ></el-pagination>
     </el-card>
 
     <!-- 新增弹窗 -->
@@ -181,14 +204,23 @@ export default {
           title: "首页",
         },
         {
-          title: "财务管理",
+          title: "收款管理",
         },
         {
-          title: "收入费用情况",
+          title: "回款单管理",
         },
       ],
-      title: "收入费用情况",
-      tableHeight: 500,
+      title: "回款单管理",
+      // 分页数据
+      total: 0,
+      listParams: { 
+        filter: [], 
+        page: 1, 
+        pageSize: 10 
+      },
+      collectionList: [],
+
+
       searchData: {
         searchLoading: true,
         de_Options: [],
@@ -260,43 +292,36 @@ export default {
         department_id: '',
         file_path: ''
       },
-      // 分页数据
-      page: 1,
-      pageSize: 10,
     };
   },
   components: {
     navBar,
     SelectData,
   },
-  mounted() {
-    this.$nextTick(() => {
-      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 50;
-      // console.log( this.tableHeight)
-      // 监听窗口大小变化
-      let self = this;
-      window.onresize = function() {
-        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 50
-      }
-    })  
-    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
-  },
   created() {
     this.getSearchList()
     this.getCollList()
   },
   methods: {
-    // 获取收入列表
+    // **********翻页**********
+    handleSizeChange(newPageSize) {
+      this.listParams.pageSize = newPageSize;
+      this.getCollList()
+    },
+    handleCurrentChange(newPage) {
+      this.listParams.page = newPage;
+      this.getCollList()
+    },
+    // *************************
+     // ********获取列表********
+    // 收入列表
     getCollList(type) {
       this.searchData.searchLoading = true
-      let params = {
-        filter: [],
-        page: this.page,
-        pageSize: this.pageSize,
-      };
+      let params = this.listParams
       collList(params).then(res => {
         if (res.status == 200) {
+          this.collectionList = res.data
+          this.total = res.pagination.total
           this.searchData.searchLoading = false
         } else {
           this.searchData.searchLoading = false
@@ -304,7 +329,7 @@ export default {
         }
       })
     },
-    // 获取账期及部门列表
+    // 账期及部门列表
     getSearchList() {
       incomesInfo().then(res => {
         if (res.status == 200) {
