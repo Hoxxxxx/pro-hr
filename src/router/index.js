@@ -26,8 +26,6 @@ const backPayment = () => import('@/views/collection/backPayMent/index')
 const payAdd = () => import('@/views/collection/backPayMent/add')
 const payEdit = () => import('@/views/collection/backPayMent/edit')
 
-const permissions = () => import('@/views/administrator/permissions')
-
 Vue.use(VueRouter)
 
 const routes = [{
