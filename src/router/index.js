@@ -15,6 +15,8 @@ const position = () => import('@/views/organization/position')
 // 管理员管理
 const admins = () => import('@/views/administrator/admins')
 const roles = () => import('@/views/administrator/roles')
+const permissions = () => import('@/views/administrator/permissions')
+const menus = () => import('@/views/administrator/menus')
 // 对账单
 const income = () => import('@/views/finance/income')
 const receivable = () => import('@/views/finance/receivable')
@@ -87,6 +89,11 @@ const routes = [{
         path: '/permissions',
         name: 'permissions',
         component: permissions
+      },
+      {
+        path: '/menus',
+        name: 'menus',
+        component: menus
       }
     ]
   },

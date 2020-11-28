@@ -4,14 +4,14 @@
     <div class="menuList">
       <ul>
         <li
-          v-for="(item,index) in menuList"
+          v-for="(item, index) in menuList"
           :key="index"
           :class="index == curIndex ? 'active' : ''"
-          @click="changeStatus(index,item.status)"
+          @click="changeStatus(index, item.status)"
         >
           <div class="index"></div>
-          <div class="menuName">{{item.name}}</div>
-          <div class="count">({{item.val}})</div>
+          <div class="menuName">{{ item.name }}</div>
+          <div class="count">({{ item.val }})</div>
         </li>
       </ul>
     </div>
@@ -19,24 +19,67 @@
     <!-- 搜索框 -->
     <el-card class="searchCard">
       <div class="serchBox">
-        <el-input
-          v-model="adminName"
-          placeholder="请输入员工姓名"
-          clearable
-          style="width: 360px;margin-right: 20px;border-radius: 4px;"
-        ></el-input>
-        <el-select v-model="status" placeholder="请选择状态" style="width: 360px;border-radius: 4px;">
+        <div class="checkBoxs">
+          <div>
+            <el-checkbox
+              :indeterminate="checkedBox.isIndeterminate"
+              v-model="checkedBox.checkAll"
+              @change="handleCheckAllChange"
+              >全选</el-checkbox
+            >
+            <div style="margin: 15px 0"></div>
+            <el-checkbox-group
+              v-model="checkedBox.checkedCities"
+              @change="handleCheckedCitiesChange"
+            >
+              <el-checkbox
+                v-for="(key,value) in checkedBox.cities"
+                class="checkItem"
+                :label="key"
+                :key="value"
+                >{{ key }}</el-checkbox
+              >
+            </el-checkbox-group>
+          </div>
+        </div>
+        <div class="rangeBox">
+          <el-input
+            v-model="adminName"
+            placeholder="请输入员工姓名"
+            clearable
+            style="width: 300px;border-radius: 4px"
+          ></el-input>
+          <div class="range">
+            <span>年龄段：</span>
+            <el-input
+              v-model="ageMin"
+              placeholder=""
+              style="width: 80px;border-radius: 4px"
+            ></el-input>
+            <span style="margin:0 10px;">~</span>
+            <el-input
+              v-model="ageMax"
+              placeholder=""
+              style="width: 80px; border-radius: 4px"
+            ></el-input>
+          </div>
+          <div class="btnBox">
+            <el-button type="primary" size="medium" @click="search(0)"
+              >搜索</el-button
+            >
+            <el-button class="secondary" size="medium" @click="search(1)"
+              >重置</el-button
+            >
+          </div>
+          <!-- <el-select v-model="status" placeholder="请选择状态" style="width: 360px;border-radius: 4px;">
           <el-option
             v-for="item in adStatus"
             :key="item.value"
             :label="item.lable"
             :value="item.value"
           ></el-option>
-        </el-select>
-      </div>
-      <div class="btnBox">
-        <el-button type="primary" size="medium" @click="search(0)">搜索</el-button>
-        <el-button class="secondary" size="medium" @click="search(1)">重置</el-button>
+        </el-select> -->
+        </div>
       </div>
     </el-card>
 
@@ -46,9 +89,13 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">员工列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="addStaff()">新增员工</el-button>
+          <el-button type="primary" class="p40" @click="addStaff()"
+            >新增员工</el-button
+          >
           <el-button class="btn p40">批量导入</el-button>
-          <el-button class="btn p40" @click="deleteSelected()">批量删除</el-button>
+          <el-button class="btn p40" @click="deleteSelected()"
+            >批量删除</el-button
+          >
         </div>
       </div>
       <!-- 表格区域 -->
@@ -56,76 +103,126 @@
         <el-table
           :data="viewsList"
           style="width: 100%"
-          :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           @selection-change="handleSelectionChange"
         >
-          <el-table-column align="center" type="selection" width="55"></el-table-column>
-          <el-table-column align="center" label="姓名" prop="name"></el-table-column>
-          <el-table-column align="center" label="工号" prop="job_number"></el-table-column>
+          <el-table-column
+            align="center"
+            type="selection"
+            width="55"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="姓名"
+            prop="name"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="工号"
+            prop="job_number"
+          ></el-table-column>
           <el-table-column align="center" label="部门" prop="department">
             <template slot-scope="scope">
               <span
-                v-for="(i,index) in scope.row.department"
+                v-for="(i, index) in scope.row.department"
                 :key="index"
-                style="margin:0 10px;"
-              >{{i.name}}</span>
+                style="margin: 0 10px"
+                >{{ i.name }}</span
+              >
             </template>
           </el-table-column>
           <el-table-column align="center" label="职位" prop="position">
             <template slot-scope="scope">
               <span
-                v-for="(i,index) in scope.row.position"
+                v-for="(i, index) in scope.row.position"
                 :key="index"
-                style="margin:0 10px;"
-              >{{i.name}}</span>
+                style="margin: 0 10px"
+                >{{ i.name }}</span
+              >
             </template>
           </el-table-column>
           <el-table-column align="center" label="员工状态" prop="status">
             <template slot-scope="scope">
-              <span>{{scope.row.status == 1 ? '试用': (scope.row.status == 2 ? '正式' : (scope.row.status == 3 ? '离职':'在职'))}}</span>
+              <span>{{
+                scope.row.status == 1
+                  ? "试用"
+                  : scope.row.status == 2
+                  ? "正式"
+                  : scope.row.status == 3
+                  ? "离职"
+                  : "在职"
+              }}</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="手机号" prop="mobile"></el-table-column>
-          <el-table-column align="center" label="入职日期" prop="entry_time"></el-table-column>
-          <el-table-column align="center" label="转正日期" prop="positive_time"></el-table-column>
-          <el-table-column label="账号状态" prop="ac_open_status" align="center">
+          <el-table-column
+            align="center"
+            label="手机号"
+            prop="mobile"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="入职日期"
+            prop="entry_time"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="转正日期"
+            prop="positive_time"
+          ></el-table-column>
+          <el-table-column
+            label="账号状态"
+            prop="ac_open_status"
+            align="center"
+          >
             <template slot-scope="scope">
               <span
                 v-if="scope.row.ac_open_status == 0"
                 :style="scope.row.ac_open_status | color"
-              >未开通</span>
+                >未开通</span
+              >
               <span
                 v-else-if="scope.row.ac_open_status == 1"
                 :style="scope.row.ac_open_status | color"
-              >已开通</span>
-              <span v-else :style="scope.row.ac_open_status | color">已停用</span>
+                >已开通</span
+              >
+              <span v-else :style="scope.row.ac_open_status | color"
+                >已停用</span
+              >
             </template>
           </el-table-column>
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)">查看</el-button>
+              <el-button type="text" @click="view(scope.row.id)"
+                >查看</el-button
+              >
               <el-button
                 type="text"
-                v-if="scope.row.status == 1 && scope.row.ac_open_status !=2"
+                v-if="scope.row.status == 1 && scope.row.ac_open_status != 2"
                 @click="positive(scope.row.id)"
-              >转正</el-button>
+                >转正</el-button
+              >
               <el-button
                 type="text"
-                v-if="scope.row.status !=3 && scope.row.ac_open_status !=2"
-                @click="openDialog('departure',scope.row.id)"
-              >离职</el-button>
-              <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
+                v-if="scope.row.status != 3 && scope.row.ac_open_status != 2"
+                @click="openDialog('departure', scope.row.id)"
+                >离职</el-button
+              >
+              <el-button type="text" @click="openDialog('remove', scope.row.id)"
+                >删除</el-button
+              >
               <el-button
                 type="text"
-                v-if="scope.row.status !=3 && scope.row.ac_open_status ==0"
-                @click="openDialog('openUse',scope.row.id)"
-              >开通账号</el-button>
+                v-if="scope.row.status != 3 && scope.row.ac_open_status == 0"
+                @click="openDialog('openUse', scope.row.id)"
+                >开通账号</el-button
+              >
               <el-button
                 type="text"
                 v-if="scope.row.ac_open_status == 1"
-                @click="openDialog('stopUse',scope.row.id)"
-              >停用账号</el-button>
+                @click="openDialog('stopUse', scope.row.id)"
+                >停用账号</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -133,7 +230,9 @@
 
       <!-- 新增管理员弹窗 -->
       <el-dialog :visible.sync="showDialog" width="25%" center>
-        <div class="deleteMsg" v-if="dialogType == 'remove'">确定要删除该条数据？</div>
+        <div class="deleteMsg" v-if="dialogType == 'remove'">
+          确定要删除该条数据？
+        </div>
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
           <span>确认后该员工不可使用账号登录进入系统</span>
@@ -142,30 +241,43 @@
           <ul class="popExtraList">
             <li>
               <span>账号名称：</span>
-              <el-input style="width:300px" placeholder="请输入账号名称" v-model="name_openUse"></el-input>
-              <span class="tips" v-if="name_openUse ==''">*请输入账号</span>
+              <el-input
+                style="width: 300px"
+                placeholder="请输入账号名称"
+                v-model="name_openUse"
+              ></el-input>
+              <span class="tips" v-if="name_openUse == ''">*请输入账号</span>
             </li>
             <li>
               <span>密码：</span>
-              <el-input style="width:300px" placeholder="请输入密码" show-password v-model="pwd_openUse"></el-input>
-              <span class="tips" v-if="pwd_openUse ==''">*请输入密码</span>
+              <el-input
+                style="width: 300px"
+                placeholder="请输入密码"
+                show-password
+                v-model="pwd_openUse"
+              ></el-input>
+              <span class="tips" v-if="pwd_openUse == ''">*请输入密码</span>
             </li>
             <li>
               <span>职位：</span>
               <div class="msgInput">
-                <span v-for="(i,idx) in job_openUse" :key="idx">{{i.name}}</span>
+                <span v-for="(i, idx) in job_openUse" :key="idx">{{
+                  i.name
+                }}</span>
               </div>
             </li>
             <li>
               <span>部门：</span>
               <div class="msgInput">
-                <span v-for="(i,idx) in depart_openUse" :key="idx">{{i.name}}</span>
+                <span v-for="(i, idx) in depart_openUse" :key="idx">{{
+                  i.name
+                }}</span>
               </div>
             </li>
             <li>
               <span>公司：</span>
               <div class="msgInput">
-                <span >{{company_openUse}}</span>
+                <span>{{ company_openUse }}</span>
               </div>
             </li>
           </ul>
@@ -174,7 +286,12 @@
           <ul class="popExtraList">
             <li>
               <span>离职类型：</span>
-              <el-select style="width:300px" v-model="depart" placeholder="请选择离职类型" class="elInput">
+              <el-select
+                style="width: 300px"
+                v-model="depart"
+                placeholder="请选择离职类型"
+                class="elInput"
+              >
                 <el-option
                   v-for="item in depart_options"
                   :key="item.value"
@@ -190,14 +307,14 @@
                 type="date"
                 placeholder="选择离职日期："
                 class="elInput"
-                style="width:300px"
+                style="width: 300px"
               ></el-date-picker>
             </li>
             <li>
               <span>离职原因：</span>
               <el-input
                 type="textarea"
-                style="width:300px"
+                style="width: 300px"
                 autosize
                 placeholder="请输入离职原因"
                 v-model="departReason"
@@ -207,8 +324,15 @@
         </div>
         <div class="extraBtns">
           <div>
-            <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
-            <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+            <el-button style="width: 95px" @click="extraBtnClick(0)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="extraBtnClick(1)"
+              type="primary"
+              >确 定</el-button
+            >
           </div>
         </div>
       </el-dialog>
@@ -272,8 +396,16 @@ export default {
         { name: "试用", val: 0, status: 1 },
       ],
       curIndex: 0,
-      // 搜索框
+      // 筛选字段
+      checkedBox: {
+        checkAll: false,
+        checkedCities: [],
+        cities: [],
+        isIndeterminate: true,
+      },
       adminName: "",
+      ageMin:"",//
+      ageMax:"",//
       status: null,
       adStatus: [
         {
@@ -326,43 +458,61 @@ export default {
   },
   mounted() {
     this.getStaffList();
-    // this.staffCount();
+    this.getFields();//获取筛选字字段
+    this.staffCount();//获取分类统计
   },
   methods: {
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
       this.listType = status;
-      this.getStaffList();
+      let params = {
+        type:status
+      }
+      this.getStaffList(params);
+    },
+    // 筛选功能
+    handleCheckAllChange(val) {
+      this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
+      this.checkedBox.isIndeterminate = false;
+    },
+    handleCheckedCitiesChange(value) {
+      let checkedCount = value.length;
+      this.checkedBox.checkAll = checkedCount === this.checkedBox.cities.length;
+      this.checkedBox.isIndeterminate =
+        checkedCount > 0 && checkedCount < this.checkedBox.cities.length;
     },
     // 搜索
     search(type) {
       let params = {
-        page:1,
-        type:type,
-        name:this.adminName
-      }
+        name: this.adminName,
+      };
       this.getStaffList(params);
-      // if (type == 0) {
-      //   console.log(this.status);
-      //   this.getStaffList();
-      // } else {
-      //   this.status = null;
-      //   this.adminName = "";
-      //   this.listParams.page = 1;
-      //   this.listType = 0;
-      //   let params = {
-      //     page:this.listParams.page,
-      //     type:this.listType
-      //   }
-      //   this.getStaffList();
-      // }
     },
     // 获取员工列表
-    getStaffList(params) {
+    getStaffList(val) {
+      let page = {
+        page:this.listParams.page
+      }
+      let params = {...val,...page}
       STAFFS_API.getStaffs(params).then((res) => {
-        this.viewsList = res.data[0].data;
-        this.total = res.data[0].total;
+        if (res.status == 200) {
+          this.viewsList = res.data[0].data;
+          this.total = res.data[0].total;
+        } else {
+        }
+      });
+    },
+    //获取筛选字段
+    getFields() {
+      STAFFS_API.getFields().then((res) => {
+        if (res.status == 200) {
+          let temp = []
+          for(let key in res.data){
+            temp.push(res.data[key])
+          }
+          this.checkedBox.cities = temp;
+        }
       });
     },
     // 新增员工
@@ -547,7 +697,7 @@ export default {
     },
     // 分类人数统计
     staffCount() {
-      http.GET(configUrl.staffCount).then((res) => {
+      STAFFS_API.staffsCount().then((res) => {
         let temp = this.menuList;
         for (let i = 0, len = temp.length; i < len; i++) {
           switch (temp[i].status) {
@@ -657,20 +807,35 @@ export default {
     }
   }
   .searchCard {
-    height: 80px;
     margin: 20px;
-    .btnBox {
-      width: 180px;
-      float: right;
-      margin-top: -38px;
+    .checkBoxs {
+      display: flex;
+      flex-direction: row;
+      margin-bottom: 20px;
+      .checkItem {
+        margin-bottom: 10px;
+      }
+    }
+    .rangeBox{
+      position: relative;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      .range{
+        margin: 0 20px;
+      }
+      .btnBox {
+        position: absolute;
+        right: 0;
+
       .el-button {
         height: 40px;
-        margin-bottom: 20px;
       }
       .secondary {
         border: 1px solid #409efd;
         color: #409efd;
       }
+    }
     }
   }
 }

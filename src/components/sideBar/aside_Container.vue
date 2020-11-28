@@ -74,6 +74,11 @@ export default {
               title: "权限配置",
               path: "/permissions",
             },
+            {
+              id: 1,
+              title: "菜单管理",
+              path: "/menus",
+            },
           ],
         },
         {

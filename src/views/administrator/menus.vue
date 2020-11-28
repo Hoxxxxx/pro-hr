@@ -5,10 +5,10 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">权限列表</span>
+        <span class="tableTitle">菜单列表</span>
         <div class="btns">
           <el-button type="primary" class="p40" @click="addStaff()"
-            >新增权限</el-button
+            >新增菜单</el-button
           >
           <!-- <el-button class="btn p40" @click="deleteMore()">批量删除</el-button> -->
         </div>
@@ -26,7 +26,6 @@
           :tree-props="{ children: 'sub', hasChildren: 'hasChildren' }"
         >
           >
-          <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
           <el-table-column
             v-for="(item, index) in tHeadList"
             :key="index"
@@ -48,22 +47,6 @@
           </el-table-column>
         </el-table>
       </div>
-
-      <!-- 分页区域 -->
-      <!-- <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        @next-click="nextPage"
-        @prev-click="prevPage"
-        :current-page="listParams.page"
-        :page-sizes="[10, 20, 50]"
-        :page-size="listParams.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        style="margin-top: 20px; margin-bottom: 20px; float: right"
-      ></el-pagination> -->
-
-      <!-- 新增权限弹窗 -->
       <el-dialog
         :visible.sync="showAddPop"
         :close-on-click-modal="false"
@@ -72,34 +55,34 @@
         center
       >
         <div class="nameInput">
-          <span>权限名称</span>
+          <span>菜单名称</span>
           <el-input
-            v-model="addParams.title"
-            placeholder="请输入权限名称"
+            v-model="addParams.name"
+            placeholder="请输入菜单名称"
             class="elInput"
           ></el-input>
         </div>
         <div class="nameInput">
-          <span class="title">上级权限</span>
+          <span class="title">上级菜单</span>
           <el-select
             v-model="addParams.pid"
             class="elInput"
-            placeholder="请选择上级权限"
+            placeholder="请选择上级菜单"
           >
             <el-option
               v-for="(item, index) in fixedData.pers"
               :key="index"
-              :label="item.title"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
           </el-select>
         </div>
         <div class="nameInput">
-          <span>标题</span>
+          <span>菜单路由</span>
           <el-input
-            v-model="addParams.name"
-            placeholder="请输入标题"
+            v-model="addParams.url"
+            placeholder="请输入菜单路由"
             class="elInput"
           ></el-input>
         </div>
@@ -118,7 +101,7 @@
         </div>
       </el-dialog>
 
-      <!-- 编辑权限弹窗 -->
+      <!-- 编辑菜单弹窗 -->
       <el-dialog
         :visible.sync="showEditPop"
         :close-on-click-modal="false"
@@ -127,34 +110,34 @@
         center
       >
         <div class="nameInput">
-          <span>权限名称</span>
+          <span>菜单名称</span>
           <el-input
-            v-model="editParams.title"
-            placeholder="请输入权限名称"
+            v-model="editParams.name"
+            placeholder="请输入菜单名称"
             class="elInput"
           ></el-input>
         </div>
         <div class="nameInput">
-          <span class="title">上级权限</span>
+          <span class="title">上级菜单</span>
           <el-select
             v-model="editParams.pid"
             class="elInput"
-            placeholder="请选择上级权限"
+            placeholder="请选择上级菜单"
           >
             <el-option
               v-for="(item, index) in fixedData.pers"
               :key="index"
-              :label="item.title"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
           </el-select>
         </div>
         <div class="nameInput">
-          <span>标题</span>
+          <span>菜单路由</span>
           <el-input
-            v-model="editParams.name"
-            placeholder="请输入标题"
+            v-model="editParams.url"
+            placeholder="请输入菜单路由"
             class="elInput"
           ></el-input>
         </div>
@@ -180,7 +163,7 @@
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 // api
-import { PERMISSION_API } from "@/api/permission";
+import { MENUS_API } from "@/api/menus";
 export default {
   data() {
     return {
@@ -188,44 +171,43 @@ export default {
       breadList: [
         {
           path: "/administrator",
-          title: "权限管理",
+          title: "菜单管理",
         },
         {
-          title: "权限配置",
+          title: "菜单管理",
         },
       ],
-      title: "权限配置",
+      title: "菜单管理",
       // 表格数据
       tHeadList: [
-        { label: "权限名称", prop: "name" },
-        { label: "上级权限", prop: "ptitle" },
-        { label: "标题", prop: "title" },
+        { label: "菜单名称", prop: "name" },
+        { label: "父级菜单", prop: "pid" },
         { label: "创建时间", prop: "created_at" },
       ],
       viewsList: [],
-      // 新增权限的弹窗中的数据
+      // 新增菜单的弹窗中的数据
       fixedData: {
         pers: [
           {
-            name: "无", //标题（权限）
-            title: "无", //权限名称
-            id: 0, //上级权限id
+            name: "无", //标题（菜单）
+            url: "", //菜单名称
+            id: 0, //上级菜单id
           },
         ],
       },
       addParams: {
-        name: "", //标题（权限）
-        title: "", //权限名称
-        pid: 0, //上级权限id
+        name: "",
+        url: "", //
+        pid: 0, //上级菜单id
       },
       showAddPop: false, //是否显示弹窗
-      permissionsData: [],
-      // 编辑权限的弹窗
+      menusData: [],
+      // 编辑菜单的弹窗
       showEditPop: false,
       editParams: {
-        name: "", //标题（权限）
-        title: "", //权限名称
-        pid: "", //上级权限id
+        name: "",
+        url: "", //
+        pid: 0, //上级菜单id
       },
       editId: "", //编辑时选中的id
       // 批量删除的角色id
@@ -236,20 +218,20 @@ export default {
     };
   },
   mounted() {
-    this.getPermissions();
+    this.getMenus();
   },
   methods: {
-    // 获取权限列表
-    getPermissions() {
-      PERMISSION_API.getPermission().then((res) => {
+    // 获取菜单列表
+    getMenus() {
+      MENUS_API.getMenus().then((res) => {
         if (res.status == 200) {
-          this.permissionsData = res.data;
+          this.menusData = res.data;
           let resArr = [];
           this.fixedData.pers = [
             {
-              name: "无", //标题（权限）
-              title: "无", //权限名称
-              id: 0, //上级权限id
+              name: "无", //标题（菜单）
+              url: "", //菜单名称
+              id: 0, //上级菜单id
             },
           ];
           this.recursive(res.data, resArr);
@@ -268,31 +250,31 @@ export default {
         }
       });
     },
-    // 新增权限
+    // 新增菜单
     addStaff() {
       this.addParams = {
-        name: "", //标题（权限）
-        title: "", //权限名称
-        pid: "", //上级权限id
+        name: "",
+        url: "", //
+        pid: 0, //上级菜单id
       };
       this.showAddPop = true;
     },
-    // 编辑权限
+    // 编辑菜单
     editStaff(val) {
       this.editParams = {
-        name: val.name, //标题（权限）
-        title: val.title, //权限名称
-        pid: val.pid, //上级权限id
+        name: val.name, //标题（菜单）
+        url: val.url, //菜单名称
+        pid: val.pid, //上级菜单id
       };
       this.editId = val.id;
       this.showEditPop = true;
     },
-    // 删除权限
+    // 删除菜单
     removeById(val) {
       let message =
         val.sub.length > 0
-          ? "删除此权限，其子权限也会删除，确认删除？"
-          : "确认删除此权限?";
+          ? "删除此菜单，其子菜单也会删除，确认删除？"
+          : "确认删除此菜单?";
       this.$confirm(message, "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -300,10 +282,10 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
-          PERMISSION_API.deletePermission({}, val.id).then((res) => {
+          MENUS_API.deleteMenu({}, val.id).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
-              this.getPermissions();
+              this.getMenus();
             } else {
               this.$message.error("删除失败！");
             }
@@ -316,7 +298,7 @@ export default {
           });
         });
     },
-    // 批量删除权限
+    // 批量删除菜单
     deleteMore() {
       let params = {
         ids: this.ids,
@@ -365,11 +347,11 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          PERMISSION_API.addPermission(this.addParams).then((res) => {
+          MENUS_API.addMenu(this.addParams).then((res) => {
             if (res.status == 200) {
               this.showAddPop = false;
               this.$message.success("添加成功");
-              this.getPermissions();
+              this.getMenus();
             } else {
               this.$message.error("添加失败！");
             }
@@ -379,17 +361,15 @@ export default {
           this.showEditPop = false;
           break;
         case 3:
-          PERMISSION_API.editPermission(this.editParams, this.editId).then(
-            (res) => {
-              if (res.status == 200) {
-                this.showEditPop = false;
-                this.$message.success("修改成功");
-                this.getPermissions();
-              } else {
-                this.$message.error("修改失败！");
-              }
+          MENUS_API.editMenu(this.editParams, this.editId).then((res) => {
+            if (res.status == 200) {
+              this.showEditPop = false;
+              this.$message.success("修改成功");
+              this.getMenus();
+            } else {
+              this.$message.error("修改失败！");
             }
-          );
+          });
           break;
         default:
           break;
