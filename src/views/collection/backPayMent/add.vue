@@ -273,7 +273,7 @@ export default {
     }
     .btnBox {
       .btns {
-        width: 200px;
+        width: 210px;
         display: flex;
         margin: 20px auto;
       }

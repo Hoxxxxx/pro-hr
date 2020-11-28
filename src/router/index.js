@@ -23,6 +23,9 @@ const depReceivable = () => import('@/views/finance/depRec')
 const backPayment = () => import('@/views/collection/backPayMent/index')
 const payAdd = () => import('@/views/collection/backPayMent/add')
 const payEdit = () => import('@/views/collection/backPayMent/edit')
+const payDeliver = () => import('@/views/collection/deliver')
+const payInvoice = () => import('@/views/collection/invoice')
+
 
 const permissions = () => import('@/views/administrator/permissions')
 
@@ -148,6 +151,16 @@ const routes = [{
         path: 'backPayment/payEdit',
         name: 'payEdit',
         component: payEdit
+      },
+      {
+        path: 'deliver',
+        name: 'deliver',
+        component: payDeliver
+      },
+      {
+        path: 'invoice',
+        name: 'invoice',
+        component: payInvoice
       },
     ]
   },
