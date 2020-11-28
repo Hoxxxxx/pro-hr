@@ -61,14 +61,14 @@
           <el-table-column align="center" label="id" prop="id" fixed="left" min-width="50px"></el-table-column>
           <el-table-column align="center" label="年" prop="year" min-width="100px"></el-table-column>
           <el-table-column align="center" label="月" prop="month" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="客户编号" prop="customer_id	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户编号" prop="customer_id" min-width="100px"></el-table-column>
           <el-table-column align="center" label="客户名称" prop="customer_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="上期金额（万元）" prop="last_period_amount" min-width="100px"></el-table-column>
           <el-table-column align="center" label="本期增加（万元）" prop="current_period_increase" min-width="100px"></el-table-column>
           <el-table-column align="center" label="本期减少（万元）" prop="current_period_decrease" min-width="100px"></el-table-column>
           <el-table-column align="center" label="期末余额（万元）" prop="ending_balance" min-width="100px"></el-table-column>
           <el-table-column align="center" label="0-90天" prop="day_0_90" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="90-180天" prop="day_90_180	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="90-180天" prop="day_90_180" min-width="100px"></el-table-column>
           <el-table-column align="center" label="180-270天" prop="day_180_270" min-width="100px"></el-table-column>
           <el-table-column align="center" label="270-365天" prop="day_270_365" min-width="100px"></el-table-column>
           <el-table-column align="center" label="1年以上" prop="over_year_1" min-width="100px"></el-table-column>
@@ -287,6 +287,7 @@ export default {
   methods: {
     // 获取账期及部门列表
     getSearchList() {
+      this.searchData.year_Options = []
       depRecInfo().then(res => {
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
@@ -304,7 +305,11 @@ export default {
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
           }
-          this.getdepRecList('year')
+          if (this.theadData.year !== '' && this.theadData.month !== '' && this.theadData.department_id !== '' ) {
+            this.getdepRecList('year')
+          } else {
+            this.$message.warning('暂无数据')
+          }
         } else {
           this.$message.error('获取检索信息失败：' + res.error.message)
         }
@@ -314,7 +319,9 @@ export default {
     getdepRecList(type) {
       this.searchData.searchLoading = true
       if (type == 'year') {
-        this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+        if ( this.searchData.year_mon_Info[this.theadData.year] !== null && this.searchData.year_mon_Info[this.theadData.year] !== 0 ) {
+          this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+        }
       }
       let params = {
         year: this.theadData.year,

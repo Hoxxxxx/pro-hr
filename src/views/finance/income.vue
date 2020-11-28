@@ -284,6 +284,7 @@ export default {
   methods: {
     // 获取账期及部门列表
     getSearchList() {
+      this.searchData.year_Options = []
       incomesInfo().then(res => {
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
@@ -301,7 +302,11 @@ export default {
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
           }
-          this.getIncomeList('year')
+          if (this.theadData.year !== '' && this.theadData.month !== '' && this.theadData.department_id !== '' ) {
+            this.getIncomeList('year')
+          } else {
+            this.$message.warning('暂无数据')
+          }
         } else {
           this.$message.error('获取检索信息失败：' + res.error.message)
         }
@@ -311,7 +316,9 @@ export default {
     getIncomeList(type) {
       this.searchData.searchLoading = true
       if (type == 'year') {
-        this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+        if ( this.searchData.year_mon_Info[this.theadData.year] !== null && this.searchData.year_mon_Info[this.theadData.year] !== 0 ) {
+          this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+        }
       }
       let params = {
         year: this.theadData.year,
