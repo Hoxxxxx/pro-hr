@@ -130,8 +130,18 @@ export default {
           children: [
             {
               id: 0,
-              title: "回款单",
+              title: "回款单管理",
               path: "/collection/backPayment/index",
+            },
+            {
+              id: 0,
+              title: "发货单管理",
+              path: "/collection/deliver",
+            },
+            {
+              id: 0,
+              title: "发票单管理",
+              path: "/collection/invoice",
             },
           ],
         },
