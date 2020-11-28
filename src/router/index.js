@@ -29,8 +29,6 @@ const payDeliver = () => import('@/views/collection/deliver')
 const payInvoice = () => import('@/views/collection/invoice')
 
 
-const permissions = () => import('@/views/administrator/permissions')
-
 Vue.use(VueRouter)
 
 const routes = [{
