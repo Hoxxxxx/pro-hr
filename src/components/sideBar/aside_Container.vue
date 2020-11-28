@@ -117,19 +117,19 @@ export default {
             },
           ],
         },
-        // {
-        //   title: "收款管理",
-        //   icon: "el-icon-s-cooperation",
-        //   path: "/collection",
-        //   menuType: 1,
-        //   children: [
-        //     {
-        //       id: 0,
-        //       title: "回款单",
-        //       path: "/collection/backPayment/index",
-        //     },
-        //   ],
-        // },
+        {
+          title: "收款管理",
+          icon: "el-icon-s-cooperation",
+          path: "/collection",
+          menuType: 1,
+          children: [
+            {
+              id: 0,
+              title: "回款单",
+              path: "/collection/backPayment/index",
+            },
+          ],
+        },
         
       ],
     };
