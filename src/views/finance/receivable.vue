@@ -367,7 +367,11 @@ export default {
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
           }
-          this.getRecList('year')
+          if (this.theadData.year !== '' && this.theadData.quarter !== '' && this.theadData.department_id !== '' ) {
+            this.getRecList('year')
+          } else {
+            this.$message.warning('暂无数据')
+          }
         } else {
           this.$message.error('获取检索信息失败：' + res.error.message)
         }
@@ -379,7 +383,9 @@ export default {
       this.cancelReceive()
       this.searchData.searchLoading = true
       if (type == 'year') {
-        this.theadData.quarter = this.searchData.year_mon_Info[this.theadData.year][0]
+        if ( this.searchData.year_mon_Info[this.theadData.year] !== null && this.searchData.year_mon_Info[this.theadData.year] !== 0 ) {
+          this.theadData.quarter = this.searchData.year_mon_Info[this.theadData.year][0]
+        }
       }
       let params = {
         year: this.theadData.year,
