@@ -89,7 +89,7 @@
         style="margin-top: 20px; margin-bottom: 20px; float: right"
       ></el-pagination>
 
-      <!-- 新增管理员弹窗 -->
+      <!-- 新增角色弹窗 -->
       <el-dialog
         :visible.sync="showAddPop"
         :close-on-click-modal="false"
@@ -117,6 +117,17 @@
             :label="title"
           ></el-tree>
         </div>
+        <div class="permissions">
+          <div class="title">菜单权限</div>
+          <el-tree
+            :data="addParams.menus"
+            show-checkbox
+            node-key="id"
+            @getCurrentNode="getCurrentMenuNode"
+            :props="defaultMenuProps"
+            ref="addMenuTree"
+          ></el-tree>
+        </div>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -132,7 +143,7 @@
         </div>
       </el-dialog>
 
-      <!-- 编辑管理员弹窗 -->
+      <!-- 编辑角色弹窗 -->
       <el-dialog
         :visible.sync="showEditPop"
         :close-on-click-modal="false"
@@ -158,6 +169,17 @@
             ref="editCodeTree"
             :props="defaultProps"
             :label="title"
+          ></el-tree>
+        </div>
+        <div class="permissions">
+          <div class="title">菜单权限</div>
+          <el-tree
+            :data="editParams.menus"
+            show-checkbox
+            node-key="id"
+            @getCurrentNode="getCurrentMenuNode"
+            :props="defaultMenuProps"
+            ref="editMenuTree"
           ></el-tree>
         </div>
         <div class="extraBtns">
@@ -213,16 +235,23 @@ export default {
       addParams: {
         roleName: "",
         permissions: [],
+        menus:[]
       },
       editParams: {
         roleName: "",
         permissions: [],
+        menus:[]
       },
       showAddPop: false, //是否显示弹窗
       permissionsData: [],
+      menusData:[],
       defaultProps: {
         children: "sub",
         label: "title",
+      },
+      defaultMenuProps: {
+        children: "sub",
+        label: "name",
       },
       // 批量删除的角色id
       ids: [],
@@ -271,7 +300,7 @@ export default {
     getMenus() {
       MENUS_API.getMenus().then((res) => {
         if (res.status == 200) {
-          console.log(res.data);
+          this.menusData = res.data;
         }
       });
     },
@@ -290,10 +319,12 @@ export default {
       this.editParams = {
         roleName: val.name,
         permissions: this.permissionsData,
+        menus:this.menusData
       };
       this.editId = val.id;
       this.$nextTick(function () {
         this.$refs.editCodeTree.setCheckedNodes(val.permissions);
+        this.$refs.editMenuTree.setCheckedNodes(val.menus);
       });
     },
     // 新增角色
@@ -301,8 +332,8 @@ export default {
       this.addParams = {
         roleName: "",
         permissions: this.permissionsData,
+        menus:this.menusData
       };
-      console.log(this.addParams);
       this.showAddPop = true;
     },
     // 删除角色
@@ -373,8 +404,8 @@ export default {
           let params = {
             name: this.addParams.roleName,
             permission: this.getCurrentAddNode(),
+            menu:this.getCurrentMenuNode()
           };
-          console.log(params);
           ROLES_API.addRoles(params).then((res) => {
             if (res.status == 200) {
               this.showAddPop = false;
@@ -383,6 +414,7 @@ export default {
             }
             // 新增成功过后需要清空已选中的节点
             this.$refs.addCodeTree.setCheckedNodes([]);
+            this.$refs.addMenuTree.setCheckedNodes([]);
           });
           break;
         case 2:
@@ -392,6 +424,7 @@ export default {
           let params_edit = {
             name: this.editParams.roleName,
             permission: this.getCurrentEditNode(),
+            menu:this.getCurrentEditMenu()
           };
           ROLES_API.editRoles(params_edit, this.editId).then((res) => {
             if (res.status == 200) {
@@ -399,8 +432,9 @@ export default {
               this.$message.success("修改成功");
               this.rolesList();
             }
-            // 新增成功过后需要清空已选中的节点
+            // 编辑成功过后需要清空已选中的节点
             this.$refs.editCodeTree.setCheckedNodes([]);
+            this.$refs.editMenuTree.setCheckedNodes([]);
           });
           break;
         default:
@@ -416,9 +450,25 @@ export default {
       });
       return temp;
     },
+    getCurrentMenuNode(){
+      let data = this.$refs.addMenuTree.getCheckedNodes();
+      let temp = [];
+      data.forEach((item) => {
+        temp.push(item.id);
+      });
+      return temp;
+    },
     //编辑时获取已选中的节点
     getCurrentEditNode() {
       let data = this.$refs.editCodeTree.getCheckedNodes();
+      let temp = [];
+      data.forEach((item) => {
+        temp.push(item.id);
+      });
+      return temp;
+    },
+    getCurrentEditMenu() {
+      let data = this.$refs.editMenuTree.getCheckedNodes();
       let temp = [];
       data.forEach((item) => {
         temp.push(item.id);

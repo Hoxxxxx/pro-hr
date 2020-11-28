@@ -8,12 +8,14 @@
           v-model="deName"
           placeholder="请输入部门名称"
           clearable
-          style="width: 360px;margin-right: 20px;border-radius: 4px;"
+          style="width: 360px; margin-right: 20px; border-radius: 4px"
         ></el-input>
       </div>
       <div class="btnBox">
         <el-button type="primary" size="medium">搜索</el-button>
-        <el-button id="secondary" class="secondary" size="medium">重置</el-button>
+        <el-button id="secondary" class="secondary" size="medium"
+          >重置</el-button
+        >
       </div>
     </el-card>
 
@@ -23,7 +25,9 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">角色列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="openDialog('add',0)">新增部门</el-button>
+          <el-button type="primary" class="p40" @click="openDialog(0)"
+            >新增部门</el-button
+          >
           <el-button class="btn p40">批量删除</el-button>
         </div>
       </div>
@@ -32,12 +36,12 @@
         <el-table
           :data="viewsList"
           style="width: 100%"
-          :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
         >
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column
-            v-for="(item,index) in tHeadList"
+            v-for="(item, index) in tHeadList"
             :key="index"
             :label="item.label"
             :prop="item.prop"
@@ -46,9 +50,11 @@
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <!-- edit -->
-              <el-button type="text" @click="openDialog('add',scope.row.id)">编辑</el-button>
+              <el-button type="text" @click="openDialog(1,scope.row)">编辑</el-button>
               <!-- delete -->
-              <el-button type="text" @click="openDialog('delete',scope.row.id)">删除</el-button>
+              <el-button type="text" @click="deleteById(scope.row.id)"
+                >删除</el-button
+              >
             </template>
           </el-table-column>
         </el-table>
@@ -67,25 +73,38 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="26%" top="20vh" center>
-        <div class="departure" v-if="dialogType == 'add'">
+      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
+        <div class="departure">
           <ul class="popExtraList">
             <li>
               <span>部门名称：</span>
-              <el-input style="width:300px" v-model="departName" placeholder="请输入部门名称"></el-input>
+              <el-input
+                style="width: 400px"
+                v-model="departName"
+                placeholder="请输入部门名称"
+              ></el-input>
             </li>
             <li>
               <span>部门负责人：</span>
-              <el-input style="width:300px" v-model="chargerName" placeholder="请输入部门负责人"></el-input>
+              <el-input
+                style="width: 400px"
+                v-model="chargerName"
+                placeholder="请输入部门负责人"
+              ></el-input>
             </li>
             <li>
               <span>上级部门：</span>
-              <el-select style="width:300px" v-model="depart" placeholder="请选择离职类型" class="elInput">
+              <el-select
+                style="width: 400px"
+                v-model="depart"
+                placeholder="请选择离职类型"
+                class="elInput"
+              >
                 <el-option
                   v-for="item in depart_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
                 ></el-option>
               </el-select>
             </li>
@@ -93,19 +112,87 @@
               <span>部门描述：</span>
               <el-input
                 type="textarea"
-                style="width:300px"
+                style="width: 400px"
                 autosize
-                placeholder="请输入离职原因"
+                placeholder="请输入部门描述"
                 v-model="departMsg"
               ></el-input>
             </li>
           </ul>
         </div>
-        <div class="deleteMsg" v-if="dialogType == 'delete'">确定要删除该条数据？</div>
         <div class="extraBtns">
           <div>
-            <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
-            <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+            <el-button style="width: 95px" @click="extraBtnClick(0)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="extraBtnClick(1)"
+              type="primary"
+              >确 定</el-button
+            >
+          </div>
+        </div>
+      </el-dialog>
+      <!-- 编辑管理员弹窗 -->
+      <el-dialog :visible.sync="showEditPop" width="600px" top="20vh" center>
+        <div class="departure">
+          <ul class="popExtraList">
+            <li>
+              <span>部门名称：</span>
+              <el-input
+                style="width: 400px"
+                v-model="departName"
+                placeholder="请输入部门名称"
+              ></el-input>
+            </li>
+            <li>
+              <span>部门负责人：</span>
+              <el-input
+                style="width: 400px"
+                v-model="chargerName"
+                placeholder="请输入部门负责人"
+              ></el-input>
+            </li>
+            <li>
+              <span>上级部门：</span>
+              <el-select
+                style="width: 400px"
+                v-model="depart"
+                placeholder="请选择离职类型"
+                class="elInput"
+              >
+                <el-option
+                  v-for="item in depart_options"
+                  :key="item.id"
+                  :label="item.name"
+                  :value="item.id"
+                ></el-option>
+              </el-select>
+            </li>
+            <li>
+              <span>部门描述：</span>
+              <el-input
+                type="textarea"
+                style="width: 400px"
+                autosize
+                placeholder="请输入部门描述"
+                v-model="departMsg"
+              ></el-input>
+            </li>
+          </ul>
+        </div>
+        <div class="extraBtns">
+          <div>
+            <el-button style="width: 95px" @click="extraBtnClick(2)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="extraBtnClick(3)"
+              type="primary"
+              >确 定</el-button
+            >
           </div>
         </div>
       </el-dialog>
@@ -114,9 +201,9 @@
 </template>
 
 <script>
-import http from "../../utils/request";
-// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
+// api
+import { DEPART_API } from "@/api/department";
 export default {
   data() {
     return {
@@ -139,23 +226,19 @@ export default {
       deName: "",
       tHeadList: [
         { label: "部门名称", prop: "name" },
-        { label: "部门主管", prop: "job_number" },
-        { label: "人数", prop: "department_id" },
+        { label: "部门主管", prop: "manager_name" },
       ],
       viewsList: [],
       // 新增角色的弹窗中的数据
       departName: "",
-      chargerName:'',
+      chargerName: "",
       showAddPop: false, //是否显示弹窗
+      showEditPop:false,
       depart_options: [
-        {
-          value: "选项1",
-          label: "黄金糕",
-        },
+        {id:0,name:"无"}
       ],
       depart: "", //上级部门
-      departMsg:'',//部门描述
-      dialogType:'',
+      departMsg: "", //部门描述
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -163,7 +246,7 @@ export default {
   },
   mounted() {
     // this.getUserInfo();
-    // this.getDepartmentList();
+    this.getDepartmentList();
   },
   methods: {
     getUserInfo() {
@@ -172,20 +255,60 @@ export default {
     // 获取部门列表
     getDepartmentList() {
       let params = {
-        page:this.listParams.page
-      }
-      http.GET(configUrl.departmentList,params).then((res) => {
-        this.viewsList = res.data.departments.data
+        page: this.listParams.page,
+      };
+      DEPART_API.getDeparts(params).then((res) => {
+        this.viewsList = res.data;
+        this.depart_options = [...res.data,...this.depart_options];
       });
     },
     // 新增管理员
-    openDialog(type,val) {
-      this.showAddPop = true;
-      this.dialogType = type;
-
+    openDialog(type, val) {
+      switch (type) {
+        case 0:
+          this.showAddPop = true;
+          break;
+        case 1:
+          this.showEditPop = true
+          this.departName = val.name
+          this.chargerName = val.manager_name
+          this.depart = val.pid
+          this.departMsg = val.description
+          break;
+        default:
+          break;
+      }
     },
     extraBtnClick(type) {
-      this.showAddPop = false;
+      switch (type) {
+        case 0:
+          this.showAddPop = false;
+          break;
+        case 1:
+          let params = {
+            name: this.departName,
+            manager_name: this.chargerName,
+            pid: this.depart,
+            description: this.departMsg,
+          };
+          DEPART_API.addDeparts(params).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("添加成功！");
+              this.getDepartmentList()
+              this.showAddPop = false;
+            } else {
+              this.$message.error("添加失败！");
+            }
+          });
+          break;
+        case 2:
+          this.showEditPop = false
+        case 3:
+          
+          break;
+        default:
+          break;
+      }
     },
     // watch pagesize change
     handleSizeChange(newSize) {},
