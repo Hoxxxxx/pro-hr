@@ -12,8 +12,10 @@ axios.interceptors.request.use(
     config => {
         // 添加token
         let token = sessionStorage.getItem('token')
+        let orgid = sessionStorage.getItem('OrgId')
         if (token) {
-            config.headers.Authorization = 'Bearer ' + token
+            config.headers.Authorization = 'Bearer ' + token,
+            config.headers['Org-Id'] = orgid
         }
         return config
     }, err => {

@@ -88,3 +88,21 @@ export const addDepRec = (params) => {
         params
     )
 }
+
+// 获取发货单列表
+export const deliverList = (params) => {
+    return request.GET('finance/oa/receivables',
+    {},
+    {
+        params
+    })
+}
+
+// 获取发货单列表
+export const invoiceList = (params) => {
+    return request.GET('finance/oa/invoices',
+    {},
+    {
+        params
+    })
+}

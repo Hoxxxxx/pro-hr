@@ -136,12 +136,12 @@ export default {
             {
               id: 0,
               title: "发货单管理",
-              path: "/collection/deliver",
+              path: "/collection/deliver/list",
             },
             {
               id: 0,
               title: "发票单管理",
-              path: "/collection/invoice",
+              path: "/collection/invoice/list",
             },
           ],
         },

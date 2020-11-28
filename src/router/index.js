@@ -25,8 +25,8 @@ const depReceivable = () => import('@/views/finance/depRec')
 const backPayment = () => import('@/views/collection/backPayMent/index')
 const payAdd = () => import('@/views/collection/backPayMent/add')
 const payEdit = () => import('@/views/collection/backPayMent/edit')
-const payDeliver = () => import('@/views/collection/deliver')
-const payInvoice = () => import('@/views/collection/invoice')
+const payDeliver = () => import('@/views/collection/deliver/list')
+const payInvoice = () => import('@/views/collection/invoice/list')
 
 
 Vue.use(VueRouter)
@@ -158,13 +158,13 @@ const routes = [{
         component: payEdit
       },
       {
-        path: 'deliver',
-        name: 'deliver',
+        path: 'deliver/list',
+        name: 'deliver_list',
         component: payDeliver
       },
       {
-        path: 'invoice',
-        name: 'invoice',
+        path: 'invoice/list',
+        name: 'invoice_list',
         component: payInvoice
       },
     ]
@@ -185,6 +185,7 @@ VueRouter.prototype.push = function push(location) {
 import {
   BASE_API
 } from "@/api/baseApi"
+import jwtDecode from 'jwt-decode'
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
@@ -210,6 +211,8 @@ router.beforeEach((to, from, next) => {
       BASE_API.getToken(params).then(res => {
         if (res.status == 200) {
           let token = res.data.token
+          const code = jwtDecode(token)
+          sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
           next({
             path: to.path,
