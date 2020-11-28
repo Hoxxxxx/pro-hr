@@ -6,181 +6,172 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">员工列表</span>
+        <div class="searchBox">
+          <el-select v-model="theadData.year" 
+                            placeholder="请选择年份"
+                            style="margin-right: 20px"
+                            @change="getIncomeList('year')">
+            <el-option
+              v-for="item in searchData.year_Options"
+              :key="item"
+              :label="item + '年'"
+              :value="item">
+            </el-option>
+          </el-select>
+          <el-select v-model="theadData.month" 
+                            placeholder="请选择账期"
+                            style="margin-right: 20px"
+                            @change="getIncomeList('month')">
+            <el-option
+              v-for="item in searchData.year_mon_Info[theadData.year]"
+              :key="item"
+              :label="item + '月'"
+              :value="item">
+            </el-option>
+          </el-select>
+          <el-select v-model="theadData.department_id" 
+                            placeholder="请选择部门"
+                            @change="getIncomeList('dep')">
+            <el-option
+              v-for="item in searchData.de_Options"
+              :key="item.id"
+              :label="item.name"
+              :value="item.id">
+            </el-option>
+          </el-select>
+        </div>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="addStaff()">新增回款单</el-button>
-          <el-button type="warning" class="p40" @click="$router.push('payEdit')">编辑回款单</el-button>
+          <el-button type="primary" class="p40" @click="openDialog()">上传收入费用</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
-          :data="viewsList"
+          ref="table"
+          class="tableRef"
+          :data="tableData"
+          v-loading = "searchData.searchLoading"
+          element-loading-background = "rgba(0, 0, 0, 0.5)"
+          element-loading-text = "数据正在加载中"
+          element-loading-spinner = "el-icon-loading"
           style="width: 100%"
+          :height="tableHeight"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
-          @selection-change="handleSelectionChange"
+          :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" type="index" width="55"></el-table-column>
-          <el-table-column align="center" label="流水号" prop="code"></el-table-column>
-          <el-table-column align="center" label="银行" prop="bank"></el-table-column>
-          <el-table-column align="center" label="客户" prop="custmer"></el-table-column>
-          <el-table-column align="center" label="日期" prop="date"></el-table-column>
-          <el-table-column align="center" label="币种" prop="department">
+          <el-table-column align="center" label="项目" prop="item" fixed="left" min-width="100px"></el-table-column>
+          <el-table-column align="center" :label="theadData.month + '月'" prop="current_period" min-width="100px"></el-table-column>
+          <el-table-column align="center" :label="'1-' + theadData.month + '月'" prop="current_year" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="同比" prop="year_over_year	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="环比" prop="chain" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="预算数据" prop="budget_data" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="预算完成率" prop="budget_complete" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="费用预警" min-width="100px">
             <template slot-scope="scope">
-              <span
-                v-for="(i,index) in scope.row.department"
-                :key="index"
-                style="margin:0 10px;"
-              >{{i.name}}</span>
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="金额" prop="mobile"></el-table-column>
-          <el-table-column align="center" label="摘要" prop="entry_time"></el-table-column>
-          <el-table-column align="center" label="用途" prop="positive_time"></el-table-column>
-          <el-table-column label="审核状态" prop="ac_open_status" align="center">
-            <template slot-scope="scope">
-              <span
-                v-if="scope.row.ac_open_status == 0"
-                :style="scope.row.ac_open_status | color"
-              >未开通</span>
-              <span
-                v-else-if="scope.row.ac_open_status == 1"
-                :style="scope.row.ac_open_status | color"
-              >已开通</span>
-              <span v-else :style="scope.row.ac_open_status | color">已停用</span>
-            </template>
-          </el-table-column>
-          <el-table-column label="操作" width="300px" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)">查看</el-button>
-              <el-button
-                type="text"
-                v-if="scope.row.status == 1 && scope.row.ac_open_status !=2"
-                @click="positive(scope.row.id)"
-              >编辑</el-button>
-              <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
+              <span style="color: #F56C6C">{{scope.row.warning}}</span>
             </template>
           </el-table-column>
         </el-table>
       </div>
-
-      <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showDialog" width="25%" center>
-        <div class="deleteMsg" v-if="dialogType == 'remove'">确定要删除该条数据？</div>
-        <div class="stopUse" v-if="dialogType == 'stopUse'">
-          <span>确定停用该员工的账号？</span>
-          <span>确认后该员工不可使用账号登录进入系统</span>
-        </div>
-        <div class="openUse" v-if="dialogType == 'openUse'">
-          <ul class="popExtraList">
-            <li>
-              <span>账号名称：</span>
-              <el-input style="width:300px" placeholder="请输入账号名称" v-model="name_openUse"></el-input>
-              <span class="tips" v-if="name_openUse ==''">*请输入账号</span>
-            </li>
-            <li>
-              <span>密码：</span>
-              <el-input style="width:300px" placeholder="请输入密码" show-password v-model="pwd_openUse"></el-input>
-              <span class="tips" v-if="pwd_openUse ==''">*请输入密码</span>
-            </li>
-            <li>
-              <span>职位：</span>
-              <div class="msgInput">
-                <span v-for="(i,idx) in job_openUse" :key="idx">{{i.name}}</span>
-              </div>
-            </li>
-            <li>
-              <span>部门：</span>
-              <div class="msgInput">
-                <span v-for="(i,idx) in depart_openUse" :key="idx">{{i.name}}</span>
-              </div>
-            </li>
-            <li>
-              <span>公司：</span>
-              <div class="msgInput">
-                <span >{{company_openUse}}</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-        <div class="departure" v-if="dialogType == 'departure'">
-          <ul class="popExtraList">
-            <li>
-              <span>离职类型：</span>
-              <el-select style="width:300px" v-model="depart" placeholder="请选择离职类型" class="elInput">
-                <el-option
-                  v-for="item in depart_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>离职日期：</span>
-              <el-date-picker
-                v-model="departTime"
-                type="date"
-                placeholder="选择离职日期："
-                class="elInput"
-                style="width:300px"
-              ></el-date-picker>
-            </li>
-            <li>
-              <span>离职原因：</span>
-              <el-input
-                type="textarea"
-                style="width:300px"
-                autosize
-                placeholder="请输入离职原因"
-                v-model="departReason"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
-        <div class="extraBtns">
-          <div>
-            <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
-            <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
-          </div>
-        </div>
-      </el-dialog>
-
-      <!-- 分页区域 -->
-      <el-pagination
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-        :current-page="listParams.page"
-        :page-sizes="[10, 20, 50]"
-        :page-size="listParams.pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        style="margin-top: 20px; margin-bottom: 20px; float: right"
-      ></el-pagination>
     </el-card>
+
+    <!-- 新增弹窗 -->
+    <el-dialog 
+      title="上传收入费用"
+      :visible.sync="showDialog"
+      width="668px">
+      <el-form :model="uploadData" 
+                      :rules="uploadRules" 
+                      ref="uploadRef" 
+                      label-width="100px">
+        <el-form-item label="选择年份" prop="year">
+          <el-date-picker
+            v-model="uploadData.year"
+            type="year"
+            placeholder="请选择年份"
+            format="yyyy 年"
+            value-format="yyyy"
+            style="width: 360px;
+                        margin: 0 20px 10px 0;
+                        border-radius: 4px;">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="选择账期" prop="month">
+          <el-select v-model="uploadData.month" 
+                          placeholder="请选择账期"
+                          style="width: 360px;
+                                    margin: 0 20px 10px 0;
+                                    border-radius: 4px;">
+            <el-option
+                v-for="item in allMonList"
+                :key="item"
+                :label="item + '月'"
+                :value="item">
+            </el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="选择部门" prop="department_id">
+          <div class="selectbox">
+            <div class="selector" @click="selectDialog('BM')">
+              {{uploadData.department}}
+            </div>
+          </div>
+        </el-form-item>
+        <el-form-item label="上传账单" prop="file_path">
+          <el-upload
+            class="upload_annex"
+            :action="$store.state.upload_url"
+            :headers="uploadParams.headers"
+            :data="uploadParams.data"
+            name="attachment[]"
+            :before-upload="beforeAvatarUpload"
+            :on-success="handleSuccess"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
+            :file-list="fileList"
+            :limit="uploadParams.limit"
+            :on-exceed="handleExceed"
+            accept=".xls,.xlsx"
+          >
+            <el-button size="small" type="primary">点击上传</el-button>
+          </el-upload>
+        </el-form-item>
+      </el-form>
+      <div class="extraBtns">
+          <el-button style="width:95px;" @click="extraBtnClick(0)">取 消</el-button>
+          <el-button style="width:95px;" @click="extraBtnClick(1)" type="primary">确 定</el-button>
+      </div>
+    </el-dialog>
+
+    <!-- 数据选择弹出框 -->
+    <SelectData
+      :isLoading="dataSelect.selectLoading"
+      :dialogTitle.sync="dataSelect.dialogTitle"
+      :dialogVisible.sync="dataSelect.dialogVisible"
+      :headList.sync="dataSelect.headList"
+      :bodyData.sync="dataSelect.bodyData"
+      :choosedData="dataSelect.choosedData"
+      :editType.sync="dataSelect.editType"
+      :searchApi="dataSelect.searchApi"
+      :searchType="dataSelect.searchType"
+      :searchParams="dataSelect.searchParams"
+      :filter="dataSelect.filter"
+      :keyMsg="dataSelect.keyMsg"
+      @selectSure="selectSure"
+      @selectCancel="selectCancel"
+    ></SelectData>
+
   </div>
 </template>
 
 <script>
 import navBar from "@/components/navBar/navBar";
+import SelectData from "@/components/selectData";
+//api
+import { incomesInfo, incomeList, addIncome } from '@/api/reconciliation'
+import { collList } from '@/api/collection'
 
 export default {
-  filters: {
-    color(val) {
-      switch (val) {
-        case 0:
-          return `color:#F56C6C;`;
-          break;
-        case 1:
-          return `color:#6DD400;`;
-          break;
-        default:
-          return `color:#CCCCCC;`;
-          break;
-      }
-    },
-  },
   data() {
     return {
       // 面包屑
@@ -190,391 +181,303 @@ export default {
           title: "首页",
         },
         {
-          title: "回款单列表",
+          title: "财务管理",
         },
         {
-          title: "回款单",
+          title: "收入费用情况",
         },
       ],
-      title: "回款单",
-      curIndex: 0,
-      // 搜索框
-      adminName: "",
-      status: null,
-      adStatus: [
-        {
-          lable: "未开通",
-          value: 0,
-        },
-        {
-          lable: "已开通",
-          value: 1,
-        },
-        {
-          lable: "已停用",
-          value: 2,
-        },
-      ],
-      listType: 0, //数据类型：3：离职、2：正式、1：试用、0：在职
-      viewsList: [],
+      title: "收入费用情况",
+      tableHeight: 500,
+      searchData: {
+        searchLoading: true,
+        de_Options: [],
+        year_mon_Info: {},
+        year_Options: [],
+      },
+      theadData: {
+        year: '',
+        month: '',
+        department_id: '',
+      },
+      tableData: [],
+      // 上传收入列表
       showDialog: false,
-      dialogType: "",
-      // 开通账号相关数据
-      name_openUse: "",
-      pwd_openUse: "",
-      job_openUse: "",
-      depart_openUse: "",
-      company_openUse: "",
-      // 离职相关数据
-      depart_options: [
-        {
-          value: 0,
-          label: "主动离职",
+      allMonList: ['1','2','3','4','5','6','7','8','9','10','11','12'],
+      allDepList: [],
+      //数据选择弹出框
+      dataSelect: {
+        editType:"entry",
+        selectLoading:false,
+        cur_input: "", // 当前点击的输入框
+        dialogTitle: "数据选择", //当前弹框的title
+        dialogVisible: false, //控制显示隐藏弹框
+        headList: [], //表头
+        bodyData: [], //表格数据
+        choosedData: [], //选中的数据
+        searchApi: "", //搜索框的接口地址
+        searchParams:{},//搜索接口自带参数
+        searchType:"",//搜索类型
+        filter: [], //筛选条件
+        keyMsg: [], //需要显示在顶部的数据
+      },
+      tableHead: {
+        // 申请人
+        head_BM: [
+          { name: "id", title: "部门id" },
+          { name: "name", title: "部门名称" },
+          { name: "manager_name", title: "主管名称" },
+        ],
+      },
+      uploadParams: {
+        headers: {
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
         },
-        {
-          value: 1,
-          label: "被动离职",
+        data: {
+          basket: ''
         },
-        {
-          value: 2,
-          label: "退休",
-        },
-      ],
-      depart: "", //离职类型
-      departTime: "", //离职时间
-      departReason: "", //离职原因
-      tempId: "", //存放列表中需要执行某个操作时点击的某一项
-      multipleSelection: [],
-      // 分页
-      total: 0,
-      listParams: { name: "", page: 1, pageSize: 10 },
+        limit: 1,
+      },
+      uploadRules: {
+        year:[
+          { required: true, message: '请选择年份', trigger: 'change' },
+        ],
+        month:[
+          { required: true, message: '请选择账期', trigger: 'change' },
+        ],
+        department_id:[
+          { required: true, message: '请选择部门', trigger: 'change' },
+        ],
+        file_path:[
+          { required: true, message: '请上传账单', trigger: 'blur' },
+        ],
+      },
+      fileList: [],
+      uploadData: {
+        year: '',
+        month: '',
+        department: '',
+        department_id: '',
+        file_path: ''
+      },
+      // 分页数据
+      page: 1,
+      pageSize: 10,
     };
-  },
-  methods: {
-    // 获取员工列表
-    getStaffList(adminName, status) {
-      let params = {
-        page: this.listParams.page,
-        type: this.listType,
-      };
-      if (adminName) {
-        params.name = adminName;
-      } else if (status != null) {
-        params.status = status;
-      }
-      http.GET(configUrl.getStaffList, params).then((res) => {
-        this.viewsList = res.data.users.data;
-        this.total = res.data.users.total;
-      });
-    },
-    // 新增员工
-    addStaff() {
-      this.$router.push({
-        path: "payAdd",
-      });
-    },
-    openDialog(type, val) {
-      this.showDialog = true;
-      this.dialogType = type;
-      this.tempId = val;
-      switch (type) {
-        case "remove":
-          break;
-        case "stopUse":
-          break;
-        case "openUse":
-          for (let i = 0, len = this.viewsList.length; i < len; i++) {
-            if (this.viewsList[i].id == this.tempId) {
-              console.log(this.viewsList[i]);
-              this.job_openUse = this.viewsList[i].position;
-              this.depart_openUse = this.viewsList[i].department;
-              this.company_openUse = this.viewsList[i].company;
-            }
-          }
-          break;
-        case "departure":
-          break;
-        default:
-          break;
-      }
-    },
-    extraBtnClick(type) {
-      if (type == 1) {
-        switch (this.dialogType) {
-          case "remove":
-            this.deleteStaff();
-            this.showDialog = false;
-            break;
-          case "stopUse":
-            this.closeAccount();
-            this.showDialog = false;
-            break;
-          case "openUse":
-            if (this.name_openUse != "" && this.pwd_openUse != "") {
-              this.openAccount();
-              this.showDialog = false;
-            }
-            break;
-          case "departure":
-            this.departure();
-            this.showDialog = false;
-            break;
-          default:
-            break;
-        }
-      } else {
-        this.showDialog = false;
-      }
-    },
-    // 查看
-    view(val) {
-      this.$router.push({
-        path: "/staffMsg",
-        query: {
-          id: val,
-        },
-      });
-    },
-    // 删除员工
-    deleteStaff(val) {
-      let url = "",
-        params = {};
-      if (val) {
-        params.ids = val;
-        url = configUrl.deleteStaff;
-      } else {
-        url = `${configUrl.deleteStaff}/${this.tempId}`;
-      }
-      http.DELETE(url, params).then((res) => {
-        console.log(res);
-        if (res.status == 0) {
-          this.$message({
-            message: "删除成功！",
-            type: "success",
-          });
-          this.getStaffList();
-        } else {
-          this.$message.error(res.error_msg[0]);
-        }
-      });
-    },
-    // 离职
-    departure() {
-      let that = this;
-      let params = {
-        uid: this.tempId,
-        turnover_type: this.depart,
-        turnover_time: this.departTime,
-        turnover_reason: this.departReason,
-      };
-      http.POST(configUrl.departure, params).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "离职成功！",
-              type: "success",
-            });
-          }, 500);
-          this.getStaffList();
-          this.staffCount();
-        } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
-        }
-      });
-    },
-    // 转正
-    positive(val) {
-      this.$router.push({
-        path: "/staffMsg",
-        query: {
-          id: val,
-          index: 1,
-          status: 0,
-        },
-      });
-    },
-    // 开通账号
-    openAccount() {
-      let that = this;
-      let params = {
-        id: this.tempId,
-        account_name: this.name_openUse,
-        password: this.pwd_openUse,
-      };
-      http.POST(`/api/users/${params.id}/openAccount`, params).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "开通成功！",
-              type: "success",
-            });
-          }, 500);
-          this.getStaffList();
-        } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
-        }
-      });
-    },
-    // 停用账号
-    closeAccount() {
-      let that = this;
-      http.PUT(`/api/users/${this.tempId}/forbidAccount`).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "停用成功！",
-              type: "success",
-            });
-          }, 500);
-          this.getStaffList();
-        } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
-        }
-      });
-    },
-    // 分类人数统计
-    staffCount() {
-      http.GET(configUrl.staffCount).then((res) => {
-        let temp = this.menuList;
-        for (let i = 0, len = temp.length; i < len; i++) {
-          switch (temp[i].status) {
-            case 0:
-              temp[i].val = res.data.on_job;
-              break;
-            case 1:
-              temp[i].val = res.data.trial;
-              break;
-            case 2:
-              temp[i].val = res.data.official;
-              break;
-            default:
-              temp[i].val = res.data.turnover;
-              break;
-          }
-        }
-      });
-    },
-    // 分页数据变化处理
-    handleSizeChange(newSize) {},
-    handleCurrentChange(newPage) {
-      this.listParams.page = newPage;
-      this.getStaffList();
-    },
-    // 批量删除
-    handleSelectionChange(val) {
-      let temp = [];
-      val.forEach((item) => {
-        temp.push(item.id);
-      });
-      this.multipleSelection = temp;
-    },
-    deleteSelected() {
-      this.deleteStaff(this.multipleSelection);
-    },
   },
   components: {
     navBar,
+    SelectData,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 50;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 50
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
+  },
+  created() {
+    this.getSearchList()
+    this.getCollList()
+  },
+  methods: {
+    // 获取收入列表
+    getCollList(type) {
+      this.searchData.searchLoading = true
+      let params = {
+        filter: [],
+        page: this.page,
+        pageSize: this.pageSize,
+      };
+      collList(params).then(res => {
+        if (res.status == 200) {
+          this.searchData.searchLoading = false
+        } else {
+          this.searchData.searchLoading = false
+          this.$message.error('获取列表失败：' + res.error.message)
+        }
+      })
+    },
+    // 获取账期及部门列表
+    getSearchList() {
+      incomesInfo().then(res => {
+        if (res.status == 200) {
+          this.searchData.year_mon_Info = res.data.params
+          this.searchData.de_Options = res.data.department
+          for(let key in this.searchData.year_mon_Info){
+            this.searchData.year_Options.push(key)
+          }
+          // 默认选择第一个
+          if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
+            this.theadData.year = this.searchData.year_Options[0]
+            this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+          }
+          if ( res.data.department !== null && res.data.department.length !== 0 ) {
+            this.theadData.department_id = res.data.department[0].id
+          }
+          this.getIncomeList('year')
+        } else {
+          this.$message.error('获取检索信息失败：' + res.error.message)
+        }
+      })
+    },
+    // 获取收入列表
+    getIncomeList(type) {
+      this.searchData.searchLoading = true
+      if (type == 'year') {
+        this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+      }
+      let params = {
+        year: this.theadData.year,
+        month: this.theadData.month,
+        department_id: this.theadData.department_id,
+      };
+      incomeList(params).then(res => {
+        if (res.status == 200) {
+          this.tableData = res.data
+          this.searchData.searchLoading = false
+        } else {
+          this.searchData.searchLoading = false
+          this.$message.error('查询失败：' + res.error.message)
+        }
+      })
+    },
+    // ***************上传收入费用*************
+    openDialog() {
+      this.showDialog = true;
+    },
+    //select弹窗
+    // 数据选择
+    selectDialog(type,rowIndex) {
+      this.rowIndex = rowIndex;
+      this.dataSelect.dialogVisible = true;
+      this.dataSelect.cur_input = type;
+      this.dataSelect.choosedData = [];
+      switch (type) {
+        case "BM":
+          let filter_BM = [{ label: "", model_key_search: "name" },{ label: "page", model_key_search: "page", value: '1', disabled: true, hide: true}];
+          this.dataSelect.filter = filter_BM;
+          this.dataSelect.searchType = "single"
+          this.dataSelect.editType = "entry"
+          this.dataSelect.searchApi = "hr/departments";
+          this.dataSelect.headList = this.tableHead.head_BM;
+          this.dataSelect.dialogTitle = "部门列表";
+        break;
+        default:
+        return;
+        break;
+      }
+    },
+    selectCancel(val) {
+      this.dataSelect.dialogVisible = false;
+      this.dataSelect.bodyData = val;
+      this.dataSelect.choosedData = val;
+    },
+    selectSure(val) {
+      this.dataSelect.dialogVisible = false;
+      this.dataSelect.bodyData = [];
+      this.dataSelect.choosedData = val;
+      if (val.length > 0) {
+        switch (this.dataSelect.cur_input) {
+          case "BM":
+            this.uploadData.department_id = val[0].id;
+            this.uploadData.department = val[0].name;
+          break;
+          default:
+          return;
+          break;
+        }
+      }
+    },
+    // 上传组件
+    beforeAvatarUpload(file) {
+      const isXls = file.type === "application/vnd.ms-excel";
+      const isXlsx = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const isNull = file.type === '';
+      const isLt5M = file.size / 1024 / 1024 < 5;
+
+      if ( !isXls && !isXlsx && !isNull ) {
+        this.$message.warning("上传文件仅限 xls / xlsx 格式!");
+        return false;
+      }
+      if (!isLt5M) {
+        this.$message.warning("上传文件大小不能超过 5MB!");
+        return false;
+      }
+      else {
+        this.uploadParams.data.basket = 'check'
+      }
+    },
+    handleExceed() {
+      this.$message.warning(`至多上传 ${ this.uploadParams.limit } 个文件！`)
+    },
+    // 上传成功
+    handleSuccess(response, file, fileList) {
+      if (response.data.length !== 0) {
+        this.uploadData.file_path = response.data[0]
+      } else {
+        this.$message.error("数据库储存失败");
+      }
+    },
+    // 移除前回调
+    beforeRemove(file, fileList) {
+      return this.$confirm(`确定移除 ${ file.name }？`);
+    },
+    // 移除上传项
+    handleRemove(file, fileList) {
+      this.uploadData.file_path = ''
+    },
+    
+    // 0：取消； 1：确定
+    extraBtnClick(type) {
+      if (type == 0) {
+        this.uploadData = {
+          month: '',
+          department: '',
+          department_id: '',
+          file_path: ''
+        },
+        this.fileList = []
+        this.showDialog = false;
+      } else if (type == 1) {
+        this.$refs.uploadRef.validate(valid => {
+          if(valid){
+            addIncome(this.uploadData)
+            .then( res => {
+              if (res.status == 200) {
+                this.uploadData.file_path = ''
+                this.fileList = []
+                this.showDialog = false;
+                this.$message.success("上传成功！" );
+                // this.theadData.month = this.uploadData.month
+                // this.theadData.department_id = this.uploadData.department_id
+                this.getSearchList()
+              } else {
+                this.$message.error("上传失败：" + res.error.message);
+              }
+            })
+          }
+        })
+      }
+    },
+    // *********************************
+  
+
+
   },
 };
 </script>
 
 <style lang="less" scoped>
+
 .staffManage {
   height: 100%;
-  .navBox {
-    margin-bottom: 0 !important;
-  }
-  .menuList {
-    width: 100%;
-    background: #fff;
-    ul {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 0 20px;
-      li {
-        position: relative;
-        cursor: pointer;
-        width: 80px;
-        height: 40px;
-        font-size: 14px;
-        margin: 0 20px;
-        color: #999999;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        &:first-child {
-          margin-left: 0;
-        }
-        &::after {
-          display: block;
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          height: 4px;
-          width: 100%;
-        }
-        .index {
-          width: 14px;
-          height: 14px;
-          border-radius: 100%;
-          background: #999;
-        }
-        .count {
-          letter-spacing: 1px;
-        }
-        .menuName {
-          line-height: 40px;
-        }
-        &.active {
-          .index {
-            background: #409efd;
-          }
-          .menuName,
-          .count {
-            color: #409efd;
-          }
-          &::after {
-            background: #409efd;
-          }
-        }
-      }
-    }
-  }
-  .searchCard {
-    height: 80px;
-    margin: 20px;
-    .btnBox {
-      width: 180px;
-      float: right;
-      margin-top: -38px;
-      .el-button {
-        height: 40px;
-        margin-bottom: 20px;
-      }
-      .secondary {
-        border: 1px solid #409efd;
-        color: #409efd;
-      }
-    }
-  }
 }
 
 .listCard {
@@ -585,7 +488,6 @@ export default {
     position: relative;
   }
   .tableTitleBox {
-    padding: 10px 0;
     .tableTitle {
       font-weight: bold;
     }
@@ -602,86 +504,20 @@ export default {
       }
     }
   }
-  .deleteMsg {
-    font-size: 16px;
-    color: #333;
-    font-weight: 600;
-    text-align: center;
-    margin-bottom: 20px;
-  }
-  .stopUse {
-    span {
-      display: block;
-      text-align: center;
-      &:first-child {
-        font-size: 16px;
-        color: #000;
-        font-weight: 600;
-      }
-      &:last-child {
-        font-size: 14px;
-        color: #333;
-        margin-top: 10px;
-      }
-    }
-  }
-  .openUse,
-  .departure {
-    padding-right: 30px;
-    .popExtraList {
-      > li {
-        display: flex;
-        flex-direction: row;
-        justify-content: space-around;
-        align-items: center;
-        margin-bottom: 30px;
-        position: relative;
-        > span {
-          display: inline-block;
-          width: 120px;
-          font-size: 16px;
-          color: #333333;
-          font-weight: 600;
-          text-align: right;
-        }
-        .tips {
-          font-size: 12px;
-          color: red;
-          position: absolute;
-          left: 120px;
-          bottom: -22px;
-          text-align: left;
-        }
-        .msgInput {
-          width: 300px;
-          height: 40px;
-          padding: 0 15px;
-          line-height: 40px;
-          border-radius: 4px;
-          border: 1px solid #dcdfe6;
-          box-sizing: border-box;
-          color: #909399;
-          font-weight: 400;
-          span {
-            margin-right: 20px;
-            &:last-child {
-              margin-right: 0;
-            }
-          }
-        }
-      }
-    }
-  }
-  .extraBtns {
-    width: 100%;
-    margin-top: 30px;
-    div {
-      width: 240px;
-      margin: 0 auto;
-      display: flex;
-      flex-direction: row;
-      justify-content: space-between;
-    }
+}
+.extraBtns {
+  width: 100%;
+  margin-top: 30px;
+  width: 200px;
+  margin: 0 auto;
+}
+.el-dialog {
+  .selectbox {
+    width: 360px;
+    border: 1px solid #DCDFE6;
+    box-sizing: border-box;
+    padding: 0 15px;
   }
 }
+
 </style>

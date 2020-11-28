@@ -1,8 +1,8 @@
 import request from '@/utils/request'
 
 // 获取回款列表
-export const incomesInfo = (params) => {
-    return request.GET(`finance/incomes/getPeriodAndDepartment`,
+export const collList = (params) => {
+    return request.GET(`v2/finance/bank-slips`,
     {},
     {
         params

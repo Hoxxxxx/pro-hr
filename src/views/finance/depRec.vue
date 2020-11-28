@@ -297,7 +297,9 @@ export default {
           // 默认选择第一个
           if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
             this.theadData.year = this.searchData.year_Options[0]
-            this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+            if ( this.searchData.year_mon_Info[this.theadData.year] !== null && this.searchData.year_mon_Info[this.theadData.year] !== 0 ) {
+              this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+            }
           }
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
