@@ -23,8 +23,7 @@ const receivable = () => import('@/views/finance/receivable')
 const depReceivable = () => import('@/views/finance/depRec')
 // 回款单
 const backPayment = () => import('@/views/collection/backPayMent/index')
-const payAdd = () => import('@/views/collection/backPayMent/add')
-const payEdit = () => import('@/views/collection/backPayMent/edit')
+const payInfo = () => import('@/views/collection/backPayMent/payInfo')
 const payDeliver = () => import('@/views/collection/deliver/list')
 const payInvoice = () => import('@/views/collection/invoice/list')
 
@@ -148,14 +147,9 @@ const routes = [{
         component: backPayment
       },
       {
-        path: 'backPayment/payAdd',
-        name: 'payAdd',
-        component: payAdd
-      },
-      {
-        path: 'backPayment/payEdit',
-        name: 'payEdit',
-        component: payEdit
+        path: 'backPayment/payInfo',
+        name: 'payInfo',
+        component: payInfo
       },
       {
         path: 'deliver/list',

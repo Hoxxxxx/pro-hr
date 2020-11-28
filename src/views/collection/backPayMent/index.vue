@@ -22,7 +22,7 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">回款单列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="$router.push('payAdd')">新增回款单</el-button>
+          <el-button type="primary" class="p40" @click="goEdit()">新增回款单</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -155,6 +155,14 @@ export default {
       })
     },
     // ***************其他操作*************
+    goEdit(id) {
+      this.$router.push({
+        path: 'payInfo',
+        query: {
+          id: id
+        }
+      })
+    },
     // *************************************
   },
 };

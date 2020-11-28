@@ -357,6 +357,7 @@ export default {
           this.searchData.de_Options = res.data.department
           for(let key in this.searchData.year_mon_Info){
             this.searchData.year_Options.push(key)
+            this.searchData.year_Options.reverse()
           }
           // 默认选择第一个
           if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
