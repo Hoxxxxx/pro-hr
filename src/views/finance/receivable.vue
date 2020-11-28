@@ -7,6 +7,17 @@
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <div class="searchBox">
+          <el-select v-model="theadData.year" 
+                            placeholder="请选择年份"
+                            style="margin-right: 20px"
+                            @change="getRecList">
+            <el-option
+              v-for="item in searchData.year_Options"
+              :key="item"
+              :label="item + '年'"
+              :value="item">
+            </el-option>
+          </el-select>
           <el-select v-model="theadData.quarter" 
                             placeholder="请选择账期"
                             style="margin-right: 20px"
@@ -117,6 +128,18 @@
                       :rules="uploadRules" 
                       ref="uploadRef" 
                       label-width="100px">
+        <el-form-item label="选择年份" prop="year">
+          <el-date-picker
+            v-model="uploadData.year"
+            type="year"
+            placeholder="请选择年份"
+            format="yyyy 年"
+            value-format="yyyy"
+            style="width: 360px;
+                        margin: 0 20px 10px 0;
+                        border-radius: 4px;">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="选择账期" prop="quarter">
           <el-select v-model="uploadData.quarter" 
                           placeholder="请选择账期"
@@ -219,17 +242,19 @@ export default {
           title: "财务管理",
         },
         {
-          title: "应收账款列表",
+          title: "应收账款核对",
         },
       ],
-      title: "应收账款列表",
+      title: "应收账款核对",
       tableHeight: 500,
       searchData: {
         searchLoading: true,
         de_Options: [],
-        quarter_Options: []
+        quarter_Options: [],
+        year_Options: []
       },
       theadData: {
+        year: '',
         quarter: '',
         department_id: '',
       },
@@ -272,6 +297,9 @@ export default {
         limit: 1,
       },
       uploadRules: {
+        year:[
+          { required: true, message: '请选择年份', trigger: 'change' },
+        ],
         quarter:[
           { required: true, message: '请选择季度', trigger: 'change' },
         ],
@@ -284,6 +312,7 @@ export default {
       },
       fileList: [],
       uploadData: {
+        year: '',
         quarter: '',
         department: '',
         department_id: '',
@@ -322,9 +351,13 @@ export default {
     getSearchList() {
       receivablesInfo().then(res => {
         if (res.status == 200) {
+          this.searchData.year_Options = res.data.year
           this.searchData.qua_Options = res.data.quarter
           this.searchData.de_Options = res.data.department
           // 默认选择第一个
+          if ( res.data.year !== null && res.data.year.length !== 0 ) {
+            this.theadData.year = res.data.year[0]
+          }
           if ( res.data.quarter !== null && res.data.quarter.length !== 0 ) {
             this.theadData.quarter = res.data.quarter[0]
           }
@@ -343,8 +376,9 @@ export default {
       this.cancelReceive()
       this.searchData.searchLoading = true
       let params = {
-        department_id: this.theadData.department_id,
+        year: this.theadData.year,
         quarter: this.theadData.quarter,
+        department_id: this.theadData.department_id,
       };
       receivablesList(params).then(res => {
         if (res.status == 200) {

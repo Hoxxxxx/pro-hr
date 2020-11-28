@@ -22,9 +22,11 @@ const income = () => import('@/views/finance/income')
 const receivable = () => import('@/views/finance/receivable')
 const depReceivable = () => import('@/views/finance/depRec')
 // 回款单
-const backPayment = () => import('@/views/backPayMent/index')
-const payAdd = () => import('@/views/backPayMent/add')
+const backPayment = () => import('@/views/collection/backPayMent/index')
+const payAdd = () => import('@/views/collection/backPayMent/add')
+const payEdit = () => import('@/views/collection/backPayMent/edit')
 
+const permissions = () => import('@/views/administrator/permissions')
 
 Vue.use(VueRouter)
 
@@ -110,7 +112,7 @@ const routes = [{
       }
     ]
   },
-  // 收入费用
+  // 财务管理
   {
     path: '/finance',
     component: Home,
@@ -133,20 +135,26 @@ const routes = [{
       },
     ]
   },
-  // 回款单
+  // 收款管理
   {
-    path: '/backPayment',
+    path: '/collection',
     component: Home,
-    redirect: '/backPayment/index',
-    children: [{
-        path: 'index',
+    redirect: '/collection/backPayment/index',
+    children: [
+      {
+        path: 'backPayment/index',
         name: 'backPayment',
         component: backPayment
       },
       {
-        path: 'payAdd',
+        path: 'backPayment/payAdd',
         name: 'payAdd',
         component: payAdd
+      },
+      {
+        path: 'backPayment/payEdit',
+        name: 'payEdit',
+        component: payEdit
       },
     ]
   },

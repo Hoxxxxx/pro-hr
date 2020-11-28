@@ -122,12 +122,20 @@ export default {
             },
           ],
         },
-        // {
-        //   title: "回款单",
-        //   icon: "el-icon-s-order",
-        //   path: "/backPayment",
-        //   menuType: 0,
-        // },
+        {
+          title: "收款管理",
+          icon: "el-icon-s-cooperation",
+          path: "/collection",
+          menuType: 1,
+          children: [
+            {
+              id: 0,
+              title: "回款单",
+              path: "/collection/backPayment/index",
+            },
+          ],
+        },
+        
       ],
     };
   },

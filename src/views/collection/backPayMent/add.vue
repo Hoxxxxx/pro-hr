@@ -101,7 +101,6 @@
 </template>
 
 <script>
-import http from "../../utils/request";
 import navBar from "@/components/navBar/navBar";
 export default {
   data() {
@@ -275,12 +274,8 @@ export default {
     .btnBox {
       .btns {
         width: 200px;
-        position: relative;
-        left: 50%;
-        margin-left: -100px;
         display: flex;
-        flex-direction: row;
-        justify-content: space-evenly;
+        margin: 20px auto;
       }
     }
   }
