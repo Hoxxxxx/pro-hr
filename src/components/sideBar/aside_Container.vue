@@ -100,7 +100,7 @@ export default {
           ],
         },
         {
-          title: "财务管理",
+          title: "财务对账",
           icon: "el-icon-s-finance",
           path: "/reconciliation",
           menuType: 1,
@@ -123,7 +123,7 @@ export default {
           ],
         },
         {
-          title: "收款管理",
+          title: "应收管理",
           icon: "el-icon-s-cooperation",
           path: "/collection",
           menuType: 1,

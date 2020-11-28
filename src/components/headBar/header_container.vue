@@ -4,7 +4,7 @@
     <div class="logo"></div>
     <!-- 标题 -->
     <div class="title">
-      <span>华录新媒人力资源管理系统</span>
+      <span>华录新媒管理系统</span>
     </div>
     <!-- 功能区 -->
     <div class="opration">
