@@ -10,7 +10,7 @@
           <el-select v-model="theadData.year" 
                             placeholder="请选择年份"
                             style="margin-right: 20px"
-                            @change="getRecList">
+                            @change="getRecList('year')">
             <el-option
               v-for="item in searchData.year_Options"
               :key="item"
@@ -21,9 +21,9 @@
           <el-select v-model="theadData.quarter" 
                             placeholder="请选择账期"
                             style="margin-right: 20px"
-                            @change="getRecList">
+                            @change="getRecList('quarter')">
             <el-option
-              v-for="item in searchData.qua_Options"
+              v-for="item in searchData.year_mon_Info[theadData.year]"
               :key="item"
               :label="'第' + item + '季度'"
               :value="item">
@@ -31,7 +31,7 @@
           </el-select>
           <el-select v-model="theadData.department_id" 
                             placeholder="请选择部门"
-                            @change="getRecList">
+                            @change="getRecList('dep')">
             <el-option
               v-for="item in searchData.de_Options"
               :key="item.id"
@@ -251,7 +251,8 @@ export default {
         searchLoading: true,
         de_Options: [],
         quarter_Options: [],
-        year_Options: []
+        year_mon_Info: {},
+        year_Options: [],
       },
       theadData: {
         year: '',
@@ -351,30 +352,33 @@ export default {
     getSearchList() {
       receivablesInfo().then(res => {
         if (res.status == 200) {
-          this.searchData.year_Options = res.data.year
-          this.searchData.qua_Options = res.data.quarter
+          this.searchData.year_mon_Info = res.data.params
           this.searchData.de_Options = res.data.department
-          // 默认选择第一个
-          if ( res.data.year !== null && res.data.year.length !== 0 ) {
-            this.theadData.year = res.data.year[0]
+          for(let key in this.searchData.year_mon_Info){
+            this.searchData.year_Options.push(key)
           }
-          if ( res.data.quarter !== null && res.data.quarter.length !== 0 ) {
-            this.theadData.quarter = res.data.quarter[0]
+          // 默认选择第一个
+          if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
+            this.theadData.year = this.searchData.year_Options[0]
+            this.theadData.quarter = this.searchData.year_mon_Info[this.theadData.year][0]
           }
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
           }
-          this.getRecList()
+          this.getRecList('year')
         } else {
           this.$message.error('获取检索信息失败：' + res.error.message)
         }
       })
     },
     // 获取收入列表
-    getRecList() {
+    getRecList(type) {
       this.can_StartRec = false
       this.cancelReceive()
       this.searchData.searchLoading = true
+      if (type == 'year') {
+        this.theadData.quarter = this.searchData.year_mon_Info[this.theadData.year][0]
+      }
       let params = {
         year: this.theadData.year,
         quarter: this.theadData.quarter,
@@ -389,6 +393,9 @@ export default {
             }
           })
           this.searchData.searchLoading = false
+        } else {
+          this.searchData.searchLoading = false
+          this.$message.error('查询失败：' + res.error.message)
         }
       })
     },

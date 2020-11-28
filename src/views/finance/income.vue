@@ -10,7 +10,7 @@
           <el-select v-model="theadData.year" 
                             placeholder="请选择年份"
                             style="margin-right: 20px"
-                            @change="getIncomeList">
+                            @change="getIncomeList('year')">
             <el-option
               v-for="item in searchData.year_Options"
               :key="item"
@@ -21,9 +21,9 @@
           <el-select v-model="theadData.month" 
                             placeholder="请选择账期"
                             style="margin-right: 20px"
-                            @change="getIncomeList">
+                            @change="getIncomeList('month')">
             <el-option
-              v-for="item in searchData.mon_Options"
+              v-for="item in searchData.year_mon_Info[theadData.year]"
               :key="item"
               :label="item + '月'"
               :value="item">
@@ -31,7 +31,7 @@
           </el-select>
           <el-select v-model="theadData.department_id" 
                             placeholder="请选择部门"
-                            @change="getIncomeList">
+                            @change="getIncomeList('dep')">
             <el-option
               v-for="item in searchData.de_Options"
               :key="item.id"
@@ -191,8 +191,8 @@ export default {
       searchData: {
         searchLoading: true,
         de_Options: [],
-        mon_Options: [],
-        year_Options: []
+        year_mon_Info: {},
+        year_Options: [],
       },
       theadData: {
         year: '',
@@ -286,28 +286,31 @@ export default {
     getSearchList() {
       incomesInfo().then(res => {
         if (res.status == 200) {
-          this.searchData.year_Options = res.data.year
-          this.searchData.mon_Options = res.data.month
+          this.searchData.year_mon_Info = res.data.params
           this.searchData.de_Options = res.data.department
-          // 默认选择第一个
-          if ( res.data.year !== null && res.data.year.length !== 0 ) {
-            this.theadData.year = res.data.year[0]
+          for(let key in this.searchData.year_mon_Info){
+            this.searchData.year_Options.push(key)
           }
-          if ( res.data.month !== null && res.data.month.length !== 0 ) {
-            this.theadData.month = res.data.month[0]
+          // 默认选择第一个
+          if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
+            this.theadData.year = this.searchData.year_Options[0]
+            this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
           }
           if ( res.data.department !== null && res.data.department.length !== 0 ) {
             this.theadData.department_id = res.data.department[0].id
           }
-          this.getIncomeList()
+          this.getIncomeList('year')
         } else {
           this.$message.error('获取检索信息失败：' + res.error.message)
         }
       })
     },
     // 获取收入列表
-    getIncomeList() {
+    getIncomeList(type) {
       this.searchData.searchLoading = true
+      if (type == 'year') {
+        this.theadData.month = this.searchData.year_mon_Info[this.theadData.year][0]
+      }
       let params = {
         year: this.theadData.year,
         month: this.theadData.month,
@@ -317,6 +320,9 @@ export default {
         if (res.status == 200) {
           this.tableData = res.data
           this.searchData.searchLoading = false
+        } else {
+          this.searchData.searchLoading = false
+          this.$message.error('查询失败：' + res.error.message)
         }
       })
     },
