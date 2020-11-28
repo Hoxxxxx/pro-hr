@@ -9,6 +9,7 @@
         <span class="tableTitle">员工列表</span>
         <div class="btns">
           <el-button type="primary" class="p40" @click="addStaff()">新增回款单</el-button>
+          <el-button type="warning" class="p40" @click="$router.push('payEdit')">编辑回款单</el-button>
         </div>
       </div>
       <!-- 表格区域 -->

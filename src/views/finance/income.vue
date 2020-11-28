@@ -7,6 +7,17 @@
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <div class="searchBox">
+          <el-select v-model="theadData.year" 
+                            placeholder="请选择年份"
+                            style="margin-right: 20px"
+                            @change="getIncomeList">
+            <el-option
+              v-for="item in searchData.year_Options"
+              :key="item"
+              :label="item + '年'"
+              :value="item">
+            </el-option>
+          </el-select>
           <el-select v-model="theadData.month" 
                             placeholder="请选择账期"
                             style="margin-right: 20px"
@@ -73,6 +84,18 @@
                       :rules="uploadRules" 
                       ref="uploadRef" 
                       label-width="100px">
+        <el-form-item label="选择年份" prop="year">
+          <el-date-picker
+            v-model="uploadData.year"
+            type="year"
+            placeholder="请选择年份"
+            format="yyyy 年"
+            value-format="yyyy"
+            style="width: 360px;
+                        margin: 0 20px 10px 0;
+                        border-radius: 4px;">
+          </el-date-picker>
+        </el-form-item>
         <el-form-item label="选择账期" prop="month">
           <el-select v-model="uploadData.month" 
                           placeholder="请选择账期"
@@ -168,9 +191,11 @@ export default {
       searchData: {
         searchLoading: true,
         de_Options: [],
-        mon_Options: []
+        mon_Options: [],
+        year_Options: []
       },
       theadData: {
+        year: '',
         month: '',
         department_id: '',
       },
@@ -213,6 +238,9 @@ export default {
         limit: 1,
       },
       uploadRules: {
+        year:[
+          { required: true, message: '请选择年份', trigger: 'change' },
+        ],
         month:[
           { required: true, message: '请选择账期', trigger: 'change' },
         ],
@@ -225,6 +253,7 @@ export default {
       },
       fileList: [],
       uploadData: {
+        year: '',
         month: '',
         department: '',
         department_id: '',
@@ -257,9 +286,13 @@ export default {
     getSearchList() {
       incomesInfo().then(res => {
         if (res.status == 200) {
+          this.searchData.year_Options = res.data.year
           this.searchData.mon_Options = res.data.month
           this.searchData.de_Options = res.data.department
           // 默认选择第一个
+          if ( res.data.year !== null && res.data.year.length !== 0 ) {
+            this.theadData.year = res.data.year[0]
+          }
           if ( res.data.month !== null && res.data.month.length !== 0 ) {
             this.theadData.month = res.data.month[0]
           }
@@ -276,8 +309,9 @@ export default {
     getIncomeList() {
       this.searchData.searchLoading = true
       let params = {
-        department_id: this.theadData.department_id,
+        year: this.theadData.year,
         month: this.theadData.month,
+        department_id: this.theadData.department_id,
       };
       incomeList(params).then(res => {
         if (res.status == 200) {
