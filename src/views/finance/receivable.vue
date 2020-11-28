@@ -350,6 +350,7 @@ export default {
   methods: {
     // 获取账期及部门列表
     getSearchList() {
+      this.searchData.year_Options = []
       receivablesInfo().then(res => {
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
