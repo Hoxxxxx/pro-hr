@@ -140,8 +140,13 @@ export default {
             },
             {
               id: 0,
-              title: "发票单管理",
+              title: "发票申请管理",
               path: "/collection/invoice/list",
+            },
+            {
+              id: 0,
+              title: "收款冲账单",
+              path: "/collection/strike/list",
             },
           ],
         },

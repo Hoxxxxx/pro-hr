@@ -27,6 +27,8 @@ const payAdd = () => import('@/views/collection/backPayMent/add')
 const payEdit = () => import('@/views/collection/backPayMent/edit')
 const payDeliver = () => import('@/views/collection/deliver/list')
 const payInvoice = () => import('@/views/collection/invoice/list')
+const payStrike = () => import('@/views/collection/strike/list')
+const payStrikeDetail = () => import('@/views/collection/strike/detail')
 
 
 Vue.use(VueRouter)
@@ -166,6 +168,16 @@ const routes = [{
         path: 'invoice/list',
         name: 'invoice_list',
         component: payInvoice
+      },
+      {
+        path: 'strike/list',
+        name: 'strike_list',
+        component: payStrike
+      },
+      {
+        path: 'strike/detail',
+        name: 'strike_detail',
+        component: payStrikeDetail
       },
     ]
   },
