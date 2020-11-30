@@ -286,6 +286,7 @@ export default {
     getSearchList() {
       this.searchData.year_Options = []
       incomesInfo().then(res => {
+        this.searchData.searchLoading = false
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
           this.searchData.de_Options = res.data.department
@@ -327,11 +328,10 @@ export default {
         department_id: this.theadData.department_id,
       };
       incomeList(params).then(res => {
+        this.searchData.searchLoading = false
         if (res.status == 200) {
           this.tableData = res.data
-          this.searchData.searchLoading = false
         } else {
-          this.searchData.searchLoading = false
           this.$message.error('查询失败：' + res.error.message)
         }
       })

@@ -289,6 +289,7 @@ export default {
     getSearchList() {
       this.searchData.year_Options = []
       depRecInfo().then(res => {
+        this.searchData.searchLoading = false
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
           this.searchData.de_Options = res.data.department
