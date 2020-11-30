@@ -20,12 +20,12 @@
           <el-table-column align="center" label="回款单 workid" prop="fp01"></el-table-column>
           <el-table-column align="center" label="日期" prop="fp02"></el-table-column>
           <el-table-column align="center" label="申请人" prop="fp03"></el-table-column>
-          <el-table-column align="center" label="摘要" prop="fp04"></el-table-column>
+          <!-- <el-table-column align="center" label="摘要" prop="fp04"></el-table-column> -->
           <el-table-column align="center" label="客户" prop="fp05"></el-table-column>
           <el-table-column align="center" label="所属部门" prop="fp06"></el-table-column>
-          <el-table-column align="center" label="摘要" prop="fp07"></el-table-column>
+          <!-- <el-table-column align="center" label="摘要" prop="fp07"></el-table-column> -->
           <el-table-column align="center" label="发票金额" prop="fp08"></el-table-column>
-          <el-table-column align="center" label="用途" prop="fp09"></el-table-column>
+          <!-- <el-table-column align="center" label="用途" prop="fp09"></el-table-column> -->
           <el-table-column align="center" label="OA workid" prop="fp10"></el-table-column>
           <el-table-column align="center" label="OA申请单"
             ><template slot-scope="scope">
