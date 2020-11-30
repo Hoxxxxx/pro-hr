@@ -78,7 +78,7 @@
         @current-change="handlePageChange"
         :current-page="listParams.page"
         :page-sizes="[10, 20, 50]"
-        :page-size="listParams.pageSize"
+        :page-size="listParams.perPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         style="margin-top: 20px; margin-bottom: 20px; float: right"
@@ -118,7 +118,7 @@ export default {
       listParams: { 
         'filter[customer]': '',
         page: 1, 
-        pageSize: 10 
+        perPage: 10 
       },
       collectionList: [],
       searchData: {
@@ -138,8 +138,8 @@ export default {
       this.listParams.page = newPage;
       this.getCollList()
     },
-    handleSizeChange(newPageSize) {
-      this.listParams.pageSize = newPageSize;
+    handleSizeChange(newperPage) {
+      this.listParams.perPage = newperPage;
       this.getCollList()
     },
     // *************************
