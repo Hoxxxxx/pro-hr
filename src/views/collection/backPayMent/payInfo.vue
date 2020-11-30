@@ -11,9 +11,11 @@
           <el-row>
             <el-col :span="24">
               <el-form-item label="图片" prop="upload_pic">
+                <!-- 上传imgbox -->
                 <el-upload
-                  v-if="pageType=='add'"
+                  v-if="pageType!=='check'"
                   :disabled="pageType == 'check'"
+                  :file-list="uploadParams.fileList"
                   :action="$store.state.upload_pic_url"
                   :headers="uploadParams.headers"
                   list-type="picture-card"
@@ -25,16 +27,17 @@
                   :on-exceed="handleExceed">
                   <i class="el-icon-plus"></i>
                 </el-upload>
-                <div v-if="pageType!=='add'">
+                <!-- check时imgbox -->
+                <div class="uploadList" v-if="pageType=='check' && uploadParams.picSrc!==''" @click="handlePictureCardPreview">
                   <el-image
-                    style="width: 100px; height: 100px"
-                    :src="picSrc"
+                    style="width: 148px; height: 148px"
+                    :src="uploadParams.picSrc"
                     fit="fill">
                   </el-image>
                 </div>
+                <!-- 预览弹窗 -->
                 <el-dialog :visible.sync="uploadParams.dialogVisible">
-                  <img v-if="pageType=='add'" width="100%" :src="dataForm.pic" alt="">
-                  <img v-if="pageType!=='add'" width="100%" :src="fileList[0].id" alt="">
+                  <img width="100%" :src="uploadParams.picSrc" alt="">
                 </el-dialog>
               </el-form-item>
             </el-col>
@@ -140,7 +143,7 @@
           <el-button @click="btnClick(2)">回到列表</el-button>
           <el-button type="primary" @click="btnClick(4)">修改</el-button>
           <el-button type="danger" @click="btnClick(5)">删除</el-button>
-          <el-button type="success" @click="btnClick(6)">审核</el-button>
+          <el-button type="success" @click="btnClick(6)" v-if="dataForm.confirmed!==1">审核</el-button>
           <el-button type="warning" @click="btnClick(7)" v-if="dataForm.confirmed==1">取消审核</el-button>
           <el-button @click="btnClick(8)">抛转全媒体</el-button>
           <el-button @click="btnClick(9)">抛转全票通</el-button>
@@ -179,7 +182,6 @@ import { OpenLoading } from "@/utils/utils.js";
 export default {
   data() {
     return {
-      picSrc: '',
       // 面包屑
       breadList: [
         {
@@ -201,6 +203,8 @@ export default {
           Org_Id: sessionStorage.getItem('OrgId')
         },
         dialogVisible: false,
+        picSrc: '',
+        fileList: [],
       },
       // form
       dataForm: {
@@ -222,7 +226,6 @@ export default {
         department: '',
         department_show: ''
       },
-      fileList: [{id: ''}],
       rules: {
         bank: [
           { required: true, message: '请选择银行', trigger: 'change' },
@@ -300,10 +303,8 @@ export default {
   },
   created() {
     this.initPage()
-    this.getPicUrl()
   },
   methods: {
-    
     // **************** init ********************
     initPage() {
       if (this.pageType == 'add') {
@@ -339,7 +340,13 @@ export default {
       }
     },
     handleSuccess(response, file, fileList) {
+      console.log(response)
       this.dataForm.pic = response.data.id
+      // 获取图片预览地址base64
+      downloadPic(this.dataForm.pic)
+      .then( res => {
+        this.uploadParams.picSrc = 'data:image/jpg;base64,'+res
+      })
     },
     handleRemove(file, fileList) {
       this.dataForm.pic = ''
@@ -603,13 +610,6 @@ export default {
       }
     },
     // ****************其他操作*****************
-    getPicUrl() {
-      downloadPic(145)
-      .then( res => {
-        console.log(res)
-        this.picSrc = res
-      })
-    },
     // 获取详情
     getCollInfo(id) {
       const loading = OpenLoading(this, 1)
@@ -617,8 +617,17 @@ export default {
       .then( res => {
         if (res.status == 200) {
           this.dataForm = res.data[0]
-          
-          
+          if (this.dataForm.pic && this.dataForm.pic!=='') {
+            // 获取图片预览地址base64
+            downloadPic(this.dataForm.pic)
+            .then( res => {
+              this.uploadParams.picSrc = 'data:image/jpg;base64,' + res
+              this.uploadParams.fileList = [{
+                name: '',
+                url: 'data:image/jpg;base64,'+res
+              }]
+            })
+          }
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
         }
@@ -691,5 +700,10 @@ export default {
       padding-left: 15px;
     }
   }
+}
+.uploadList {
+  width: 148px;
+  height: 148px;
+  cursor: pointer;
 }
 </style>

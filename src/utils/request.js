@@ -69,12 +69,12 @@ axios.interceptors.response.use(
                 // case 408:
                 //     console.log('请求超时')
                 //     break;
-                case 500:
-                Message.warning({
-                    message: '服务器端出错',
-                    type: 'warning'
-                })
-                break;
+                // case 500:
+                // Message.warning({
+                //     message: '服务器端出错',
+                //     type: 'warning'
+                // })
+                // break;
                 // case 501:
                 //     console.log('网络未实现')
                 //     break;

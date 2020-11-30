@@ -55,7 +55,6 @@
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
           <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="图片URL" prop="pic_url" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px">
             <template slot-scope="scope">
@@ -67,7 +66,7 @@
             <template slot-scope="scope">
               <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
               <el-button type="text" @click="goPage('edit', scope.row.id)">编辑</el-button>
-              <el-button type="text" @click="del(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="delCollItem(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -76,7 +75,7 @@
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        @current-change="handlePageChange"
         :current-page="listParams.page"
         :page-sizes="[10, 20, 50]"
         :page-size="listParams.pageSize"
@@ -92,7 +91,9 @@
 <script>
 import navBar from "@/components/navBar/navBar";
 //api
-import { collList } from '@/api/collection'
+import { collList, delColl } from '@/api/collection'
+// utils
+import { OpenLoading } from "@/utils/utils.js";
 
 export default {
   data() {
@@ -111,6 +112,7 @@ export default {
         },
       ],
       title: "回款单管理",
+      overloading: '', //加载定时器
       // 分页数据
       total: 0,
       listParams: { 
@@ -132,12 +134,12 @@ export default {
   },
   methods: {
     // **********翻页**********
-    handleSizeChange(newPageSize) {
-      this.listParams.pageSize = newPageSize;
+    handlePageChange(newPage) {
+      this.listParams.page = newPage;
       this.getCollList()
     },
-    handleCurrentChange(newPage) {
-      this.listParams.page = newPage;
+    handleSizeChange(newPageSize) {
+      this.listParams.pageSize = newPageSize;
       this.getCollList()
     },
     // *************************
@@ -191,6 +193,31 @@ export default {
         })
       }
     },
+    delCollItem(id){
+      this.$confirm('此操作将永久删除该回款单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const loading = OpenLoading(this, 1)
+        delColl(id)
+        .then( res => {
+          if (res.status == 200) {
+            this.$message.success('删除成功！' )
+            this.getCollList()
+          } else {
+            this.$message.error('删除失败：' + res.error.message)
+          }
+          loading.close()
+          clearTimeout(this.overloading)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+    }
     // *************************************
   },
 };
