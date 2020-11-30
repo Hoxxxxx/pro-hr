@@ -423,7 +423,10 @@ export default {
       this.dataSelect.choosedData = [];
       switch (type) {
         case "BM":
-          let filter_BM = [{ label: "", model_key_search: "name" },{ label: "page", model_key_search: "page", value: '1', disabled: true, hide: true}];
+          let filter_BM = [
+            { label: "", model_key_search: "name" },
+            { label: "", model_key_search: "page", value: '1', disabled: true, hide: true},
+            { label: "", model_key_search: "is_paging", value: '0', disabled: true, hide: true},];
           this.dataSelect.filter = filter_BM;
           this.dataSelect.searchType = "single"
           this.dataSelect.editType = "entry"
