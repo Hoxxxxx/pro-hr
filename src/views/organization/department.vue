@@ -23,7 +23,7 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">角色列表</span>
+        <span class="tableTitle">部门列表</span>
         <div class="btns">
           <el-button type="primary" class="p40" @click="openDialog(0)"
             >新增部门</el-button
@@ -50,7 +50,9 @@
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <!-- edit -->
-              <el-button type="text" @click="openDialog(1,scope.row)">编辑</el-button>
+              <el-button type="text" @click="openDialog(1, scope.row)"
+                >编辑</el-button
+              >
               <!-- delete -->
               <el-button type="text" @click="deleteById(scope.row.id)"
                 >删除</el-button
@@ -97,7 +99,7 @@
               <el-select
                 style="width: 400px"
                 v-model="depart"
-                placeholder="请选择离职类型"
+                placeholder="请选择上级部门"
                 class="elInput"
               >
                 <el-option
@@ -159,7 +161,7 @@
               <el-select
                 style="width: 400px"
                 v-model="depart"
-                placeholder="请选择离职类型"
+                placeholder="请选择上级部门"
                 class="elInput"
               >
                 <el-option
@@ -233,10 +235,8 @@ export default {
       departName: "",
       chargerName: "",
       showAddPop: false, //是否显示弹窗
-      showEditPop:false,
-      depart_options: [
-        {id:0,name:"无"}
-      ],
+      showEditPop: false,
+      depart_options: [{ id: 0, name: "无" }],
       depart: "", //上级部门
       departMsg: "", //部门描述
       // 分页
@@ -259,21 +259,49 @@ export default {
       };
       DEPART_API.getDeparts(params).then((res) => {
         this.viewsList = res.data;
-        this.depart_options = [...res.data,...this.depart_options];
+        this.depart_options = [...res.data, ...this.depart_options];
       });
+    },
+    // 删除部门
+    deleteById(val) {
+      this.$confirm("确认删除部门?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+      })
+        .then(() => {
+          DEPART_API.deleteDeparts({}, val).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("删除成功！");
+              this.getDepartmentList();
+            } else {
+              this.$message.error("删除成功！");
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     // 新增管理员
     openDialog(type, val) {
       switch (type) {
         case 0:
           this.showAddPop = true;
+          this.departName = '';
+          this.chargerName = '';
+          this.depart = '';
+          this.departMsg = '';
           break;
         case 1:
-          this.showEditPop = true
-          this.departName = val.name
-          this.chargerName = val.manager_name
-          this.depart = val.pid
-          this.departMsg = val.description
+          this.showEditPop = true;
+          this.departName = val.name;
+          this.chargerName = val.manager_name;
+          this.depart = val.pid;
+          this.departMsg = val.description;
           break;
         default:
           break;
@@ -294,7 +322,7 @@ export default {
           DEPART_API.addDeparts(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("添加成功！");
-              this.getDepartmentList()
+              this.getDepartmentList();
               this.showAddPop = false;
             } else {
               this.$message.error("添加失败！");
@@ -302,9 +330,8 @@ export default {
           });
           break;
         case 2:
-          this.showEditPop = false
+          this.showEditPop = false;
         case 3:
-          
           break;
         default:
           break;

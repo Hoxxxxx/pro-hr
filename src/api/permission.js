@@ -27,6 +27,12 @@ const permissionUrl = [
     url: 'hr/permissions',
     caller: 'deletePermission',
   },
+  
+  {
+    requstType: 'get',
+    url: 'hr/admins/permission',
+    caller: 'getAdminPer',
+  },
 ]
 
 const PERMISSION_API = ApiFuns(permissionUrl)

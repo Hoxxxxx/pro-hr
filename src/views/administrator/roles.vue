@@ -105,28 +105,30 @@
             class="elInput"
           ></el-input>
         </div>
-        <div class="permissions">
-          <div class="title">角色权限</div>
-          <el-tree
-            :data="addParams.permissions"
-            show-checkbox
-            node-key="id"
-            @getCurrentNode="getCurrentAddNode"
-            :props="defaultProps"
-            ref="addCodeTree"
-            :label="title"
-          ></el-tree>
-        </div>
-        <div class="permissions">
-          <div class="title">菜单权限</div>
-          <el-tree
-            :data="addParams.menus"
-            show-checkbox
-            node-key="id"
-            @getCurrentNode="getCurrentMenuNode"
-            :props="defaultMenuProps"
-            ref="addMenuTree"
-          ></el-tree>
+        <div class="dialogBox">
+          <div class="permissions">
+            <div class="title">角色权限</div>
+            <el-tree
+              :data="addParams.permissions"
+              show-checkbox
+              node-key="id"
+              @getCurrentNode="getCurrentAddNode"
+              :props="defaultProps"
+              ref="addCodeTree"
+              :label="title"
+            ></el-tree>
+          </div>
+          <div class="permissions">
+            <div class="title">菜单权限</div>
+            <el-tree
+              :data="addParams.menus"
+              show-checkbox
+              node-key="id"
+              @getCurrentNode="getCurrentMenuNode"
+              :props="defaultMenuProps"
+              ref="addMenuTree"
+            ></el-tree>
+          </div>
         </div>
         <div class="extraBtns">
           <div>
@@ -151,50 +153,53 @@
         top="20vh"
         center
       >
-        <div class="nameInput">
-          <span>角色名称</span>
-          <el-input
-            v-model="editParams.roleName"
-            placeholder="请输入角色名称"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="permissions">
-          <div class="title">角色权限</div>
-          <el-tree
-            :data="editParams.permissions"
-            show-checkbox
-            node-key="id"
-            @getCurrentNode="getCurrentEditNode"
-            ref="editCodeTree"
-            :props="defaultProps"
-            :label="title"
-          ></el-tree>
-        </div>
-        <div class="permissions">
-          <div class="title">菜单权限</div>
-          <el-tree
-            :data="editParams.menus"
-            show-checkbox
-            node-key="id"
-            @getCurrentNode="getCurrentMenuNode"
-            :props="defaultMenuProps"
-            ref="editMenuTree"
-          ></el-tree>
-        </div>
-        <div class="extraBtns">
-          <div>
-            <el-button style="width: 95px" @click="extraBtnClick(2)"
-              >取 消</el-button
-            >
-            <el-button
-              style="width: 95px"
-              @click="extraBtnClick(3)"
-              type="primary"
-              >确 定</el-button
-            >
+        
+          <div class="nameInput">
+            <span>角色名称</span>
+            <el-input
+              v-model="editParams.roleName"
+              placeholder="请输入角色名称"
+              class="elInput"
+            ></el-input>
           </div>
-        </div>
+          <div class="dialogBox">
+          <div class="permissions">
+            <div class="title">角色权限</div>
+            <el-tree
+              :data="editParams.permissions"
+              show-checkbox
+              node-key="id"
+              @getCurrentNode="getCurrentEditNode"
+              ref="editCodeTree"
+              :props="defaultProps"
+              :label="title"
+            ></el-tree>
+          </div>
+          <div class="permissions">
+            <div class="title">菜单权限</div>
+            <el-tree
+              :data="editParams.menus"
+              show-checkbox
+              node-key="id"
+              @getCurrentNode="getCurrentMenuNode"
+              :props="defaultMenuProps"
+              ref="editMenuTree"
+            ></el-tree>
+          </div>
+          </div>
+          <div class="extraBtns">
+            <div>
+              <el-button style="width: 95px" @click="extraBtnClick(2)"
+                >取 消</el-button
+              >
+              <el-button
+                style="width: 95px"
+                @click="extraBtnClick(3)"
+                type="primary"
+                >确 定</el-button
+              >
+            </div>
+          </div>
       </el-dialog>
     </el-card>
   </div>
@@ -235,16 +240,16 @@ export default {
       addParams: {
         roleName: "",
         permissions: [],
-        menus:[]
+        menus: [],
       },
       editParams: {
         roleName: "",
         permissions: [],
-        menus:[]
+        menus: [],
       },
       showAddPop: false, //是否显示弹窗
       permissionsData: [],
-      menusData:[],
+      menusData: [],
       defaultProps: {
         children: "sub",
         label: "title",
@@ -319,7 +324,7 @@ export default {
       this.editParams = {
         roleName: val.name,
         permissions: this.permissionsData,
-        menus:this.menusData
+        menus: this.menusData,
       };
       this.editId = val.id;
       this.$nextTick(function () {
@@ -332,7 +337,7 @@ export default {
       this.addParams = {
         roleName: "",
         permissions: this.permissionsData,
-        menus:this.menusData
+        menus: this.menusData,
       };
       this.showAddPop = true;
     },
@@ -404,7 +409,7 @@ export default {
           let params = {
             name: this.addParams.roleName,
             permission: this.getCurrentAddNode(),
-            menu:this.getCurrentMenuNode()
+            menu: this.getCurrentMenuNode(),
           };
           ROLES_API.addRoles(params).then((res) => {
             if (res.status == 200) {
@@ -424,7 +429,7 @@ export default {
           let params_edit = {
             name: this.editParams.roleName,
             permission: this.getCurrentEditNode(),
-            menu:this.getCurrentEditMenu()
+            menu: this.getCurrentEditMenu(),
           };
           ROLES_API.editRoles(params_edit, this.editId).then((res) => {
             if (res.status == 200) {
@@ -450,7 +455,7 @@ export default {
       });
       return temp;
     },
-    getCurrentMenuNode(){
+    getCurrentMenuNode() {
       let data = this.$refs.addMenuTree.getCheckedNodes();
       let temp = [];
       data.forEach((item) => {
@@ -595,6 +600,10 @@ export default {
       flex-direction: row;
       justify-content: space-between;
     }
+  }
+  .dialogBox {
+    height: 400px;
+    overflow: auto;
   }
 }
 </style>

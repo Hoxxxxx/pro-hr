@@ -13,36 +13,100 @@
         <el-table
           :data="viewsList"
           style="width: 100%"
-          :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
         >
-          <el-table-column align="center" label="发货单OA单号" prop="fhd00"></el-table-column>
-          <el-table-column align="center" label="集团作业号" prop="fhd01"></el-table-column>
-          <el-table-column align="center" label="日期" prop="fhd02"></el-table-column>
-          <el-table-column align="center" label="申请人" prop="fhd03"></el-table-column>
+          <el-table-column
+            align="center"
+            label="发货单OA单号"
+            prop="fhd00"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="集团作业号"
+            prop="fhd01"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="日期"
+            prop="fhd02"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="申请人"
+            prop="fhd03"
+          ></el-table-column>
           <el-table-column align="center" label="摘要" prop="fhd04">
           </el-table-column>
-          <el-table-column align="center" label="客户" prop="fhd05"></el-table-column>
-          <el-table-column align="center" label="所属部门" prop="fhd06"></el-table-column>
-          <el-table-column align="center" label="合同金额" prop="fhd07"></el-table-column>
+          <el-table-column
+            align="center"
+            label="客户"
+            prop="fhd05"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="所属部门"
+            prop="fhd06"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="合同金额"
+            prop="fhd07"
+          ></el-table-column>
           <el-table-column label="发票金额" prop="fhd08" align="center">
           </el-table-column>
-          <el-table-column align="center" label="回款金额" prop="fhd09"></el-table-column>
-          <el-table-column align="center" label="OA workid" prop="fhd10"></el-table-column>
-          <!-- <el-table-column label="操作" width="300px" align="center">
+          <el-table-column
+            align="center"
+            label="回款金额"
+            prop="fhd09"
+          ></el-table-column>
+          <el-table-column align="center" label="OA workid" prop="fhd10">
             <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)">查看</el-button>
-              <el-button
-                type="text"
-                v-if="scope.row.status == 1 && scope.row.ac_open_status !=2"
-                @click="positive(scope.row.id)"
-              >编辑</el-button>
-              <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
+              <el-link @click="jump(scope.row.id)">{{
+                scope.row.fhd10
+              }}</el-link>
             </template>
-          </el-table-column> -->
+          </el-table-column>
+          <el-table-column align="center" label="OA申请单"
+            ><template slot-scope="scope">
+              <el-link type="primary" @click="jump(scope.row.id)"
+                >查看申请单</el-link
+              >
+            </template></el-table-column
+          >
+          <el-table-column align="center" label="发票列表"
+            ><template slot-scope="scope">
+              <el-link type="primary" @click="open(scope.row.id)"
+                >查看发票</el-link
+              >
+            </template></el-table-column
+          >
         </el-table>
       </div>
-
+      <el-dialog
+        title="发票列表"
+        :visible.sync="dialogVisible"
+        center
+        width="800px"
+      >
+        <div>
+          <el-link
+            v-for="(item, index) in links"
+            :key="index"
+            type="primary"
+            @click="openMore(item)"
+            >{{item}}</el-link
+          >
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="dialogVisible = false"
+            style="width: 100px"
+            >关 闭</el-button
+          >
+        </span>
+      </el-dialog>
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -59,8 +123,9 @@
 </template>
 
 <script>
+import Axios from 'axios'
 import navBar from "@/components/navBar/navBar";
-import {deliverList} from '@/api/reconciliation'
+import { deliverList, deliverLink } from "@/api/reconciliation";
 export default {
   data() {
     return {
@@ -79,28 +144,74 @@ export default {
       ],
       title: "发货单列表",
       viewsList: [],
+      dialogVisible: false,
+      links:[],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 30 },
     };
   },
-  created(){
-    this.getDeliverList()
+  created() {
+    if(this.$route.query.url){
+      this.getJumpUrl(this.$route.query.url)
+    }else{
+      this.getDeliverList();
+    }
   },
   methods: {
     // 获取发货单列表
-    getDeliverList() {
+    async getDeliverList() {
       let params = {
-        page:this.listParams.page,
-        perPage:this.listParams.pageSize,
-        'fliter[f10]':4436
-      }
-      deliverList(params).then(res=>{
-        if(res.status == 200 ){
-          this.viewsList = res.data
-          this.total = res.pagination.total
-        }else{
-          this.$message.error('列表获取失败！')
+        page: this.listParams.page,
+        perPage: this.listParams.pageSize,
+        "fliter[f10]": 4436,
+      };
+      deliverList(params).then((res) => {
+        if (res.status == 200) {
+          this.viewsList = res.data;
+          this.total = res.pagination.total;
+        } else {
+          this.$message.error("列表获取失败！");
+        }
+      });
+    },
+    jump(val) {
+      let params = {
+        id: val,
+      };
+      deliverLink(params).then((res) => {
+        if (res.status == 200) {
+          console.log(res);
+          window.open(res.data.followOaLink, "_blank");
+        }
+      });
+    },
+    getJumpUrl(url){
+      Axios.get(url).then(res=>{
+        if(res.status == 200){
+          this.viewsList = res.data.data
+          this.total = res.data.pagination.total
+        }
+      })
+    },
+    open(val) {
+      this.dialogVisible = true;
+      let params = {
+        id: val,
+      };
+      deliverLink(params).then((res) => {
+        if (res.status == 200) {
+          this.links = res.data.followInvoiceLink
+        }
+      });
+    },
+    openMore(val){
+      // window.open(val, "_blank");
+      let url = val.split('v2/')[1]
+      this.$router.push({
+        path:"/collection/invoice/list",
+        query:{
+          url:val
         }
       })
     },

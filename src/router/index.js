@@ -120,22 +120,21 @@ const routes = [{
     path: '/finance',
     component: Home,
     redirect: '/finance/income',
-    children: [
-      {
-        path: 'income',
-        name: 'income',
-        component: income
-      },
-      {
-        path: 'receivable',
-        name: 'receivable',
-        component: receivable
-      },
-      {
-        path: 'depReceivable',
-        name: 'depReceivable',
-        component: depReceivable
-      },
+    children: [{
+      path: 'income',
+      name: 'income',
+      component: income
+    },
+    {
+      path: 'receivable',
+      name: 'receivable',
+      component: receivable
+    },
+    {
+      path: 'depReceivable',
+      name: 'depReceivable',
+      component: depReceivable
+    },
     ]
   },
   // 收款管理
@@ -143,8 +142,7 @@ const routes = [{
     path: '/collection',
     component: Home,
     redirect: '/collection/backPayment/index',
-    children: [
-      {
+    children: [{
         path: 'backPayment/index',
         name: 'backPayment',
         component: backPayment
@@ -194,6 +192,7 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
+
 import {
   BASE_API
 } from "@/api/baseApi"
@@ -203,13 +202,17 @@ import jwtDecode from 'jwt-decode'
 router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   if (token) {
-    next()
+    const code = jwtDecode(token)
+    let now = Math.round(new Date() / 1000)
+    let exp = code.exp
+    if (now < exp) {
+      next()
+    } else {
+      window.sessionStorage.clear()
+      next('/error')
+    }
   } else {
     if (window.location.href.includes('code')) {
-      // let id = window.location.href.split('code')[1].split('&')[0].split('=')[1]
-      // let params = {
-      //   code: id
-      // }
       let urlParams = window.location.href.split('?')[1].split('&')
       let allParams = {}
       urlParams.forEach(item => {
@@ -224,6 +227,7 @@ router.beforeEach((to, from, next) => {
         if (res.status == 200) {
           let token = res.data.token
           const code = jwtDecode(token)
+          sessionStorage.setItem('exp',code.exp)
           sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
           next({

@@ -27,6 +27,12 @@ const menusUrl = [
     url: 'hr/menus',
     caller: 'deleteMenu',
   },
+  // 获取当前登录人的菜单
+  {
+    requstType: 'get',
+    url: 'hr/menus/list',
+    caller: 'getPerMenu',
+  },
 ]
 
 const MENUS_API = ApiFuns(menusUrl)

@@ -97,6 +97,12 @@ export const deliverList = (params) => {
         params
     })
 }
+// 获取发货单跳转链接
+export const deliverLink = (params) => {
+    return request.GET(`finance/oa/receivables/${params.id}`,
+    {},
+    {})
+}
 
 // 获取发票列表
 export const invoiceList = (params) => {
@@ -106,6 +112,13 @@ export const invoiceList = (params) => {
         params
     })
 }
+// 获取发票跳转链接
+export const invoicesLink = (params) => {
+    return request.GET(`finance/oa/invoices/${params.id}`,
+    {},
+    {})
+}
+
 
 // 获取付款冲账单列表
 export const strikeList = (params) => {

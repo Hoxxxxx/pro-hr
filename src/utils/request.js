@@ -14,8 +14,15 @@ axios.interceptors.request.use(
         let token = sessionStorage.getItem('token')
         let orgid = sessionStorage.getItem('OrgId')
         if (token) {
-            config.headers.Authorization = 'Bearer ' + token,
-            config.headers['Org-Id'] = orgid
+            let exp = sessionStorage.getItem('exp')
+            let now = Math.round(new Date() / 1000)
+            if (now > exp) {
+                sessionStorage.clear()
+                window.location = '/error'
+            }else{
+                config.headers.Authorization = 'Bearer ' + token,
+                config.headers['Org-Id'] = orgid
+            }
         }
         return config
     }, err => {
@@ -28,7 +35,7 @@ axios.interceptors.response.use(
         if (response.status === 200) {
             if (response.data.error) {
                 if (response.data.error.code === 900009) {
-                    window.location = '/login'
+                    window.location = '/error'
                     sessionStorage.clear()
                     return Message.warning({
                         message: '登录超时：请重新登录',
@@ -42,20 +49,25 @@ axios.interceptors.response.use(
         }
     }, err => {
         if (err && err.response) {
+            console.log(err.response)
             switch (err.response.status) {
                 // case 400:
                 //     console.log('错误请求')
                 //     break;
                 case 401:
                     Message.warning({
-                        message: 'token已过期,请重新登录！',
+                        message: '登录超时：请重新登录！',
                         type: 'warning'
                     })
+                    sessionStorage.clear();
+                    window.location = '/error'
                     break;
-                    // case 403:
-                    //     window.location = '/403'
-                    //     console.log('无权限访问')
-                    //     break;
+                    case 403:
+                        Message.warning({
+                            message: '无访问权限！',
+                            type: 'warning'
+                        })
+                        break;
                     // case 404:
                     //     window.location = '/404'
                     //     console.log('请求错误,未找到该资源')

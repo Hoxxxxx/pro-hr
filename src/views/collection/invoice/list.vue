@@ -27,6 +27,20 @@
           <el-table-column align="center" label="发票金额" prop="fp08"></el-table-column>
           <el-table-column align="center" label="用途" prop="fp09"></el-table-column>
           <el-table-column align="center" label="OA workid" prop="fp10"></el-table-column>
+          <el-table-column align="center" label="OA申请单"
+            ><template slot-scope="scope">
+              <el-link type="primary" @click="jump(scope.row.id)"
+                >查看申请单</el-link
+              >
+            </template></el-table-column
+          >
+          <el-table-column align="center" label="发货单列表"
+            ><template slot-scope="scope">
+              <el-link type="primary" @click="open(scope.row.id)"
+                >查看发货单</el-link
+              >
+            </template></el-table-column
+          >
           <!-- <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="view(scope.row.id)">查看</el-button>
@@ -40,7 +54,30 @@
           </el-table-column> -->
         </el-table>
       </div>
-
+      <el-dialog
+        title="发票列表"
+        :visible.sync="dialogVisible"
+        center
+        width="800px"
+      >
+        <div>
+          <el-link
+            v-for="(item, index) in links"
+            :key="index"
+            type="primary"
+            @click="openMore(item)"
+            >{{item}}</el-link
+          >
+        </div>
+        <span slot="footer" class="dialog-footer">
+          <el-button
+            type="primary"
+            @click="dialogVisible = false"
+            style="width: 100px"
+            >关 闭</el-button
+          >
+        </span>
+      </el-dialog>
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
@@ -57,8 +94,9 @@
 </template>
 
 <script>
+import Axios from 'axios'
 import navBar from "@/components/navBar/navBar";
-import {invoiceList} from '@/api/reconciliation'
+import {invoiceList,invoicesLink} from '@/api/reconciliation'
 export default {
   data() {
     return {
@@ -77,13 +115,19 @@ export default {
       ],
       title: "发票申请列表",
       viewsList: [],
+      dialogVisible: false,
+      links:[],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 30 },
     };
   },
   created(){
-    this.getInvoiceList()
+    if(this.$route.query.url){
+      this.getJumpUrl(this.$route.query.url)
+    }else{
+      this.getInvoiceList()
+    }
   },
   methods: {
     // 获取发票列表
@@ -99,6 +143,44 @@ export default {
           this.total = res.pagination.total
         }else{
           this.$message.error('列表获取失败！')
+        }
+      })
+    },
+    getJumpUrl(url){
+      Axios.get(url).then(res=>{
+        if(res.status == 200){
+          this.viewsList = res.data.data
+          this.total = res.data.pagination.total
+        }
+      })
+    },
+    jump(val) {
+      let params = {
+        id: val,
+      };
+      invoicesLink(params).then((res) => {
+        if (res.status == 200) {
+          console.log(res);
+          window.open(res.data.followOaLink, "_blank");
+        }
+      });
+    },
+    open(val) {
+      this.dialogVisible = true;
+      let params = {
+        id: val,
+      };
+      invoicesLink(params).then((res) => {
+        if (res.status == 200) {
+          this.links = res.data.followReceivableLink
+        }
+      });
+    },
+    openMore(val){
+      this.$router.push({
+        path:"/collection/deliver/list",
+        query:{
+          url:val
         }
       })
     },
