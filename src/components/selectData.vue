@@ -244,7 +244,7 @@ export default {
             this.tableData = res.data;
           }else{
             this.showLoading = false;
-            this.$message.error('服务器错误！')
+            this.$message.error(res.error.message)
           }
         });
       } else {
@@ -256,7 +256,7 @@ export default {
             this.tableData = res.data;
           }else{
             this.showLoading = false;
-            this.$message.error('服务器错误！')
+            this.$message.error(res.error.message)
           }
         });
       }

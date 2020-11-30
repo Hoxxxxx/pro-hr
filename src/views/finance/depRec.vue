@@ -41,7 +41,7 @@
           </el-select>
         </div>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
+          <el-button v-if="testBtn('departmentreceivables.store')" type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -172,6 +172,7 @@ import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 //api
 import { depRecInfo, depRecList, addDepRec } from '@/api/reconciliation'
+import { testBtnAuth } from '@/utils/permission'
 
 export default {
   data() {
@@ -285,15 +286,21 @@ export default {
     this.getSearchList()
   },
   methods: {
+    testBtn(name) {
+      const res = testBtnAuth(name)
+      return res
+    },
     // 获取账期及部门列表
     getSearchList() {
       this.searchData.year_Options = []
       depRecInfo().then(res => {
+        this.searchData.searchLoading = false
         if (res.status == 200) {
           this.searchData.year_mon_Info = res.data.params
           this.searchData.de_Options = res.data.department
           for(let key in this.searchData.year_mon_Info){
             this.searchData.year_Options.push(key)
+            this.searchData.year_Options.reverse()
           }
           // 默认选择第一个
           if ( this.searchData.year_Options !== null && this.searchData.year_Options.length !== 0 ) {
@@ -351,7 +358,11 @@ export default {
       this.dataSelect.choosedData = [];
       switch (type) {
         case "BM":
-          let filter_BM = [{ label: "", model_key_search: "name" },{ label: "page", model_key_search: "page", value: '1', disabled: true, hide: true}];
+          let filter_BM = [
+            { label: "", model_key_search: "name" },
+            { label: "", model_key_search: "page", value: '1', disabled: true, hide: true},
+            { label: "", model_key_search: "is_paging", value: '0', disabled: true, hide: true},
+          ];
           this.dataSelect.filter = filter_BM;
           this.dataSelect.searchType = "single"
           this.dataSelect.editType = "entry"

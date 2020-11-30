@@ -23,8 +23,7 @@ const receivable = () => import('@/views/finance/receivable')
 const depReceivable = () => import('@/views/finance/depRec')
 // 回款单
 const backPayment = () => import('@/views/collection/backPayMent/index')
-const payAdd = () => import('@/views/collection/backPayMent/add')
-const payEdit = () => import('@/views/collection/backPayMent/edit')
+const payInfo = () => import('@/views/collection/backPayMent/payInfo')
 const payDeliver = () => import('@/views/collection/deliver/list')
 const payInvoice = () => import('@/views/collection/invoice/list')
 const payStrike = () => import('@/views/collection/strike/list')
@@ -148,14 +147,9 @@ const routes = [{
         component: backPayment
       },
       {
-        path: 'backPayment/payAdd',
-        name: 'payAdd',
-        component: payAdd
-      },
-      {
-        path: 'backPayment/payEdit',
-        name: 'payEdit',
-        component: payEdit
+        path: 'backPayment/payInfo',
+        name: 'payInfo',
+        component: payInfo
       },
       {
         path: 'deliver/list',
@@ -193,10 +187,10 @@ VueRouter.prototype.push = function push(location) {
 }
 
 
-import {
-  BASE_API
-} from "@/api/baseApi"
+import { BASE_API } from "@/api/baseApi"
 import jwtDecode from 'jwt-decode'
+import { btnPermission } from '@/api/Btnpermission'
+
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
@@ -230,6 +224,12 @@ router.beforeEach((to, from, next) => {
           sessionStorage.setItem('exp',code.exp)
           sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
+          // 获取按钮权限
+          btnPermission()
+          .then( res=> {
+            let permissionList = JSON.stringify( res.data )
+            sessionStorage.setItem('permissionList', permissionList)
+          })
           next({
             path: to.path,
             query: allParams

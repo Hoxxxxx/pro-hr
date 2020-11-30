@@ -5,7 +5,7 @@
     <!-- 搜索框 -->
     <el-card class="searchCard">
       <div class="serchBox">
-        <el-input v-model="listParams['fliter[customer]']" 
+        <el-input v-model="listParams['filter[customer]']" 
                           placeholder="请输入客户编号"
                           style="margin-right: 20px">
         </el-input>
@@ -22,7 +22,7 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">回款单列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="$router.push('payAdd')">新增回款单</el-button>
+          <el-button type="primary" class="p40" @click="goPage('add', null)">新增回款单</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -39,10 +39,10 @@
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="50px"></el-table-column>
+          <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" label="流水号" prop="ssn" min-width="100px"></el-table-column>
           <el-table-column align="center" label="银行编号" prop="bank" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="200px"></el-table-column>
           <el-table-column align="center" label="客户编号" prop="customer" min-width="100px"></el-table-column>
           <el-table-column align="center" label="客户名称" prop="customer_show" min-width="100px"></el-table-column>
           <el-table-column align="center" label="日期" prop="date" min-width="100px"></el-table-column>
@@ -51,28 +51,34 @@
           <el-table-column align="center" label="金额" prop="amount" min-width="100px"></el-table-column>
           <el-table-column align="center" label="摘要" prop="summary" min-width="100px"></el-table-column>
           <el-table-column align="center" label="用途" prop="purpose" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="集团凭证号" prop="jt_number" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="集团作业号" prop="jt_number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px"></el-table-column>
           <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="图片URL" prop="pic_url" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
-          <!-- <el-table-column align="center" label="费用预警" min-width="100px">
+          <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px">
             <template slot-scope="scope">
-              <span style="color: #F56C6C">{{scope.row.warning}}</span>
+              <span style="color: #67C23A" v-if="scope.row.confirmed==1">已审核</span>
+              <span style="color: #F56C6C" v-if="scope.row.confirmed!==1">未审核</span>
             </template>
-          </el-table-column> -->
+          </el-table-column>
+          <el-table-column align="center" label="操作" min-width="160px">
+            <template slot-scope="scope">
+              <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
+              <el-button type="text" @click="goPage('edit', scope.row.id)">编辑</el-button>
+              <el-button type="text" @click="delCollItem(scope.row.id)">删除</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
       <!-- 分页区域 -->
       <el-pagination
         @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
+        @current-change="handlePageChange"
         :current-page="listParams.page"
         :page-sizes="[10, 20, 50]"
-        :page-size="listParams.pageSize"
+        :page-size="listParams.perPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
         style="margin-top: 20px; margin-bottom: 20px; float: right"
@@ -85,7 +91,9 @@
 <script>
 import navBar from "@/components/navBar/navBar";
 //api
-import { collList } from '@/api/collection'
+import { collList, delColl } from '@/api/collection'
+// utils
+import { OpenLoading } from "@/utils/utils.js";
 
 export default {
   data() {
@@ -104,12 +112,13 @@ export default {
         },
       ],
       title: "回款单管理",
+      overloading: '', //加载定时器
       // 分页数据
       total: 0,
       listParams: { 
-        'fliter[customer]': '',
+        'filter[customer]': '',
         page: 1, 
-        pageSize: 10 
+        perPage: 10 
       },
       collectionList: [],
       searchData: {
@@ -125,18 +134,18 @@ export default {
   },
   methods: {
     // **********翻页**********
-    handleSizeChange(newPageSize) {
-      this.listParams.pageSize = newPageSize;
+    handlePageChange(newPage) {
+      this.listParams.page = newPage;
       this.getCollList()
     },
-    handleCurrentChange(newPage) {
-      this.listParams.page = newPage;
+    handleSizeChange(newperPage) {
+      this.listParams.perPage = newperPage;
       this.getCollList()
     },
     // *************************
     // ********获取列表********
     re_getCollList() {
-      this.listParams["fliter[customer]"] = ''
+      this.listParams["filter[customer]"] = ''
       this.getCollList()
     },
     // 收入列表
@@ -155,6 +164,60 @@ export default {
       })
     },
     // ***************其他操作*************
+    goPage(type, id) {
+      if (type == 'add') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'add'
+          }
+        })
+      }
+      else if (type == 'check') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'check'
+          }
+        })
+      }
+      else if (type == 'edit') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'edit'
+          }
+        })
+      }
+    },
+    delCollItem(id){
+      this.$confirm('此操作将永久删除该回款单, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        const loading = OpenLoading(this, 1)
+        delColl(id)
+        .then( res => {
+          if (res.status == 200) {
+            this.$message.success('删除成功！' )
+            this.getCollList()
+          } else {
+            this.$message.error('删除失败：' + res.error.message)
+          }
+          loading.close()
+          clearTimeout(this.overloading)
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
+    }
     // *************************************
   },
 };
