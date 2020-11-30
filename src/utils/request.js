@@ -79,10 +79,10 @@ axios.interceptors.response.use(
                     //     console.log('请求超时')
                     //     break;
                 case 500:
-                    Message.warning({
-                        message: '无权限访问！',
-                        type: 'warning'
-                    })
+                    // Message.warning({
+                    //     message: '无权限访问！',
+                    //     type: 'warning'
+                    // })
                     console.log('无权限访问')
                 break;
                 // case 404:
