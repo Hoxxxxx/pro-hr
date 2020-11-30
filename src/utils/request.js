@@ -52,10 +52,10 @@ axios.interceptors.response.use(
                         type: 'warning'
                     })
                     break;
-                    // case 403:
-                    //     window.location = '/403'
-                    //     console.log('无权限访问')
-                    //     break;
+                    case 403:
+                        window.location = '/403'
+                        console.log('无权限访问')
+                    break;
                     // case 404:
                     //     window.location = '/404'
                     //     console.log('请求错误,未找到该资源')
@@ -66,7 +66,7 @@ axios.interceptors.response.use(
                     // case 408:
                     //     console.log('请求超时')
                     //     break;
-                case 500:
+                    case 500:
                     Message.warning({
                         message: '服务器端出错',
                         type: 'warning'

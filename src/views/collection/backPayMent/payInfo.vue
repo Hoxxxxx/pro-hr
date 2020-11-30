@@ -26,7 +26,8 @@
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <el-dialog :visible.sync="uploadParams.dialogVisible">
-                  <img width="100%" :src="dataForm.pic" alt="">
+                  <img v-if="pageType=='add'" width="100%" :src="dataForm.pic" alt="">
+                  <img v-if="pageType!=='add'" width="100%" :src="fileList[0].path" alt="">
                 </el-dialog>
               </el-form-item>
             </el-col>
@@ -238,7 +239,7 @@ export default {
           { required: true, message: '请选择日期', trigger: 'change' }
         ],
         customer: [
-          { required: true, message: '请输入客户编码', trigger: 'change' }
+          { required: true, message: '请选择客户', trigger: 'change' }
         ],
         department: [
           { required: true, message: '请选择部门', trigger: 'change' }
@@ -328,15 +329,12 @@ export default {
       }
     },
     handleSuccess(response, file, fileList) {
-      this.dataForm.pic = response.data.path
+      this.dataForm.pic = response.data.id
     },
     handleRemove(file, fileList) {
-      console.log(file, fileList);
-      this.fileList = [],
       this.dataForm.pic = ''
     },
     handlePictureCardPreview(file) {
-      this.dataForm.pic = file.url;
       this.uploadParams.dialogVisible = true;
     },
     handleExceed(files, fileList) {
@@ -602,6 +600,10 @@ export default {
       .then( res => {
         if (res.status == 200) {
           this.dataForm = res.data[0]
+          // console.log(this.$store.state.upload_pic_url + '202011/u2sorRh6mOWkpHB0FSUVHFl0jJMjKvoP9UGNP04l.jpeg')
+          this.fileList.push({
+            id: this.dataForm.pic
+          })
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
         }
