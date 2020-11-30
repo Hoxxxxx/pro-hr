@@ -607,21 +607,8 @@ export default {
       downloadPic(145)
       .then( res => {
         console.log(res)
-        // this.picSrc = res
-        this.base64TransFile(res,'111')
+        this.picSrc = res
       })
-    },
-    ////将图片Base64 转成文件
-    base64TransFile(base64Url,fileName){ 
-      var arr = base64Url.split(','),
-          mime = arr[0].match(/:(.*?);/)[1],
-          str = atob(arr[1]),
-          n = str.length,
-          u8arr = new Uint8Array(n);
-      while (n--) {
-        u8arr[n] = str.charCodeAt(n);
-      }
-      return new File([u8arr], fileName, { type: mime });
     },
     // 获取详情
     getCollInfo(id) {
