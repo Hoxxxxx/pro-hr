@@ -39,10 +39,10 @@
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="50px"></el-table-column>
+          <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" label="流水号" prop="ssn" min-width="100px"></el-table-column>
           <el-table-column align="center" label="银行编号" prop="bank" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="200px"></el-table-column>
           <el-table-column align="center" label="客户编号" prop="customer" min-width="100px"></el-table-column>
           <el-table-column align="center" label="客户名称" prop="customer_show" min-width="100px"></el-table-column>
           <el-table-column align="center" label="日期" prop="date" min-width="100px"></el-table-column>
