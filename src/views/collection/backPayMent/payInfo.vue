@@ -113,8 +113,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="集团凭证号" prop="jt_number">
-                <el-input v-model="dataForm.jt_number" disabled></el-input>
+              <el-form-item label="集团作业号" prop="oa_erp_id">
+                <el-input v-model="dataForm.oa_erp_id" disabled></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -196,7 +196,7 @@ export default {
       // form
       dataForm: {
         id: '',
-        jt_number: '',
+        oa_erp_id: '',
         confirmed: 0,
         pic: '',
         bank: '',
@@ -224,7 +224,7 @@ export default {
         ssn: [
           { required: true, message: '请输入流水号', trigger: 'blur' }
         ],
-        jt_number: [
+        oa_erp_id: [
         ],
         purpose: [
         ],
