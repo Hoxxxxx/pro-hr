@@ -56,3 +56,10 @@ export const delColl = (params) => {
   return request.DELETE(`finance/bank-slips/${params}`,
   {})
 }
+
+// 下载
+export const downloadPic = (params) => {
+  return request.GET(`files/download/${params}?follow=1`,
+  {},
+  {})
+}

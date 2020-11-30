@@ -12,10 +12,10 @@
             <el-col :span="24">
               <el-form-item label="图片" prop="upload_pic">
                 <el-upload
+                  v-if="pageType=='add'"
                   :disabled="pageType == 'check'"
                   :action="$store.state.upload_pic_url"
                   :headers="uploadParams.headers"
-                  :file-list="fileList"
                   list-type="picture-card"
                   :limit="1"
                   :before-upload="beforeAvatarUpload"
@@ -25,9 +25,16 @@
                   :on-exceed="handleExceed">
                   <i class="el-icon-plus"></i>
                 </el-upload>
+                <div v-if="pageType!=='add'">
+                  <el-image
+                    style="width: 100px; height: 100px"
+                    :src="picSrc"
+                    fit="fill">
+                  </el-image>
+                </div>
                 <el-dialog :visible.sync="uploadParams.dialogVisible">
                   <img v-if="pageType=='add'" width="100%" :src="dataForm.pic" alt="">
-                  <img v-if="pageType!=='add'" width="100%" :src="fileList[0].path" alt="">
+                  <img v-if="pageType!=='add'" width="100%" :src="fileList[0].id" alt="">
                 </el-dialog>
               </el-form-item>
             </el-col>
@@ -165,13 +172,14 @@
 import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 // api
-import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl } from "@/api/collection";
+import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl, downloadPic } from "@/api/collection";
 // utils
 import { OpenLoading } from "@/utils/utils.js";
 
 export default {
   data() {
     return {
+      picSrc: '',
       // 面包屑
       breadList: [
         {
@@ -214,7 +222,7 @@ export default {
         department: '',
         department_show: ''
       },
-      fileList: [],
+      fileList: [{id: ''}],
       rules: {
         bank: [
           { required: true, message: '请选择银行', trigger: 'change' },
@@ -292,8 +300,10 @@ export default {
   },
   created() {
     this.initPage()
+    this.getPicUrl()
   },
   methods: {
+    
     // **************** init ********************
     initPage() {
       if (this.pageType == 'add') {
@@ -593,6 +603,26 @@ export default {
       }
     },
     // ****************其他操作*****************
+    getPicUrl() {
+      downloadPic(145)
+      .then( res => {
+        console.log(res)
+        // this.picSrc = res
+        this.base64TransFile(res,'111')
+      })
+    },
+    ////将图片Base64 转成文件
+    base64TransFile(base64Url,fileName){ 
+      var arr = base64Url.split(','),
+          mime = arr[0].match(/:(.*?);/)[1],
+          str = atob(arr[1]),
+          n = str.length,
+          u8arr = new Uint8Array(n);
+      while (n--) {
+        u8arr[n] = str.charCodeAt(n);
+      }
+      return new File([u8arr], fileName, { type: mime });
+    },
     // 获取详情
     getCollInfo(id) {
       const loading = OpenLoading(this, 1)
@@ -600,10 +630,8 @@ export default {
       .then( res => {
         if (res.status == 200) {
           this.dataForm = res.data[0]
-          // console.log(this.$store.state.upload_pic_url + '202011/u2sorRh6mOWkpHB0FSUVHFl0jJMjKvoP9UGNP04l.jpeg')
-          this.fileList.push({
-            id: this.dataForm.pic
-          })
+          
+          
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
         }
