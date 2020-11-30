@@ -2,6 +2,7 @@ let userInfo = sessionStorage.getItem('userInfo') ? JSON.parse(sessionStorage.ge
 const state = {
   userInfo: userInfo,
   upload_url: 'http://test-erp.hualumedia.com/api/v2/hr/files/upload',
-  upload_pic_url: 'http://test-erp.hualumedia.com/api/v2/files/upload'
+  upload_pic_url: 'http://test-erp.hualumedia.com/api/v2/files/upload',
+  permissionList: []
 }
 export default state

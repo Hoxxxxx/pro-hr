@@ -188,10 +188,10 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-import {
-  BASE_API
-} from "@/api/baseApi"
+import { BASE_API } from "@/api/baseApi"
 import jwtDecode from 'jwt-decode'
+import { btnPermission } from '@/api/Btnpermission'
+
 
 // 挂载路由导航守卫
 router.beforeEach((to, from, next) => {
@@ -220,6 +220,12 @@ router.beforeEach((to, from, next) => {
           const code = jwtDecode(token)
           sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
+          // 获取按钮权限
+          btnPermission()
+          .then( res=> {
+            let permissionList = JSON.stringify( res.data )
+            sessionStorage.setItem('permissionList', permissionList)
+          })
           next({
             path: to.path,
             query: allParams

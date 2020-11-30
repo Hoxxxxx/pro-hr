@@ -41,11 +41,11 @@
           </el-select>
         </div>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
-          <el-button v-if="!StartRec" type="primary" class="p40" :disabled="!can_StartRec" @click="startReceive()">发起对账</el-button>
-          <el-button v-if="StartRec" type="info" class="p40" @click="cancelReceive()">取消对账</el-button>
-          <el-button v-if="StartRec" type="success" class="p40" @click="addReceive()">完成对账</el-button>
-          <el-button v-if="!StartRec" type="warning" class="p40" :disabled="!can_StartRec" @click="addReceive_arr()">批量对账</el-button>
+          <el-button v-if="testBtn('receivables.store')" type="primary" class="p40" @click="openDialog()">上传应收账款</el-button>
+          <el-button v-if="testBtn('receivables.checkAccount') && !StartRec" type="primary" class="p40" :disabled="!can_StartRec" @click="startReceive()">发起对账</el-button>
+          <el-button v-if="testBtn('receivables.checkAccount') && StartRec" type="info" class="p40" @click="cancelReceive()">取消对账</el-button>
+          <el-button v-if="testBtn('receivables.checkAccount') && StartRec" type="success" class="p40" @click="addReceive()">完成对账</el-button>
+          <el-button v-if="testBtn('receivables.checkAccount') && !StartRec" type="warning" class="p40" :disabled="!can_StartRec" @click="addReceive_arr()">批量对账</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -228,6 +228,7 @@ import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 //api
 import { receivablesInfo, receivablesList, addReceivables, checkReceivables } from '@/api/reconciliation'
+import { testBtnAuth } from '@/utils/permission'
 
 export default {
   data() {
@@ -348,6 +349,10 @@ export default {
     this.getSearchList()
   },
   methods: {
+    testBtn(name) {
+      const res = testBtnAuth(name)
+      return res
+    },
     // 获取账期及部门列表
     getSearchList() {
       this.searchData.year_Options = []
