@@ -22,7 +22,7 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">回款单列表</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="goEdit()">新增回款单</el-button>
+          <el-button type="primary" class="p40" @click="goPage('add', null)">新增回款单</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -54,15 +54,22 @@
           <el-table-column align="center" label="集团凭证号" prop="jt_number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px">
+            <template slot-scope="scope">
+              <span style="color: #67C23A" v-if="scope.row.confirmed==1">已审核</span>
+              <span style="color: #F56C6C" v-if="scope.row.confirmed!==1">未审核</span>
+            </template>
+          </el-table-column>
           <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
           <el-table-column align="center" label="图片URL" prop="pic_url" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
-          <!-- <el-table-column align="center" label="费用预警" min-width="100px">
+          <el-table-column align="center" label="操作" min-width="160px">
             <template slot-scope="scope">
-              <span style="color: #F56C6C">{{scope.row.warning}}</span>
+              <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
+              <el-button type="text" @click="goPage('edit', scope.row.id)">编辑</el-button>
+              <el-button type="text" @click="del(scope.row.id)">删除</el-button>
             </template>
-          </el-table-column> -->
+          </el-table-column>
         </el-table>
       </div>
 
@@ -155,13 +162,34 @@ export default {
       })
     },
     // ***************其他操作*************
-    goEdit(id) {
-      this.$router.push({
-        path: 'payInfo',
-        query: {
-          id: id
-        }
-      })
+    goPage(type, id) {
+      if (type == 'add') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'add'
+          }
+        })
+      }
+      else if (type == 'check') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'check'
+          }
+        })
+      }
+      else if (type == 'edit') {
+        this.$router.push({
+          path: 'payInfo',
+          query: {
+            id: id,
+            pageType: 'edit'
+          }
+        })
+      }
     },
     // *************************************
   },
