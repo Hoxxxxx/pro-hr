@@ -51,7 +51,7 @@
           <el-table-column align="center" label="金额" prop="amount" min-width="100px"></el-table-column>
           <el-table-column align="center" label="摘要" prop="summary" min-width="100px"></el-table-column>
           <el-table-column align="center" label="用途" prop="purpose" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="集团作业号" prop="oa_erp_id" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="集团作业号" prop="jt_number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
           <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
