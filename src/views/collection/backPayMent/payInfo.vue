@@ -37,7 +37,7 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="银行" prop="bank">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="width:881px;height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataForm.bank_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
@@ -49,7 +49,7 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="客户" prop="customer">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="width:881px;height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataForm.customer_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
@@ -75,7 +75,7 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="币种" prop="currency">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="width:881px;height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataForm.currency_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
@@ -102,7 +102,7 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="所属部门" prop="department">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="width:881px;height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataForm.department_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
