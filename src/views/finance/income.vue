@@ -62,7 +62,7 @@
           <el-table-column align="center" label="项目" prop="item" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" :label="theadData.month + '月'" prop="current_period" min-width="100px"></el-table-column>
           <el-table-column align="center" :label="'1-' + theadData.month + '月'" prop="current_year" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="同比" prop="year_over_year	" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="同比" prop="year_over_year" min-width="100px"></el-table-column>
           <el-table-column align="center" label="环比" prop="chain" min-width="100px"></el-table-column>
           <el-table-column align="center" label="预算数据" prop="budget_data" min-width="100px"></el-table-column>
           <el-table-column align="center" label="预算完成率" prop="budget_complete" min-width="100px"></el-table-column>
