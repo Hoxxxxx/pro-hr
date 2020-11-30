@@ -47,9 +47,7 @@ export const collInfo= (params) => {
 // 编辑
 export const editColl = (params) => {
   return request.PUT(`finance/bank-slips/${params.id}`,
-      {
-        params
-      }
+    params
   )
 }
 

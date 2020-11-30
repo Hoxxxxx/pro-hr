@@ -480,7 +480,6 @@ export default {
               loading.close()
               clearTimeout(this.overloading)
               if (res.status == 200) {
-                this.dataForm.id = res.data.id
                 this.$router.push({
                   path: 'payInfo',
                   query:{
