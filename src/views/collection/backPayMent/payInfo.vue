@@ -453,8 +453,8 @@ export default {
                         pageType: 'check'
                       }
                     })
-                    this.$router.go(0)
                     this.$message.success('新增成功！')
+                    this.$router.go(0)
                   } else {
                     this.$message.error('抛转集团失败：' + res.error.message)
                   }
@@ -488,8 +488,8 @@ export default {
                     pageType: 'check'
                   }
                 })
-                this.$router.go(0)
                 this.$message.success('编辑成功！')
+                this.$router.go(0)
               } else {
                 loading.close()
                 clearTimeout(this.overloading)
@@ -549,8 +549,8 @@ export default {
                 pageType: 'check'
               }
             })
-            this.$router.go(0)
             this.$message.success('审核成功！')
+            this.$router.go(0)
           } else {
             this.$message.error('审核失败：' + res.error.message)
           }
