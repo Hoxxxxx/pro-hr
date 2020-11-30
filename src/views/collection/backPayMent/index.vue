@@ -5,7 +5,7 @@
     <!-- 搜索框 -->
     <el-card class="searchCard">
       <div class="serchBox">
-        <el-input v-model="listParams['fliter[customer]']" 
+        <el-input v-model="listParams['filter[customer]']" 
                           placeholder="请输入客户编号"
                           style="margin-right: 20px">
         </el-input>
@@ -116,7 +116,7 @@ export default {
       // 分页数据
       total: 0,
       listParams: { 
-        'fliter[customer]': '',
+        'filter[customer]': '',
         page: 1, 
         pageSize: 10 
       },
@@ -145,7 +145,7 @@ export default {
     // *************************
     // ********获取列表********
     re_getCollList() {
-      this.listParams["fliter[customer]"] = ''
+      this.listParams["filter[customer]"] = ''
       this.getCollList()
     },
     // 收入列表
