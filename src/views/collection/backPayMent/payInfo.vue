@@ -9,7 +9,7 @@
                       label-position="left"
                       class="payForm">
           <el-row>
-            <el-col :span="12">
+            <el-col :span="12" style="height: 148px">
               <el-form-item label="图片" prop="upload_pic">
                 <!-- 上传imgbox -->
                 <el-upload
