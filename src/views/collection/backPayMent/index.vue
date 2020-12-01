@@ -9,6 +9,10 @@
                           placeholder="请输入客户编号"
                           style="margin-right: 20px">
         </el-input>
+        <el-input v-model="listParams['filter[department]']" 
+                          placeholder="请输入部门编号"
+                          style="margin-right: 20px">
+        </el-input>
       </div>
       <div class="btnBox">
         <el-button type="primary" size="medium" @click="getCollList">搜索</el-button>
@@ -54,15 +58,13 @@
           <el-table-column align="center" label="集团作业号" prop="jt_number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="图片Id" prop="pic" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px">
             <template slot-scope="scope">
               <span style="color: #67C23A" v-if="scope.row.confirmed==1">已审核</span>
               <span style="color: #F56C6C" v-if="scope.row.confirmed!==1">未审核</span>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="操作" min-width="160px">
+          <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
               <el-button type="text" @click="goPage('edit', scope.row.id)">编辑</el-button>
@@ -117,6 +119,7 @@ export default {
       total: 0,
       listParams: { 
         'filter[customer]': '',
+        'filter[department]': '',
         page: 1, 
         perPage: 10 
       },
@@ -146,6 +149,7 @@ export default {
     // ********获取列表********
     re_getCollList() {
       this.listParams["filter[customer]"] = ''
+      this.listParams['filter[department]'] = ''
       this.getCollList()
     },
     // 收入列表
@@ -232,7 +236,8 @@ export default {
   height: 80px;
   margin: 20px 20px 0 20px;
   .serchBox {
-    width: 300px;
+    width: 600px;
+    display: flex;
   }
   .btnBox {
     width: 180px;
