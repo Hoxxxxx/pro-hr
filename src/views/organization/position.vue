@@ -256,7 +256,7 @@ export default {
     getPositionsList(val) {
       let params = {
         page: this.listParams.page,
-        is_paging: 0,
+        is_paging: 0
       };
       if (val) {
         params = { ...params, ...val };
