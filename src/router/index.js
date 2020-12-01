@@ -199,6 +199,7 @@ router.beforeEach((to, from, next) => {
     const code = jwtDecode(token)
     let now = Math.round(new Date() / 1000)
     let exp = code.exp
+    console.log(exp)
     if (now < exp) {
       next()
     } else {

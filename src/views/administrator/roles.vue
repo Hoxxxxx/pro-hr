@@ -252,7 +252,7 @@ export default {
       menusData: [],
       defaultProps: {
         children: "sub",
-        label: "title",
+        label: "name",
       },
       defaultMenuProps: {
         children: "sub",
