@@ -197,8 +197,6 @@ router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   if (token) {
     const code = jwtDecode(token)
-    console.log(code)
-
     let now = Math.round(new Date() / 1000)
     let exp = code.exp
     if (now < exp) {

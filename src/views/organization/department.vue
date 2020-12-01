@@ -12,8 +12,10 @@
         ></el-input>
       </div>
       <div class="btnBox">
-        <el-button type="primary" size="medium">搜索</el-button>
-        <el-button id="secondary" class="secondary" size="medium"
+        <el-button type="primary" size="medium" @click="search()"
+          >搜索</el-button
+        >
+        <el-button class="secondary" size="medium" @click="reset()"
           >重置</el-button
         >
       </div>
@@ -28,7 +30,7 @@
           <el-button type="primary" class="p40" @click="openDialog(0)"
             >新增部门</el-button
           >
-          <el-button class="btn p40">批量删除</el-button>
+          <el-button class="btn p40" @click="deleteIds()">批量删除</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
@@ -38,7 +40,9 @@
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
+          @selection-change="handleSelectionChange"
         >
+          >
           <el-table-column type="selection" width="55"></el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"
@@ -103,8 +107,8 @@
                 class="elInput"
               >
                 <el-option
-                  v-for="item in depart_options"
-                  :key="item.id"
+                  v-for="(item, index) in depart_options"
+                  :key="index"
                   :label="item.name"
                   :value="item.id"
                 ></el-option>
@@ -165,8 +169,8 @@
                 class="elInput"
               >
                 <el-option
-                  v-for="item in depart_options"
-                  :key="item.id"
+                  v-for="(item, index) in depart_options"
+                  :key="index"
                   :label="item.name"
                   :value="item.id"
                 ></el-option>
@@ -223,7 +227,6 @@ export default {
         },
       ],
       title: "部门管理",
-
       // 搜索框
       deName: "",
       tHeadList: [
@@ -231,6 +234,7 @@ export default {
         { label: "部门主管", prop: "manager_name" },
       ],
       viewsList: [],
+      ids: [], //批量删除
       // 新增角色的弹窗中的数据
       departName: "",
       chargerName: "",
@@ -239,7 +243,7 @@ export default {
       depart_options: [{ id: 0, name: "无" }],
       depart: "", //上级部门
       departMsg: "", //部门描述
-      editId:"",
+      editId: "",
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -250,19 +254,32 @@ export default {
     this.getDepartmentList();
   },
   methods: {
-    getUserInfo() {
-      http.GET(configUrl.getUserInfo).then((res) => {});
-    },
     // 获取部门列表
-    getDepartmentList() {
+    getDepartmentList(val) {
       let params = {
         page: this.listParams.page,
-        is_paging:0
+        is_paging: 0,
       };
+      if (val) {
+        params = { ...params, ...val };
+      }
       DEPART_API.getDeparts(params).then((res) => {
         this.viewsList = res.data;
+        this.total = res.pagination.total;
         this.depart_options = [...res.data, ...this.depart_options];
       });
+    },
+    search() {
+      this.listParams.page = 1;
+      let params = {
+        name: this.deName,
+      };
+      this.getDepartmentList(params);
+    },
+    reset() {
+      this.listParams.page = 1;
+      this.deName = "";
+      this.getDepartmentList();
     },
     // 删除部门
     deleteById(val) {
@@ -288,19 +305,34 @@ export default {
           });
         });
     },
-    // 新增管理员
+    // 批量删除
+    deleteIds(){
+      let params = {
+        ids:this.ids
+      }
+      // console.log(params)
+      DEPART_API.deleteDeparts(params).then(res=>{
+        if(res.status == 200){
+          this.$message.success('删除成功！')
+          this.getDepartmentList()
+        }else{
+          this.$message.error('删除失败！')
+        }
+      })
+    },
+    // 新增部门
     openDialog(type, val) {
       switch (type) {
         case 0:
           this.showAddPop = true;
-          this.departName = '';
-          this.chargerName = '';
-          this.depart = '';
-          this.departMsg = '';
+          this.departName = "";
+          this.chargerName = "";
+          this.depart = "";
+          this.departMsg = "";
           break;
         case 1:
           this.showEditPop = true;
-          this.editId = val.id
+          this.editId = val.id;
           this.departName = val.name;
           this.chargerName = val.manager_name;
           this.depart = val.pid;
@@ -341,7 +373,7 @@ export default {
             pid: this.depart,
             description: this.departMsg,
           };
-          DEPART_API.editDeparts(paramsEdit,this.editId).then((res) => {
+          DEPART_API.editDeparts(paramsEdit, this.editId).then((res) => {
             if (res.status == 200) {
               this.$message.success("修改成功！");
               this.getDepartmentList();
@@ -355,11 +387,20 @@ export default {
           break;
       }
     },
+    handleSelectionChange(val) {
+      let temp = []
+      val.forEach(item=>{
+        temp.push(item.id)
+      })
+      this.ids = temp
+    },
     // watch pagesize change
     handleSizeChange(newSize) {},
-
     // watch page change
-    handleCurrentChange(newPage) {},
+    handleCurrentChange(newPage) {
+      this.listParams.page = newPage;
+      this.getDepartmentList();
+    },
   },
   components: {
     navBar,

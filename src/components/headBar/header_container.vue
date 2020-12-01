@@ -94,7 +94,6 @@ export default {
   },
   created(){
     this.userInfo = JSON.parse(sessionStorage.getItem('oauserinfo'))
-    console.log(this.userInfo)
   },
   methods: {
     // 获取用户信息
