@@ -118,11 +118,6 @@
             ></el-table-column>
             <el-table-column
               align="center"
-              label="回款单 workid"
-              prop="fp01"
-            ></el-table-column>
-            <el-table-column
-              align="center"
               label="日期"
               prop="fp02"
             ></el-table-column>
@@ -140,11 +135,6 @@
               align="center"
               label="客户编号"
               prop="fp05"
-            ></el-table-column>
-            <el-table-column
-              align="center"
-              label="客户名称"
-              prop="fp05_show"
             ></el-table-column>
             <el-table-column
               align="center"
