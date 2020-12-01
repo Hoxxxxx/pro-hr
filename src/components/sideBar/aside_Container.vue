@@ -169,7 +169,6 @@ export default {
             this.$set(item,'menuType',1)
           }
         })
-        console.log(res.data)
         this.menuList = res.data
       })
     }

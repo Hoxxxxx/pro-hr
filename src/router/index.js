@@ -197,9 +197,10 @@ router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   if (token) {
     const code = jwtDecode(token)
+    console.log(code)
+
     let now = Math.round(new Date() / 1000)
     let exp = code.exp
-    console.log(exp)
     if (now < exp) {
       next()
     } else {
@@ -222,7 +223,12 @@ router.beforeEach((to, from, next) => {
         if (res.status == 200) {
           let token = res.data.token
           const code = jwtDecode(token)
+          let oauserinfo = {
+            oauserid:code.oauserid,
+            oaname:code.oaname
+          }
           sessionStorage.setItem('exp',code.exp)
+          sessionStorage.setItem('oauserinfo',JSON.stringify(oauserinfo))
           sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
           // 获取按钮权限
