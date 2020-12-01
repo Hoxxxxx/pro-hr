@@ -43,13 +43,8 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="客户编号"
+            label="客户"
             prop="fp05"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="客户名称"
-            prop="fp05_show"
           ></el-table-column>
           <el-table-column
             align="center"

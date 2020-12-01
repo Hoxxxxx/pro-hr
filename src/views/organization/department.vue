@@ -305,20 +305,33 @@ export default {
           });
         });
     },
-    // 批量删除
-    deleteIds(){
+    // 批量删除部门
+    deleteIds(val) {
       let params = {
-        ids:this.ids
-      }
-      // console.log(params)
-      DEPART_API.deleteDeparts(params).then(res=>{
-        if(res.status == 200){
-          this.$message.success('删除成功！')
-          this.getDepartmentList()
-        }else{
-          this.$message.error('删除失败！')
-        }
+        ids: this.ids,
+      };
+      console.log(params)
+      this.$confirm("确认删除选中的部门?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
       })
+        .then(() => {
+          DEPART_API.deleteIds(params).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("删除成功！");
+              this.getDepartmentList();
+            } else {
+              this.$message.error("删除成功！");
+            }
+          });
+        })
+        .catch(() => {
+          this.$message({
+            type: "info",
+            message: "已取消删除",
+          });
+        });
     },
     // 新增部门
     openDialog(type, val) {
@@ -366,6 +379,7 @@ export default {
           break;
         case 2:
           this.showEditPop = false;
+          break;
         case 3:
           let paramsEdit = {
             name: this.departName,
@@ -388,11 +402,11 @@ export default {
       }
     },
     handleSelectionChange(val) {
-      let temp = []
-      val.forEach(item=>{
-        temp.push(item.id)
-      })
-      this.ids = temp
+      let temp = [];
+      val.forEach((item) => {
+        temp.push(item.id);
+      });
+      this.ids = temp;
     },
     // watch pagesize change
     handleSizeChange(newSize) {},
