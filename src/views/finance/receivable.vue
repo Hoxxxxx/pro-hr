@@ -121,7 +121,7 @@
 
     <!-- 新增弹窗 -->
     <el-dialog 
-      title="上传收入费用"
+      title="上传应收账款"
       :visible.sync="showDialog"
       width="668px">
       <el-form :model="uploadData" 
