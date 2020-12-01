@@ -9,7 +9,7 @@
                       label-position="left"
                       class="payForm">
           <el-row>
-            <el-col :span="24">
+            <el-col :span="12">
               <el-form-item label="图片" prop="upload_pic">
                 <!-- 上传imgbox -->
                 <el-upload
@@ -39,6 +39,11 @@
                 <el-dialog :visible.sync="uploadParams.dialogVisible">
                   <img width="100%" :src="uploadParams.picSrc" alt="">
                 </el-dialog>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="审核否">
+                <div class="confirmBox" :class="dataForm.confirmed==1?'confirmed':''"></div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -143,7 +148,7 @@
           <el-button @click="btnClick(2)">回到列表</el-button>
           <el-button type="primary" @click="btnClick(4)">修改</el-button>
           <el-button type="danger" @click="btnClick(5)">删除</el-button>
-          <el-button type="success" @click="btnClick(6)" v-if="dataForm.confirmed!==1">审核</el-button>
+          <el-button type="success" @click="btnClick(6)" v-if="dataForm.confirmed!==1 && dataForm.confirmed!==''">审核</el-button>
           <el-button type="warning" @click="btnClick(7)" v-if="dataForm.confirmed==1">取消审核</el-button>
           <el-button @click="btnClick(8)">抛转全媒体</el-button>
           <el-button @click="btnClick(9)">抛转全票通</el-button>
@@ -210,7 +215,7 @@ export default {
       dataForm: {
         id: '',
         jt_number: '',
-        confirmed: 0,
+        confirmed: '',
         pic: '',
         bank: '',
         bank_show: '',
@@ -469,7 +474,9 @@ export default {
                       }
                     })
                     this.$message.success('新增成功！')
-                    this.$router.go(0)
+                    setTimeout(() => {
+                      this.$router.go(0)
+                    },1000)
                   } else {
                     this.$message.error('抛转集团失败：' + res.error.message)
                   }
@@ -503,7 +510,9 @@ export default {
                   }
                 })
                 this.$message.success('编辑成功！')
-                this.$router.go(0)
+                setTimeout(() => {
+                  this.$router.go(0)
+                },1000)
               } else {
                 loading.close()
                 clearTimeout(this.overloading)
@@ -521,7 +530,9 @@ export default {
             pageType: 'edit'
           }
         })
-        this.$router.go(0)
+        setTimeout(() => {
+          this.$router.go(0)
+        },1000)
       }
       else if (type == 5) {
         this.$confirm('此操作将永久删除该回款单, 是否继续?', '提示', {
@@ -564,7 +575,9 @@ export default {
               }
             })
             this.$message.success('审核成功！')
-            this.$router.go(0)
+            setTimeout(() => {
+              this.$router.go(0)
+            },1000)
           } else {
             this.$message.error('审核失败：' + res.error.message)
           }
@@ -590,7 +603,9 @@ export default {
                 }
               })
               this.$message.success('取消审核成功！')
-              this.$router.go(0)
+              setTimeout(() => {
+                this.$router.go(0)
+              },1000)
             } else {
               this.$message.error('取消审核失败：' + res.error.message)
             }
@@ -705,5 +720,15 @@ export default {
   width: 148px;
   height: 148px;
   cursor: pointer;
+}
+.confirmBox {
+  width: 148px;
+  height: 148px;
+  background: #F5F7FA;
+  border-radius: 4px;
+}
+.confirmed {
+  background: url(../../../assets/img/confirm.png) no-repeat;
+  background-size: 148px 148px;
 }
 </style>
