@@ -3,7 +3,16 @@
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
 
     <!-- 搜索框 -->
-    <el-card class="searchCard">
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
       <div class="serchBox">
         <el-input v-model="listParams['filter[customer]']" 
                           placeholder="请输入客户编号"
@@ -19,6 +28,9 @@
         <el-button class="secondary" size="medium" @click="re_getCollList">重置</el-button>
       </div>
     </el-card>
+      </div>
+    </el-collapse-transition>
+    
     
     <!-- 表格 -->
     <el-card class="listCard">
@@ -115,6 +127,7 @@ export default {
       ],
       title: "回款单管理",
       overloading: '', //加载定时器
+      showSearch: false,
       // 分页数据
       total: 0,
       listParams: { 
@@ -231,6 +244,9 @@ export default {
 .staffManage {
   height: 100%;
 }
+.showSearch {
+    margin-left: 20px;
+  }
 .searchCard {
   border-radius: 10px;
   height: 80px;

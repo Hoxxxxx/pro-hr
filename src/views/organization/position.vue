@@ -2,24 +2,35 @@
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
     <!-- 搜索框 -->
-    <el-card class="searchCard">
-      <div class="serchBox">
-        <el-input
-          v-model="jobName"
-          placeholder="请输入职位名称"
-          clearable
-          style="width: 360px; margin-right: 20px; border-radius: 4px"
-        ></el-input>
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
+          <div class="serchBox">
+            <el-input
+              v-model="jobName"
+              placeholder="请输入职位名称"
+              clearable
+              style="width: 360px; margin-right: 20px; border-radius: 4px"
+            ></el-input>
+          </div>
+          <div class="btnBox">
+            <el-button type="primary" size="medium" @click="search()"
+              >搜索</el-button
+            >
+            <el-button class="secondary" size="medium" @click="reset()"
+              >重置</el-button
+            >
+          </div>
+        </el-card>
       </div>
-      <div class="btnBox">
-        <el-button type="primary" size="medium" @click="search()"
-          >搜索</el-button
-        >
-        <el-button class="secondary" size="medium" @click="reset()"
-          >重置</el-button
-        >
-      </div>
-    </el-card>
+    </el-collapse-transition>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -213,6 +224,7 @@ export default {
       title: "职位管理",
 
       // 搜索框
+      showSearch: false,
       jobName: "",
       tHeadList: [
         { label: "职位名称", prop: "name" },
@@ -250,9 +262,10 @@ export default {
         params = { ...params, ...val };
       }
       POSI_API.getPositions(params).then((res) => {
-        res.data.forEach(item=>{
+        res.data.forEach((item) => {
           item.created_at = renderTime(item.created_at);
-        })
+          item.p_name = item.p_name == null ? '无' : item.p_name
+        });
         this.viewsList = res.data;
         this.total = res.pagination.total;
         this.position_options = [...res.data, ...this.position_options];
@@ -297,9 +310,9 @@ export default {
     // 批量删除
     deleteIds() {
       let params = {
-        ids: this.ids
+        ids: this.ids,
       };
-      console.log(params)
+      console.log(params);
       this.$confirm("确认删除选中的职位?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -412,6 +425,9 @@ export default {
   height: 100%;
   .navBox {
     margin-bottom: 0 !important;
+  }
+  .showSearch {
+    margin-left: 20px;
   }
   .searchCard {
     height: 80px;

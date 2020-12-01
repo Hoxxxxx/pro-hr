@@ -2,24 +2,35 @@
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
     <!-- 搜索框 -->
-    <el-card class="searchCard">
-      <div class="serchBox">
-        <el-input
-          v-model="deName"
-          placeholder="请输入部门名称"
-          clearable
-          style="width: 360px; margin-right: 20px; border-radius: 4px"
-        ></el-input>
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
+          <div class="serchBox">
+            <el-input
+              v-model="deName"
+              placeholder="请输入部门名称"
+              clearable
+              style="width: 360px; margin-right: 20px; border-radius: 4px"
+            ></el-input>
+          </div>
+          <div class="btnBox">
+            <el-button type="primary" size="medium" @click="search()"
+              >搜索</el-button
+            >
+            <el-button class="secondary" size="medium" @click="reset()"
+              >重置</el-button
+            >
+          </div>
+        </el-card>
       </div>
-      <div class="btnBox">
-        <el-button type="primary" size="medium" @click="search()"
-          >搜索</el-button
-        >
-        <el-button class="secondary" size="medium" @click="reset()"
-          >重置</el-button
-        >
-      </div>
-    </el-card>
+    </el-collapse-transition>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -228,6 +239,7 @@ export default {
       ],
       title: "部门管理",
       // 搜索框
+      showSearch: false,
       deName: "",
       tHeadList: [
         { label: "部门名称", prop: "name" },
@@ -310,7 +322,7 @@ export default {
       let params = {
         ids: this.ids,
       };
-      console.log(params)
+      console.log(params);
       this.$confirm("确认删除选中的部门?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
@@ -427,6 +439,9 @@ export default {
   height: 100%;
   .navBox {
     margin-bottom: 0 !important;
+  }
+  .showSearch {
+    margin-left: 20px;
   }
   .searchCard {
     height: 80px;
