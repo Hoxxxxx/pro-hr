@@ -23,11 +23,6 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="回款单 workid"
-            prop="fp01"
-          ></el-table-column>
-          <el-table-column
-            align="center"
             label="日期"
             prop="fp02"
           ></el-table-column>
@@ -253,8 +248,11 @@ export default {
       };
       invoicesLink(params).then((res) => {
         if (res.status == 200) {
-          console.log(res);
-          window.open(res.data.followOaLink, "_blank");
+          if(res.data.followOaLink){
+            window.open(res.data.followOaLink, "_blank");
+          }else{
+            this.$message.warning('当前项无申请单！')
+          }
         }
       });
     },

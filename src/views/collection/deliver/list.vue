@@ -242,8 +242,11 @@ export default {
       };
       deliverLink(params).then((res) => {
         if (res.status == 200) {
-          console.log(res);
-          window.open(res.data.followOaLink, "_blank");
+          if(res.data.followOaLink){
+            window.open(res.data.followOaLink, "_blank");
+          }else{
+            this.$message.warning('当前项无申请单！')
+          }
         }
       });
     },
