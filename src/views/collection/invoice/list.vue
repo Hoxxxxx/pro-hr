@@ -13,20 +13,64 @@
         <el-table
           :data="viewsList"
           style="width: 100%"
-          :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
-          :cell-style="{background:'#FCFDFF',color:'#666666'}"
+          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
         >
-          <el-table-column align="center" label="OA单号" prop="fp00"></el-table-column>
-          <el-table-column align="center" label="回款单 workid" prop="fp01"></el-table-column>
-          <el-table-column align="center" label="日期" prop="fp02"></el-table-column>
-          <el-table-column align="center" label="申请人" prop="fp03"></el-table-column>
-          <!-- <el-table-column align="center" label="摘要" prop="fp04"></el-table-column> -->
-          <el-table-column align="center" label="客户" prop="fp05"></el-table-column>
-          <el-table-column align="center" label="所属部门" prop="fp06"></el-table-column>
-          <!-- <el-table-column align="center" label="摘要" prop="fp07"></el-table-column> -->
-          <el-table-column align="center" label="发票金额" prop="fp08"></el-table-column>
-          <!-- <el-table-column align="center" label="用途" prop="fp09"></el-table-column> -->
-          <el-table-column align="center" label="OA workid" prop="fp10"></el-table-column>
+          <el-table-column
+            align="center"
+            label="OA单号"
+            prop="fp00"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="回款单 workid"
+            prop="fp01"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="日期"
+            prop="fp02"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="申请人编号"
+            prop="fp03"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="申请人名称"
+            prop="fp03_show"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="客户编号"
+            prop="fp05"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="客户名称"
+            prop="fp05_show"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="所属部门编号"
+            prop="fp06"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="所属部门名称"
+            prop="fp06_show"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="发票金额"
+            prop="fp08"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="OA workid"
+            prop="fp10"
+          ></el-table-column>
           <el-table-column align="center" label="OA申请单"
             ><template slot-scope="scope">
               <el-link type="primary" @click="jump(scope.row.id)"
@@ -55,19 +99,85 @@
         </el-table>
       </div>
       <el-dialog
-        title="发票列表"
+        title="发货单列表"
         :visible.sync="dialogVisible"
         center
-        width="800px"
+        width="1200px"
       >
         <div>
-          <el-link
+          <el-table
+            :data="viewsList1"
+            style="width: 100%"
+            :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+            :cell-style="{ background: '#FCFDFF', color: '#666666' }"
+          >
+            <el-table-column
+              align="center"
+              label="发货单OA单号"
+              prop="fhd00"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="集团作业号"
+              prop="fhd01"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="日期"
+              prop="fhd02"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="申请人编号"
+              prop="fhd03"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="申请人名称"
+              prop="fhd03_show"
+            ></el-table-column>
+            <el-table-column align="center" label="摘要" prop="fhd04">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="客户编号"
+              prop="fhd05"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="客户名称"
+              prop="fhd05_show"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="所属部门编号"
+              prop="fhd06"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="所属部门名称"
+              prop="fhd06_show"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="合同金额"
+              prop="fhd07"
+            ></el-table-column>
+            <el-table-column label="发票金额" prop="fhd08" align="center">
+            </el-table-column>
+            <el-table-column
+              align="center"
+              label="回款金额"
+              prop="fhd09"
+            ></el-table-column>
+          </el-table>
+          <!-- <el-link
             v-for="(item, index) in links"
             :key="index"
             type="primary"
             @click="openMore(item)"
             >{{item}}</el-link
-          >
+          > -->
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button
@@ -94,9 +204,8 @@
 </template>
 
 <script>
-import Axios from 'axios'
 import navBar from "@/components/navBar/navBar";
-import {invoiceList,invoicesLink} from '@/api/reconciliation'
+import { invoiceList, invoicesLink } from "@/api/reconciliation";
 export default {
   data() {
     return {
@@ -116,43 +225,32 @@ export default {
       title: "发票申请列表",
       viewsList: [],
       dialogVisible: false,
-      links:[],
+      links: [],
+      viewsList1: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 30 },
     };
   },
-  created(){
-    if(this.$route.query.url){
-      this.getJumpUrl(this.$route.query.url)
-    }else{
-      this.getInvoiceList()
-    }
+  created() {
+    this.getInvoiceList();
   },
   methods: {
     // 获取发票列表
     getInvoiceList() {
       let params = {
-        page:this.listParams.page,
-        perPage:this.listParams.pageSize,
-        'fliter[f01]':4436
-      }
-      invoiceList(params).then(res=>{
-        if(res.status == 200 ){
-          this.viewsList = res.data
-          this.total = res.pagination.total
-        }else{
-          this.$message.error('列表获取失败！')
+        page: this.listParams.page,
+        perPage: this.listParams.pageSize,
+        "fliter[f01]": 4436,
+      };
+      invoiceList(params).then((res) => {
+        if (res.status == 200) {
+          this.viewsList = res.data;
+          this.total = res.pagination.total;
+        } else {
+          this.$message.error("列表获取失败！");
         }
-      })
-    },
-    getJumpUrl(url){
-      Axios.get(url).then(res=>{
-        if(res.status == 200){
-          this.viewsList = res.data.data
-          this.total = res.data.pagination.total
-        }
-      })
+      });
     },
     jump(val) {
       let params = {
@@ -172,17 +270,10 @@ export default {
       };
       invoicesLink(params).then((res) => {
         if (res.status == 200) {
-          this.links = res.data.followReceivableLink
+          this.links = res.data.followReceivableLink;
+          this.viewsList1 = res.data.receivables;
         }
       });
-    },
-    openMore(val){
-      this.$router.push({
-        path:"/collection/deliver/list",
-        query:{
-          url:val
-        }
-      })
     },
     // 分页数据变化处理
     handleSizeChange(newSize) {},

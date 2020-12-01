@@ -33,20 +33,35 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="申请人"
+            label="申请人编号"
             prop="fhd03"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="申请人名称"
+            prop="fhd03_show"
           ></el-table-column>
           <el-table-column align="center" label="摘要" prop="fhd04">
           </el-table-column>
           <el-table-column
             align="center"
-            label="客户"
+            label="客户编号"
             prop="fhd05"
           ></el-table-column>
           <el-table-column
             align="center"
-            label="所属部门"
+            label="客户名称"
+            prop="fhd05_show"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="所属部门编号"
             prop="fhd06"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="所属部门名称"
+            prop="fhd06_show"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -87,16 +102,66 @@
         title="发票列表"
         :visible.sync="dialogVisible"
         center
-        width="800px"
+        width="1200px"
       >
         <div>
-          <el-link
-            v-for="(item, index) in links"
-            :key="index"
-            type="primary"
-            @click="openMore(item)"
-            >{{item}}</el-link
+          <el-table
+            :data="viewsList1"
+            style="width: 100%"
+            :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
+            :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           >
+            <el-table-column
+              align="center"
+              label="OA单号"
+              prop="fp00"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="回款单 workid"
+              prop="fp01"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="日期"
+              prop="fp02"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="申请人编号"
+              prop="fp03"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="申请人名称"
+              prop="fp03_show"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="客户编号"
+              prop="fp05"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="客户名称"
+              prop="fp05_show"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="所属部门编号"
+              prop="fp06"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="所属部门名称"
+              prop="fp06_show"
+            ></el-table-column>
+            <el-table-column
+              align="center"
+              label="发票金额"
+              prop="fp08"
+            ></el-table-column>
+          </el-table>
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button
@@ -123,7 +188,6 @@
 </template>
 
 <script>
-import Axios from 'axios'
 import navBar from "@/components/navBar/navBar";
 import { deliverList, deliverLink } from "@/api/reconciliation";
 export default {
@@ -145,18 +209,15 @@ export default {
       title: "发货单列表",
       viewsList: [],
       dialogVisible: false,
-      links:[],
+      links: [],
+      viewsList1: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 30 },
     };
   },
   created() {
-    if(this.$route.query.url){
-      this.getJumpUrl(this.$route.query.url)
-    }else{
-      this.getDeliverList();
-    }
+    this.getDeliverList();
   },
   methods: {
     // 获取发货单列表
@@ -186,14 +247,6 @@ export default {
         }
       });
     },
-    getJumpUrl(url){
-      Axios.get(url).then(res=>{
-        if(res.status == 200){
-          this.viewsList = res.data.data
-          this.total = res.data.pagination.total
-        }
-      })
-    },
     open(val) {
       this.dialogVisible = true;
       let params = {
@@ -201,19 +254,10 @@ export default {
       };
       deliverLink(params).then((res) => {
         if (res.status == 200) {
-          this.links = res.data.followInvoiceLink
+          this.links = res.data.followInvoiceLink;
+          this.viewsList1 = res.data.invoices;
         }
       });
-    },
-    openMore(val){
-      // window.open(val, "_blank");
-      let url = val.split('v2/')[1]
-      this.$router.push({
-        path:"/collection/invoice/list",
-        query:{
-          url:val
-        }
-      })
     },
     // 分页数据变化处理
     handleSizeChange(newSize) {},
