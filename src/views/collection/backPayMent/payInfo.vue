@@ -724,7 +724,7 @@ export default {
 .confirmBox {
   width: 148px;
   height: 148px;
-  background: #F5F7FA;
+  background: url(../../../assets/img/unconfirm.png) no-repeat;
   border-radius: 4px;
 }
 .confirmed {
