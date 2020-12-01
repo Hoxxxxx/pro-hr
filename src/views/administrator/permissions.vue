@@ -89,7 +89,7 @@
             <el-option
               v-for="(item, index) in fixedData.pers"
               :key="index"
-              :label="item.title"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>
@@ -144,7 +144,7 @@
             <el-option
               v-for="(item, index) in fixedData.pers"
               :key="index"
-              :label="item.title"
+              :label="item.name"
               :value="item.id"
             >
             </el-option>

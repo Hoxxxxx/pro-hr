@@ -21,6 +21,12 @@ const departUrl = [
     url: 'hr/departments',
     caller: 'deleteDeparts',
   },
+  // 删除部门
+  {
+    requstType: 'put',
+    url: 'hr/departments',
+    caller: 'editDeparts',
+  },
 ]
 
 const DEPART_API = ApiFuns(departUrl)

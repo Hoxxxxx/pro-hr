@@ -252,7 +252,7 @@ export default {
       menusData: [],
       defaultProps: {
         children: "sub",
-        label: "title",
+        label: "name",
       },
       defaultMenuProps: {
         children: "sub",
@@ -279,6 +279,7 @@ export default {
       let params = {
         name: this.adminName,
         page: this.listParams.page,
+        is_paging:0
       };
       ROLES_API.getRoles(params).then((res) => {
         if (res.status == 200) {

@@ -239,6 +239,7 @@ export default {
       depart_options: [{ id: 0, name: "无" }],
       depart: "", //上级部门
       departMsg: "", //部门描述
+      editId:"",
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -256,6 +257,7 @@ export default {
     getDepartmentList() {
       let params = {
         page: this.listParams.page,
+        is_paging:0
       };
       DEPART_API.getDeparts(params).then((res) => {
         this.viewsList = res.data;
@@ -298,6 +300,7 @@ export default {
           break;
         case 1:
           this.showEditPop = true;
+          this.editId = val.id
           this.departName = val.name;
           this.chargerName = val.manager_name;
           this.depart = val.pid;
@@ -332,6 +335,21 @@ export default {
         case 2:
           this.showEditPop = false;
         case 3:
+          let paramsEdit = {
+            name: this.departName,
+            manager_name: this.chargerName,
+            pid: this.depart,
+            description: this.departMsg,
+          };
+          DEPART_API.editDeparts(paramsEdit,this.editId).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("修改成功！");
+              this.getDepartmentList();
+              this.showEditPop = false;
+            } else {
+              this.$message.error("修改失败！");
+            }
+          });
           break;
         default:
           break;

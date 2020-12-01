@@ -10,7 +10,7 @@
     <div class="opration">
       <div class="more">
         <span class="tips">
-          欢迎您,{{userInfo.name}}
+          欢迎您,{{userInfo.oaname}}
         </span>
         <!-- <el-dropdown trigger="click" @command="userOption">
           <span class="el-dropdown-link">
@@ -83,13 +83,18 @@ export default {
         email: "",
         password: "",
       },
+      userInfo:{},
       nameEdit: false,
       emailEdit: false,
       passwordEdit: false,
     };
   },
   computed:{
-    ...mapState(['userInfo'])
+    // ...mapState(['userInfo'])
+  },
+  created(){
+    this.userInfo = JSON.parse(sessionStorage.getItem('oauserinfo'))
+    console.log(this.userInfo)
   },
   methods: {
     // 获取用户信息

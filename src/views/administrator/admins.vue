@@ -349,7 +349,10 @@ export default {
     },
     // 获取角色列表
     rolesList() {
-      ROLES_API.getRoles().then((res) => {
+      let params = {
+        is_paging:1
+      };
+      ROLES_API.getRoles(params).then((res) => {
         if (res.status == 200) {
           this.roles = res.data;
         } else {
