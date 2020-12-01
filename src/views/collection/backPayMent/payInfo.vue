@@ -725,6 +725,7 @@ export default {
   width: 148px;
   height: 148px;
   background: url(../../../assets/img/unconfirm.png) no-repeat;
+  background-size: 148px 148px;
   border-radius: 4px;
 }
 .confirmed {
