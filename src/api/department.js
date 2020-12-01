@@ -21,6 +21,12 @@ const departUrl = [
     url: 'hr/departments',
     caller: 'deleteDeparts',
   },
+  // 批量删除部门
+  {
+    requstType: 'delete',
+    url: 'hr/departments',
+    caller: 'deleteIds',
+  },
   // 编辑部门
   {
     requstType: 'put',
