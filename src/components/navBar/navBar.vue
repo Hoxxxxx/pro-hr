@@ -1,9 +1,9 @@
 <template>
   <div class="navBox">
     <bread-Nav v-bind="$attrs" :title="title"></bread-Nav>
-    <div class="titleBox">
+    <!-- <div class="titleBox">
       <span>{{title}}</span>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -28,9 +28,9 @@ export default {
 
 .navBox {
   position: fixed;
-  top: 56px;
+  top: 52px;
   width: 100%;
-  height: 76px;
+  height: 35px;
   background: #ffffff;
   box-sizing: border-box;
   padding-top: 15px;

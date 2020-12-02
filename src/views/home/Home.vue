@@ -80,7 +80,7 @@ export default {
       flex: 1 1 auto;
       background: #f5f5f5;
       overflow-y: auto;
-      margin-top: 86px;
+      margin-top: 35px;
       .staffManage{
         height: calc(100% - 56px);
       }
