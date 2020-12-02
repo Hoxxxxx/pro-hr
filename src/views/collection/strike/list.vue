@@ -29,14 +29,14 @@
           <el-table-column
             align="center"
             label="输入日期"
-            prop="ooa032"
+            prop="ooa021"
           ></el-table-column>
           <el-table-column
             align="center"
             label="账款客户编号"
-            prop="ooa32d"
+            prop="ooa03"
           ></el-table-column>
-          <!-- <el-table-column
+          <el-table-column
             align="center"
             label="账款客户简称"
             prop="ooa032"
@@ -70,7 +70,7 @@
             align="center"
             label="本币贷方金额合计"
             prop="ooa32c"
-          ></el-table-column> -->
+          ></el-table-column>
           <el-table-column label="操作" width="300px" align="center">
             <template slot-scope="scope">
               <el-button type="text" @click="view(scope.row.id)"
