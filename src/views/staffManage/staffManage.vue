@@ -114,7 +114,7 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="姓名"
+            label="员工姓名"
             prop="name"
           ></el-table-column>
           <el-table-column
@@ -142,14 +142,14 @@
               >
             </template>
           </el-table-column>
-          <el-table-column align="center" label="员工状态" prop="status">
+          <el-table-column align="center" label="员工性质" prop="type">
             <template slot-scope="scope">
               <span>{{
-                scope.row.status == 1
+                scope.row.type == 1
                   ? "试用"
-                  : scope.row.status == 2
+                  : scope.row.type == 2
                   ? "正式"
-                  : scope.row.status == 3
+                  : scope.row.type == 3
                   ? "离职"
                   : "在职"
               }}</span>
@@ -157,13 +157,23 @@
           </el-table-column>
           <el-table-column
             align="center"
+            label="司龄"
+            prop="company_age"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="工龄"
+            prop="work_age"
+          ></el-table-column>
+          <el-table-column
+            align="center"
             label="手机号"
             prop="mobile"
           ></el-table-column>
           <el-table-column
             align="center"
-            label="入职日期"
-            prop="entry_time"
+            label="年龄"
+            prop="age"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -172,21 +182,21 @@
           ></el-table-column>
           <el-table-column
             label="账号状态"
-            prop="ac_open_status"
+            prop="status"
             align="center"
           >
             <template slot-scope="scope">
               <span
-                v-if="scope.row.ac_open_status == 0"
-                :style="scope.row.ac_open_status | color"
+                v-if="scope.row.status == '未开通'"
+                :style="scope.row.status | color"
                 >未开通</span
               >
               <span
-                v-else-if="scope.row.ac_open_status == 1"
-                :style="scope.row.ac_open_status | color"
+                v-else-if="scope.row.status == '已开通'"
+                :style="scope.row.status | color"
                 >已开通</span
               >
-              <span v-else :style="scope.row.ac_open_status | color"
+              <span v-else :style="scope.row.status | color"
                 >已停用</span
               >
             </template>
@@ -361,10 +371,10 @@ export default {
   filters: {
     color(val) {
       switch (val) {
-        case 0:
+        case '未开通':
           return `color:#F56C6C;`;
           break;
-        case 1:
+        case '已开通':
           return `color:#6DD400;`;
           break;
         default:
