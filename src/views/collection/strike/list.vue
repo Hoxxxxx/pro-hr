@@ -12,6 +12,10 @@
       <div class="tableBox">
         <el-table
           :data="viewsList"
+          v-loading = "searchData.viewsList_searchLoading"
+          element-loading-background = "rgba(0, 0, 0, 0.5)"
+          element-loading-text = "数据正在加载中"
+          element-loading-spinner = "el-icon-loading"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
@@ -20,56 +24,67 @@
             align="center"
             label="冲账单号"
             prop="ooa01"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="冲账日期"
             prop="ooa02"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="输入日期"
-            prop="ooa032"
+            prop="ooa021"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="账款客户编号"
-            prop="ooa32d"
+            prop="ooa03"
+            min-width="100px"
           ></el-table-column>
-          <!-- <el-table-column
+          <el-table-column
             align="center"
             label="账款客户简称"
             prop="ooa032"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="币别"
             prop="ooa23"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="汇率"
             prop="ooa24"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="原币借方金额合计"
             prop="ooa31d"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="原币贷方金额合计"
             prop="ooa31c"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="本币借方金额合计"
             prop="ooa32d"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="本币贷方金额合计"
             prop="ooa32c"
+            min-width="100px"
           ></el-table-column> -->
           <el-table-column label="操作" width="160px" align="center">
             <template slot-scope="scope">
@@ -155,6 +170,10 @@
         </div>
         <el-table
           :data="detailList"
+          v-loading = "searchData.detailList_searchLoading"
+          element-loading-background = "rgba(0, 0, 0, 0.5)"
+          element-loading-text = "数据正在加载中"
+          element-loading-spinner = "el-icon-loading"
           style="width: 100%"
           height="550px"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
@@ -238,6 +257,10 @@ export default {
         },
       ],
       title: "收款冲账单列表",
+      searchData: {
+        viewsList_searchLoading: true,
+        detailList_searchLoading: true,
+      },
       viewsList: [],
       detailList: [],
       detail: {},
@@ -270,6 +293,7 @@ export default {
       strikeList(params).then((res) => {
         if (res.status == 200) {
           this.viewsList = res.data;
+          this.searchData.viewsList_searchLoading = false;
           this.total = res.pagination.total;
         } else {
           this.$message.error("列表获取失败！");
@@ -294,6 +318,7 @@ export default {
       strikeDetail(params).then((res) => {
         if (res.status == 200) {
           this.detailList = res.data[0].oob;
+          this.searchData.detailList_searchLoading = false;
           this.detail = res.data[0];
         } else {
           this.$message.error("列表获取失败！");

@@ -242,6 +242,7 @@ export default {
     },
     open(val) {
       this.dialogVisible = true;
+      this.viewsList1 = []
       let params = {
         id: val,
       };

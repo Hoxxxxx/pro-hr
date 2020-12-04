@@ -10,7 +10,6 @@
           <el-button type="primary" class="p40" @click="addStaff()"
             >新增菜单</el-button
           >
-          <!-- <el-button class="btn p40" @click="deleteMore()">批量删除</el-button> -->
         </div>
       </div>
       <!-- 表格区域 -->
@@ -86,6 +85,28 @@
             class="elInput"
           ></el-input>
         </div>
+        <div class="nameInput" v-if="addParams.pid == 0">
+          <span class="title">菜单ICON</span>
+          <el-select
+            v-model="addParams.icon"
+            class="elInput"
+            placeholder="请选择菜单ICON"
+          >
+            <el-option
+              v-for="(item, index) in fixedData.icons"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            >
+              <div class="iconBox">
+                <span style="float: left">{{ item.name }}</span>
+                <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
+                  :class="item.name"
+                ></i>
+              </div>
+            </el-option>
+          </el-select>
+        </div>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -141,6 +162,28 @@
             class="elInput"
           ></el-input>
         </div>
+        <div class="nameInput" v-if="editParams.pid == 0">
+          <span class="title">菜单ICON</span>
+          <el-select
+            v-model="editParams.icon"
+            class="elInput"
+            placeholder="请选择菜单ICON"
+          >
+            <el-option
+              v-for="(item, index) in fixedData.icons"
+              :key="index"
+              :label="item.name"
+              :value="item.name"
+            >
+              <div class="iconBox">
+                <span style="float: left">{{ item.name }}</span>
+                <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
+                  :class="item.name"
+                ></i>
+              </div>
+            </el-option>
+          </el-select>
+        </div>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -194,11 +237,29 @@ export default {
             id: 0, //上级菜单id
           },
         ],
+        icons: [
+          { id: 0, name: "el-icon-user-solid" },
+          { id: 1, name: "el-icon-s-check" },
+          { id: 2, name: "el-icon-menu" },
+          { id: 3, name: "el-icon-s-finance" },
+          { id: 4, name: "el-icon-s-cooperation" },
+          { id: 5, name: "el-icon-phone" },
+          { id: 6, name: "el-icon-s-tools" },
+          { id: 7, name: "el-icon-s-goods" },
+          { id: 8, name: "el-icon-video-camera-solid" },
+          { id: 9, name: "el-icon-s-flag" },
+          { id: 10, name: "el-icon-s-shop" },
+          { id: 11, name: "el-icon-s-data" },
+          { id: 12, name: "el-icon-s-grid" },
+          { id: 13, name: "el-icon-s-ticket" },
+          { id: 14, name: "el-icon-s-home" },
+        ],
       },
       addParams: {
         name: "",
         url: "", //
         pid: 0, //上级菜单id
+        icon: "",
       },
       showAddPop: false, //是否显示弹窗
       menusData: [],
@@ -208,6 +269,7 @@ export default {
         name: "",
         url: "", //
         pid: 0, //上级菜单id
+        icon: "",
       },
       editId: "", //编辑时选中的id
       // 批量删除的角色id
@@ -256,6 +318,7 @@ export default {
         name: "",
         url: "", //
         pid: 0, //上级菜单id
+        icon:""
       };
       this.showAddPop = true;
     },
@@ -265,6 +328,7 @@ export default {
         name: val.name, //标题（菜单）
         url: val.url, //菜单名称
         pid: val.pid, //上级菜单id
+        icon: val.icon
       };
       this.editId = val.id;
       this.showEditPop = true;
@@ -419,6 +483,15 @@ export default {
         border: 1px solid #409efd;
         color: #409efd;
       }
+    }
+  }
+
+  .iconBox{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    div{
+      height: 34px;
     }
   }
 

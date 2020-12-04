@@ -11,6 +11,7 @@ axios.defaults.baseURL = 'http://test-erp.hualumedia.com/api/v2/'
 axios.interceptors.request.use(
     config => {
         // 添加token
+        let curUrl = window.location.href
         let token = sessionStorage.getItem('token')
         let orgid = sessionStorage.getItem('OrgId')
         if (token) {
@@ -18,7 +19,8 @@ axios.interceptors.request.use(
             let now = Math.round(new Date() / 1000)
             if (now > exp) {
                 sessionStorage.clear()
-                window.location = '/error'
+                // window.location = '/error'
+                window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
             }else{
                 config.headers.Authorization = 'Bearer ' + token,
                 config.headers['Org-Id'] = orgid
@@ -60,7 +62,9 @@ axios.interceptors.response.use(
                         type: 'warning'
                     })
                     sessionStorage.clear();
-                    window.location = '/error'
+                    // window.location = '/error'
+                    let curUrl = window.location.href
+                    window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
                     break;
                     case 403:
                         Message.warning({
