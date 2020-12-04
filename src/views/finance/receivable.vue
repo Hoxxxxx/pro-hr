@@ -403,11 +403,13 @@ export default {
       receivablesList(params).then(res => {
         if (res.status == 200) {
           this.tableData = res.data
-          this.tableData.forEach(item => {
-            if (item.status == '未对账') {
-              this.can_StartRec = true
-            }
-          })
+          if (this.tableData !== null && this.tableData !== []) {
+            this.tableData.forEach(item => {
+              if (item.status == '未对账') {
+                this.can_StartRec = true
+              }
+            })
+          }
           this.searchData.searchLoading = false
         } else {
           this.searchData.searchLoading = false
