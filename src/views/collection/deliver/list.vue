@@ -90,21 +90,21 @@
             prop="fhd09"
             min-width="100px"
           ></el-table-column>
-          <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
+          <!-- <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
             <template slot-scope="scope">
               <el-link @click="jump(scope.row.id)">{{
                 scope.row.fhd10
               }}</el-link>
             </template>
-          </el-table-column>
-          <el-table-column align="center" label="OA申请单" width="160px"
+          </el-table-column> -->
+          <el-table-column align="center" label="OA申请单" width="160px" fixed="right"
             ><template slot-scope="scope">
               <el-link type="primary" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
             </template></el-table-column
           >
-          <el-table-column align="center" label="发票列表" width="160px"
+          <el-table-column align="center" label="发票列表" width="160px" fixed="right"
             ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发票</el-link

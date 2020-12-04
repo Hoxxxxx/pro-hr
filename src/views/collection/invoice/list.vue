@@ -68,20 +68,20 @@
             prop="fp08"
             min-width="100px"
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             align="center"
             label="OA workid"
             prop="fp10"
             min-width="100px"
-          ></el-table-column>
-          <el-table-column align="center" label="OA申请单" width="160px"
+          ></el-table-column> -->
+          <el-table-column align="center" label="OA申请单" width="160px" fixed="right"
             ><template slot-scope="scope">
               <el-link type="primary" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
             </template></el-table-column
           >
-          <el-table-column align="center" label="发货单列表" width="160px"
+          <el-table-column align="center" label="发货单列表" width="160px" fixed="right"
             ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发货单</el-link
