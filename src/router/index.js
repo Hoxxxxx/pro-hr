@@ -244,6 +244,15 @@ router.beforeEach((to, from, next) => {
           })
         } else {
           console.log('token获取失败！')
+          delete allParams.code
+          let paraStr = ''
+          for(let key in allParams){
+            paraStr += `&${key}=${allParams[key]}`
+          }
+          let urlStr = window.location.href.split('?')[0]
+          let curUrl = `${urlStr}?${paraStr.substring(1)}`
+          console.log(window.location.href)
+          window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
         }
       })
     } else {
