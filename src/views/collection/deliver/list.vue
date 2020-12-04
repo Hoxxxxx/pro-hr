@@ -97,20 +97,21 @@
               }}</el-link>
             </template>
           </el-table-column> -->
-          <el-table-column align="center" label="OA申请单" width="160px" fixed="right"
-            ><template slot-scope="scope">
-              <el-link type="primary" @click="jump(scope.row.id)"
+          <el-table-column align="center" label="操作" width="260px" fixed="right">
+            <template slot-scope="scope">
+              <el-link type="primary" style="margin-right:20px" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
-            </template></el-table-column
-          >
-          <el-table-column align="center" label="发票列表" width="160px" fixed="right"
-            ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发票</el-link
               >
             </template></el-table-column
           >
+          <!-- <el-table-column align="center" label="发票列表" width="160px" fixed="right"
+            ><template slot-scope="scope">
+              
+            </template></el-table-column
+          > -->
         </el-table>
       </div>
       <el-dialog
