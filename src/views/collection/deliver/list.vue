@@ -11,6 +11,10 @@
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
+          v-loading = "searchData.viewsList_searchLoading"
+          element-loading-background = "rgba(0, 0, 0, 0.5)"
+          element-loading-text = "数据正在加载中"
+          element-loading-spinner = "el-icon-loading"
           :data="viewsList"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
@@ -20,26 +24,31 @@
             align="center"
             label="发货单OA单号"
             prop="fhd00"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="集团作业号"
             prop="fhd01"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="日期"
             prop="fhd02"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="申请人编号"
             prop="fhd03"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="申请人名称"
             prop="fhd03_show"
+            min-width="100px"
           ></el-table-column>
           <el-table-column align="center" label="摘要" prop="fhd04">
           </el-table-column>
@@ -47,26 +56,31 @@
             align="center"
             label="客户编号"
             prop="fhd05"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="客户名称"
             prop="fhd05_show"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="所属部门编号"
             prop="fhd06"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="所属部门名称"
             prop="fhd06_show"
+            min-width="100px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="合同金额"
             prop="fhd07"
+            min-width="100px"
           ></el-table-column>
           <el-table-column label="发票金额" prop="fhd08" align="center">
           </el-table-column>
@@ -74,22 +88,23 @@
             align="center"
             label="回款金额"
             prop="fhd09"
+            min-width="100px"
           ></el-table-column>
-          <el-table-column align="center" label="OA workid" prop="fhd10">
+          <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
             <template slot-scope="scope">
               <el-link @click="jump(scope.row.id)">{{
                 scope.row.fhd10
               }}</el-link>
             </template>
           </el-table-column>
-          <el-table-column align="center" label="OA申请单"
+          <el-table-column align="center" label="OA申请单" width="160px"
             ><template slot-scope="scope">
               <el-link type="primary" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
             </template></el-table-column
           >
-          <el-table-column align="center" label="发票列表"
+          <el-table-column align="center" label="发票列表" width="160px"
             ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发票</el-link
@@ -107,6 +122,10 @@
         <div>
           <el-table
             :data="viewsList1"
+            v-loading = "searchData.viewsList1_searchLoading"
+            element-loading-background = "rgba(0, 0, 0, 0.5)"
+            element-loading-text = "数据正在加载中"
+            element-loading-spinner = "el-icon-loading"
             style="width: 100%"
             :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
             :cell-style="{ background: '#FCFDFF', color: '#666666' }"
@@ -197,6 +216,10 @@ export default {
         },
       ],
       title: "发货单列表",
+      searchData: {
+        viewsList_searchLoading: true,
+        viewsList1_searchLoading: true,
+      },
       viewsList: [],
       dialogVisible: false,
       links: [],
@@ -220,6 +243,7 @@ export default {
       deliverList(params).then((res) => {
         if (res.status == 200) {
           this.viewsList = res.data;
+          this.searchData.viewsList_searchLoading = false;
           this.total = res.pagination.total;
         } else {
           this.$message.error("列表获取失败！");
@@ -250,6 +274,7 @@ export default {
         if (res.status == 200) {
           this.links = res.data.followInvoiceLink;
           this.viewsList1 = res.data.invoices;
+          this.searchData.viewsList1_searchLoading = false;
         }
       });
     },
