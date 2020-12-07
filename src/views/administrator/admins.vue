@@ -308,7 +308,7 @@ export default {
       addParams: {
         name: "", //用户名
         role_ids: "", //角色
-        id: "", //员工
+        staff_id: "", //员工
       },
       staffList: [], //员工列表
       roles: [], //角色列表
@@ -414,7 +414,7 @@ export default {
       this.addParams = {
         name: "", //用户名
         role_ids: "", //角色
-        id: "", //员工
+        staff_id: "", //员工
       };
     },
     extraBtnClick(type) {
@@ -443,7 +443,7 @@ export default {
         this.addParams = {
           name: "", //用户名
           role_ids: "", //角色
-          id: "", //员工
+          staff_id: "", //员工
         };
         this.showAddPop = false;
         this.showEditPop = false;
@@ -465,6 +465,7 @@ export default {
     },
     // 编辑管理员、
     edit(val) {
+      console.log(val)
       this.showEditPop = true;
       this.editID = val.id;
       let temp = [];
@@ -476,7 +477,6 @@ export default {
         role_ids: temp,
         staff_id: val.id,
       };
-      console.log(val);
     },
     // 删除管理员
     removeById(val) {
