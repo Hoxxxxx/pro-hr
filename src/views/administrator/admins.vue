@@ -215,7 +215,7 @@
           <li>
             <span>用户名称</span>
             <el-input
-              v-model="addParams.name"
+              v-model="editParams.name"
               class="elInput"
               placeholder="请输入用户名称"
             ></el-input>
@@ -223,7 +223,7 @@
           <li>
             <span>选择员工</span>
             <el-select
-              v-model="addParams.staff_id"
+              v-model="editParams.staff_id"
               placeholder="请选择员工"
               class="elInput"
             >
@@ -239,7 +239,7 @@
             <span>选择角色</span>
             <el-select
               multiple
-              v-model="addParams.role_ids"
+              v-model="editParams.role_ids"
               placeholder="请选择角色"
               class="elInput"
             >
@@ -315,6 +315,11 @@ export default {
       // 编辑管理员
       showEditPop: false,
       editID: "", //当前编辑的管理员
+      editParams: {
+        name: "", //用户名
+        role_ids: "", //角色
+        staff_id: "", //员工id
+      },
       // 批量删除
       ids: [], //批量选中的管理员
       // 筛选列表的参数
@@ -337,11 +342,11 @@ export default {
     // 获取所有员工
     getUsers() {
       let params = {
-        page: 1,
+        is_paging:1
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
-          this.staffList = res.data[0].data;
+          this.staffList = res.data;
         } else {
           this.$message.error(res.error);
         }
@@ -429,9 +434,8 @@ export default {
           }
         });
       } else if (type == 3) {
-        ADMINS_API.editAdmins(this.addParams, this.editID).then((res) => {
+        ADMINS_API.editAdmins(this.editParams, this.editID).then((res) => {
           if (res.status == 200) {
-            console.log(res);
             this.$message.success("修改成功！");
             this.getAdminsList();
             this.showEditPop = false;
@@ -472,10 +476,10 @@ export default {
       val.roles.forEach((item) => {
         temp.push(item.id);
       });
-      this.addParams = {
+      this.editParams = {
         name: val.adm_name,
         role_ids: temp,
-        staff_id: val.id,
+        staff_id: val.staff_id,
       };
     },
     // 删除管理员
