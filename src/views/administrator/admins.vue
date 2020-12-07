@@ -333,7 +333,6 @@ export default {
     };
   },
   mounted() {
-    // this.getAdmins()
     this.getUsers();
     this.rolesList();
     this.getAdminsList();
@@ -379,25 +378,14 @@ export default {
         }
       });
     },
-    // 查看某个管理员
-    getAdmins() {
-      let id = 4;
-      ADMINS_API.getAdmins({}, id).then((res) => {
-        console.log(res);
-      });
-    },
     // 搜索列表
     search() {
-      console.log(this.filterList);
+      this.listParams.page = 1
       let params = {
         page: this.listParams.page,
+        name:this.filterList.name,
+        status:this.filterList.status
       };
-      if (this.filterList.name != "") {
-        params.name = this.filterList.name;
-      }
-      if (this.filterList.status != "") {
-        params.status = this.filterList.status;
-      }
       ADMINS_API.getAdmins(params).then((res) => {
         if (res.status == 200) {
           this.viewsList = res.data;
