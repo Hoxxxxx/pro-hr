@@ -399,7 +399,7 @@ export default {
     reset() {
       this.filterList.name = "";
       this.filterList.status = "";
-      this.search();
+      this.getAdminsList()
     },
     // 新增管理员
     addStaff() {
