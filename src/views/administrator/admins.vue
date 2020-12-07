@@ -325,7 +325,7 @@ export default {
       // 筛选列表的参数
       filterList: {
         name: "",
-        status: "",
+        status: null,
       },
       // 分页
       total: 0,
@@ -383,9 +383,13 @@ export default {
       this.listParams.page = 1
       let params = {
         page: this.listParams.page,
-        name:this.filterList.name,
-        status:this.filterList.status
       };
+      if (this.filterList.name != "") {
+        params.name = this.filterList.name;
+      }
+      if (this.filterList.status != null) {
+        params.status = this.filterList.status;
+      }
       ADMINS_API.getAdmins(params).then((res) => {
         if (res.status == 200) {
           this.viewsList = res.data;
@@ -398,8 +402,8 @@ export default {
     // 重置
     reset() {
       this.filterList.name = "";
-      this.filterList.status = "";
-      this.getAdminsList()
+      this.filterList.status = null;
+      this.search();
     },
     // 新增管理员
     addStaff() {
