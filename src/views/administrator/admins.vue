@@ -469,7 +469,6 @@ export default {
     },
     // 编辑管理员、
     edit(val) {
-      console.log(val)
       this.showEditPop = true;
       this.editID = val.id;
       let temp = [];
