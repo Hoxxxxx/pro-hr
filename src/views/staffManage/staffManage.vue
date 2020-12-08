@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList"></nav-Bar>
     <div class="menuList">
       <ul>
         <li
@@ -33,7 +33,7 @@
               @change="handleCheckedCitiesChange"
             >
               <el-checkbox
-                v-for="(key,value) in checkedBox.cities"
+                v-for="(key, value) in checkedBox.cities"
                 class="checkItem"
                 :label="key"
                 :key="value"
@@ -47,16 +47,16 @@
             v-model="adminName"
             placeholder="请输入员工姓名"
             clearable
-            style="width: 300px;border-radius: 4px"
+            style="width: 300px; border-radius: 4px"
           ></el-input>
           <div class="range">
             <span>年龄段：</span>
             <el-input
               v-model="ageMin"
               placeholder=""
-              style="width: 80px;border-radius: 4px"
+              style="width: 80px; border-radius: 4px"
             ></el-input>
-            <span style="margin:0 10px;">~</span>
+            <span style="margin: 0 10px">~</span>
             <el-input
               v-model="ageMax"
               placeholder=""
@@ -143,7 +143,7 @@
             </template>
           </el-table-column>
           <el-table-column align="center" label="员工性质" prop="type">
-            <template slot-scope="scope">
+            <!-- <template slot-scope="scope">
               <span>{{
                 scope.row.type == 1
                   ? "试用"
@@ -153,7 +153,7 @@
                   ? "离职"
                   : "在职"
               }}</span>
-            </template>
+            </template> -->
           </el-table-column>
           <el-table-column
             align="center"
@@ -180,11 +180,7 @@
             label="转正日期"
             prop="positive_time"
           ></el-table-column>
-          <el-table-column
-            label="账号状态"
-            prop="status"
-            align="center"
-          >
+          <el-table-column label="账号状态" prop="status" align="center">
             <template slot-scope="scope">
               <span
                 v-if="scope.row.status == '未开通'"
@@ -196,9 +192,7 @@
                 :style="scope.row.status | color"
                 >已开通</span
               >
-              <span v-else :style="scope.row.status | color"
-                >已停用</span
-              >
+              <span v-else :style="scope.row.status | color">已停用</span>
             </template>
           </el-table-column>
           <el-table-column label="操作" width="300px" align="center">
@@ -208,28 +202,28 @@
               >
               <el-button
                 type="text"
-                v-if="scope.row.status == 1 && scope.row.ac_open_status != 2"
+                v-if="scope.row.type == '试用'"
                 @click="positive(scope.row.id)"
                 >转正</el-button
               >
               <el-button
                 type="text"
-                v-if="scope.row.status != 3 && scope.row.ac_open_status != 2"
+                v-if="scope.row.type != '离职'"
                 @click="openDialog('departure', scope.row.id)"
                 >离职</el-button
               >
-              <el-button type="text" @click="openDialog('remove', scope.row.id)"
+              <el-button type="text" @click="deleteStaff(scope.row.id)"
                 >删除</el-button
               >
               <el-button
                 type="text"
-                v-if="scope.row.status != 3 && scope.row.ac_open_status == 0"
+                v-if="scope.row.type != '离职' && scope.row.status == '未开通'"
                 @click="openDialog('openUse', scope.row.id)"
                 >开通账号</el-button
               >
               <el-button
                 type="text"
-                v-if="scope.row.ac_open_status == 1"
+                v-if="scope.row.status != '已停用' || (scope.row.type == '离职' && scope.row.status == '已开通')"
                 @click="openDialog('stopUse', scope.row.id)"
                 >停用账号</el-button
               >
@@ -238,11 +232,7 @@
         </el-table>
       </div>
 
-      <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showDialog" width="25%" center>
-        <div class="deleteMsg" v-if="dialogType == 'remove'">
-          确定要删除该条数据？
-        </div>
+      <el-dialog :visible.sync="showDialog" width="600px" center>
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
           <span>确认后该员工不可使用账号登录进入系统</span>
@@ -252,7 +242,7 @@
             <li>
               <span>账号名称：</span>
               <el-input
-                style="width: 300px"
+                style="width: 450px"
                 placeholder="请输入账号名称"
                 v-model="name_openUse"
               ></el-input>
@@ -261,7 +251,7 @@
             <li>
               <span>密码：</span>
               <el-input
-                style="width: 300px"
+                style="width: 450px"
                 placeholder="请输入密码"
                 show-password
                 v-model="pwd_openUse"
@@ -297,7 +287,7 @@
             <li>
               <span>离职类型：</span>
               <el-select
-                style="width: 300px"
+                style="width: 450px"
                 v-model="depart"
                 placeholder="请选择离职类型"
                 class="elInput"
@@ -317,14 +307,14 @@
                 type="date"
                 placeholder="选择离职日期："
                 class="elInput"
-                style="width: 300px"
+                style="width: 450px"
               ></el-date-picker>
             </li>
             <li>
               <span>离职原因：</span>
               <el-input
                 type="textarea"
-                style="width: 300px"
+                style="width: 450px"
                 autosize
                 placeholder="请输入离职原因"
                 v-model="departReason"
@@ -340,6 +330,103 @@
             <el-button
               style="width: 95px"
               @click="extraBtnClick(1)"
+              type="primary"
+              >确 定</el-button
+            >
+          </div>
+        </div>
+      </el-dialog>
+
+      <!-- 转正弹框 -->
+      <el-dialog :visible.sync="showPositive" width="1000px" center>
+        <h3 class="positiveTitle">申请转正</h3>
+        <div class="positiveEdit">
+          <div class="baseInfo">
+            <ul class="inputBox">
+              <!-- 姓名/入职日期 -->
+              <li>
+                <div class="itemBox">
+                  <div class="labelBox">
+                    <span class="label">姓名</span>
+                  </div>
+                  <div class="elInput">{{ positiveData.name }}</div>
+                </div>
+                <div class="itemBox">
+                  <div class="labelBox">
+                    <span class="label">入职日期</span>
+                  </div>
+                  <div class="elInput">{{positiveData.entryDate}}</div>
+                </div>
+              </li>
+              <!-- 手机号 -->
+              <li>
+                <div class="itemBox">
+                  <div class="labelBox">
+                    <span class="label">手机号</span>
+                  </div>
+                  <div class="elInput">{{positiveData.mobile}}</div>
+                </div>
+              </li>
+            </ul>
+          </div>
+          <!-- 转正时间 -->
+          <div class="baseInfo">
+            <ul class="inputBoxPositive">
+              <!-- 转正时间 -->
+              <li>
+                <div class="itemBox">
+                  <div class="labelBox">
+                    <span class="redPot">&#10052;</span>
+                    <span class="label">转正时间</span>
+                  </div>
+                  <el-date-picker
+                    v-model="positiveData.positiveTime"
+                    type="date"
+                    placeholder="选择转正时间"
+                    class="elInput"
+                  ></el-date-picker>
+                </div>
+              </li>
+            </ul>
+            <!-- 工作总结 -->
+            <div class="conclusion">
+              <span class="label">工作总结</span>
+              <el-input
+                type="textarea"
+                :rows="15"
+                placeholder="请输入内容"
+                minlength="30"
+                v-model="positiveData.conclusion"
+              ></el-input>
+            </div>
+            <div class="upload">
+              <span class="label">附件</span>
+              <el-upload
+                class="upload-demo"
+                action
+                :on-remove="handleRemove"
+                :before-remove="beforeRemove"
+                :before-upload="beforeUpload"
+                :on-change="handleChange"
+                :auto-upload="false"
+                multiple
+                :file-list="positiveData.fileList"
+              >
+                <el-button size="small" type="primary" style="width: 120px"
+                  >新增附件</el-button
+                >
+              </el-upload>
+            </div>
+          </div>
+        </div>
+        <div class="extraBtns">
+          <div>
+            <el-button style="width: 95px" @click="positiveClick(0)"
+              >取 消</el-button
+            >
+            <el-button
+              style="width: 95px"
+              @click="positiveClick(1)"
               type="primary"
               >确 定</el-button
             >
@@ -367,14 +454,15 @@ import http from "../../utils/request";
 import navBar from "@/components/navBar/navBar";
 // api
 import { STAFFS_API } from "@/api/staffs";
+import { renderTime } from "@/utils/function.js";
 export default {
   filters: {
     color(val) {
       switch (val) {
-        case '未开通':
+        case "未开通":
           return `color:#F56C6C;`;
           break;
-        case '已开通':
+        case "已开通":
           return `color:#6DD400;`;
           break;
         default:
@@ -398,7 +486,6 @@ export default {
           title: "员工列表",
         },
       ],
-      title: "员工管理",
       menuList: [
         { name: "在职", val: 0, status: 0 },
         { name: "离职", val: 0, status: 3 },
@@ -414,8 +501,8 @@ export default {
         isIndeterminate: true,
       },
       adminName: "",
-      ageMin:"",//
-      ageMax:"",//
+      ageMin: "", //
+      ageMax: "", //
       status: null,
       adStatus: [
         {
@@ -461,6 +548,16 @@ export default {
       departReason: "", //离职原因
       tempId: "", //存放列表中需要执行某个操作时点击的某一项
       multipleSelection: [],
+      // 转正信息
+      showPositive: false,
+      positiveData: {
+        staff_id:"",
+        entryDate:"",
+        mobile:'',
+        positiveTime: "", //转正时间
+        conclusion: "", //工作总结
+        fileList: [], //附件
+      },
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -468,8 +565,8 @@ export default {
   },
   mounted() {
     this.getStaffList();
-    this.getFields();//获取筛选字字段
-    this.staffCount();//获取分类统计
+    this.getFields(); //获取筛选字字段
+    this.staffCount(); //获取分类统计
   },
   methods: {
     // 顶部菜单选择
@@ -477,8 +574,8 @@ export default {
       this.curIndex = index;
       this.listType = status;
       let params = {
-        type:status
-      }
+        type: status,
+      };
       this.getStaffList(params);
     },
     // 筛选功能
@@ -494,20 +591,31 @@ export default {
     },
     // 搜索
     search(type) {
+      console.log(this.checkedBox.checkedCities);
       let params = {
         name: this.adminName,
+        field: this.checkedBox.checkedCities,
       };
+      if (type == 1) {
+        params.name = "";
+        this.adminName = "";
+        this.checkedBox.checkedCities = [];
+      }
       this.getStaffList(params);
     },
     // 获取员工列表
     getStaffList(val) {
       let page = {
-        page:this.listParams.page
-      }
-      let params = {...val,...page}
+        page: this.listParams.page,
+        is_paging: 0,
+      };
+      let params = { ...val, ...page };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
           this.viewsList = res.data[0].data;
+          this.viewsList.forEach(item=>{
+            item.positive_time = renderTime(item.positive_time)
+          })
           this.total = res.data[0].total;
         } else {
         }
@@ -517,9 +625,9 @@ export default {
     getFields() {
       STAFFS_API.getFields().then((res) => {
         if (res.status == 200) {
-          let temp = []
-          for(let key in res.data){
-            temp.push(res.data[key])
+          let temp = [];
+          for (let key in res.data) {
+            temp.push(res.data[key]);
           }
           this.checkedBox.cities = temp;
         }
@@ -536,11 +644,10 @@ export default {
       this.dialogType = type;
       this.tempId = val;
       switch (type) {
-        case "remove":
-          break;
         case "stopUse":
           break;
         case "openUse":
+          console.log(val)
           for (let i = 0, len = this.viewsList.length; i < len; i++) {
             if (this.viewsList[i].id == this.tempId) {
               console.log(this.viewsList[i]);
@@ -559,10 +666,6 @@ export default {
     extraBtnClick(type) {
       if (type == 1) {
         switch (this.dialogType) {
-          case "remove":
-            this.deleteStaff();
-            this.showDialog = false;
-            break;
           case "stopUse":
             this.closeAccount();
             this.showDialog = false;
@@ -575,7 +678,6 @@ export default {
             break;
           case "departure":
             this.departure();
-            this.showDialog = false;
             break;
           default:
             break;
@@ -595,66 +697,88 @@ export default {
     },
     // 删除员工
     deleteStaff(val) {
-      let url = "",
-        params = {};
-      if (val) {
-        params.ids = val;
-        url = configUrl.deleteStaff;
-      } else {
-        url = `${configUrl.deleteStaff}/${this.tempId}`;
-      }
-      http.DELETE(url, params).then((res) => {
-        console.log(res);
-        if (res.status == 0) {
-          this.$message({
-            message: "删除成功！",
-            type: "success",
+      this.$confirm("确认删除该员工？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        closeOnClickModal: false,
+      })
+        .then(() => {
+          STAFFS_API.deleteStaff({}, val).then((res) => {
+            if (res.status == 200) {
+              this.$message({
+                message: "删除成功！",
+                type: "success",
+              });
+              this.getStaffList();
+            } else {
+              this.$message.error(res.error);
+            }
           });
-          this.getStaffList();
-        } else {
-          this.$message.error(res.error_msg[0]);
-        }
-      });
+        })
+        .catch(() => {});
     },
     // 离职
     departure() {
-      let that = this;
       let params = {
-        uid: this.tempId,
+        staff_id: this.tempId,
         turnover_type: this.depart,
         turnover_time: this.departTime,
         turnover_reason: this.departReason,
       };
-      http.POST(configUrl.departure, params).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "离职成功！",
-              type: "success",
-            });
-          }, 500);
+      STAFFS_API.turnover(params).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: "离职成功！",
+            type: "success",
+          });
+          this.showDialog = false;
           this.getStaffList();
           this.staffCount();
         } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
+          this.$message({
+            message: res.msg,
+            type: "warning",
+          });
         }
       });
     },
     // 转正
-    positive(val) {
-      this.$router.push({
-        path: "/staffMsg",
-        query: {
-          id: val,
-          index: 1,
-          status: 0,
-        },
-      });
+    async positive(val) {
+      this.showPositive = true;
+      let data = await STAFFS_API.staffInfo({}, val).then(res=>{
+        return res.data
+      })
+      this.positiveData = {
+        name:data.name,
+        mobile:data.mobile,
+        staff_id:data.id,
+        positiveTime:"",
+        conclusion:"",
+        fileList:[],
+        entryDate:data.hualu_join_time
+      }
+    },
+    positiveClick(val){
+      let params={
+        staff_id:this.positiveData.staff_id,
+        positive_time:this.positiveData.positiveTime,
+        summary:this.positiveData.conclusion,
+        attachment_url:this.positiveData.fileList
+      }
+      if(val == 0 ){
+        this.showPositive = false
+      }else{
+        STAFFS_API.positive(params).then(res=>{
+          if(res.status == 200){
+            this.$message.success('转正成功！')
+            this.showPositive = false
+            this.getStaffList()
+          }else{
+            this.$message.error(res.error.message)
+          }
+        })
+      }
     },
     // 开通账号
     openAccount() {
@@ -742,7 +866,41 @@ export default {
       this.multipleSelection = temp;
     },
     deleteSelected() {
-      this.deleteStaff(this.multipleSelection);
+      let params = {
+        ids: this.multipleSelection,
+      };
+      this.$confirm("确认删除选中的员工？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning",
+        closeOnClickModal: false,
+      })
+        .then(() => {
+          STAFFS_API.deleteStaff(params).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("删除成功！");
+              this.getStaffList();
+            } else {
+              this.$message.error("删除失败！");
+            }
+          });
+        })
+        .catch(() => {});
+    },
+    // 转正相关
+    // 文件上传
+    handleRemove(file, fileList) {
+      console.log(file, fileList);
+    },
+    handleChange(file, fileList) {
+      this.fileList = fileList;
+    },
+    beforeRemove(file, fileList) {
+      console.log(fileList);
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    beforeUpload(file, fileList) {
+      return false;
     },
   },
   components: {
@@ -826,26 +984,177 @@ export default {
         margin-bottom: 10px;
       }
     }
-    .rangeBox{
+    .rangeBox {
       position: relative;
       display: flex;
       flex-direction: row;
       align-items: center;
-      .range{
+      .range {
         margin: 0 20px;
       }
       .btnBox {
         position: absolute;
         right: 0;
 
-      .el-button {
-        height: 40px;
-      }
-      .secondary {
-        border: 1px solid #409efd;
-        color: #409efd;
+        .el-button {
+          height: 40px;
+        }
+        .secondary {
+          border: 1px solid #409efd;
+          color: #409efd;
+        }
       }
     }
+  }
+  .positiveTitle{
+      text-align: center;
+    }
+  .baseInfo {
+    border-bottom: 1px solid #f0f3f7;
+    margin-bottom: 20px;
+    
+    .inputBox {
+      margin-top: 20px;
+      li {
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        flex: 1 1 auto;
+        margin-bottom: 10px;
+        .itemBox {
+          min-width: 400px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          flex: 1 1 auto;
+          margin: 0 80px 20px 0;
+          &:last-child {
+            margin-right: 0;
+          }
+          .elInput{
+            width: 200px;
+            flex: 1 1 auto;
+          }
+          .elInput {
+            border-radius: 4px;
+            border: 1px solid #dcdfe6;
+            box-sizing: border-box;
+            color: #606266;
+            min-height: 40px;
+            line-height: 40px;
+            padding: 0 15px;
+          }
+          .labelBox {
+            width: 116px;
+            text-align:left;
+            .label {
+              color: #606266;
+              margin-right: 0;
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+    .inputBoxPositive {
+      li {
+        width: 100%;
+        margin-right: 50px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        margin-bottom: 20px;
+        .itemBox {
+          width: 480px;
+          max-width: 500px;
+          min-width: 450px;
+          display: flex;
+          flex-direction: row;
+          justify-content: space-between;
+          align-items: center;
+          margin-right: 120px;
+          .elInput {
+            width: 370px;
+          }
+          .labelBox {
+            width: 120px;
+            text-align: left;
+            .label {
+              letter-spacing: 1px;
+              color: #f56c6c;
+              font-size: 16px;
+              font-weight: bold;
+              margin-right: 2px;
+            }
+            .label {
+              color: #333333;
+              margin-right: 0;
+            }
+          }
+        }
+      }
+    }
+    .turnover {
+      margin-top: 20px;
+    }
+    .conclusion,
+    .upload {
+      display: flex;
+      flex-direction: row;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+
+      .label {
+        display: block;
+        width: 120px;
+        margin-right: 2px;
+        letter-spacing: 1px;
+        font-size: 16px;
+        font-weight: bold;
+        margin-right: 12px;
+      }
+    }
+    .upload {
+      align-items: normal;
+      justify-content: flex-start;
+      .label {
+        margin-right: 0;
+        line-height: 32px;
+      }
+      .tips {
+        font-size: 14px;
+        color: #909399;
+        font-weight: 400;
+        line-height: 32px;
+      }
+      .fileList {
+        li {
+          margin-bottom: 10px;
+          span {
+            display: inline-block;
+            height: 32px;
+            line-height: 32px;
+          }
+          .fileName {
+            font-size: 14px;
+            color: #3b4859;
+          }
+          .fileDownload {
+            width: 60px;
+            height: 20px;
+            cursor: pointer;
+            line-height: 20px;
+            color: #fff;
+            background: #409efd;
+            text-align: center;
+            border-radius: 4px;
+            margin-left: 20px;
+          }
+        }
+      }
     }
   }
 }
@@ -926,7 +1235,7 @@ export default {
           text-align: left;
         }
         .msgInput {
-          width: 300px;
+          width: 450px;
           height: 40px;
           padding: 0 15px;
           line-height: 40px;

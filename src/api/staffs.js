@@ -27,6 +27,32 @@ const staffsUrl = [
     url: 'hr/staffs',
     caller: 'addStaff',
   },
+  // 获取员工详情
+  {
+    requstType: 'get',
+    url: 'hr/staffs',
+    caller: 'staffInfo',
+  },
+  // 删除员工
+  {
+    requstType: 'delete',
+    url: 'hr/staffs',
+    caller: 'deleteStaff',
+  },
+  // 离职
+  {
+    requstType: 'post',
+    url: 'hr/staffs/turnover',
+    caller: 'turnover',
+  },
+  // 离职
+  {
+    requstType: 'post',
+    url: 'hr/staffs/positive',
+    caller: 'positive',
+  },
+  
+  
 ]
 
 const STAFFS_API = ApiFuns(staffsUrl)

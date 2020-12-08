@@ -1,777 +1,652 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList"></nav-Bar>
     <el-card class="formCard">
       <!-- 基本信息 -->
-      <div class="baseInfo">
-        <span class="title">基本信息</span>
-        <ul class="inputBox">
-          <!-- 姓名/性别 -->
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">姓名</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.name"
-                placeholder="请输入姓名"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">姓别</span>
-              </div>
-              <div class="genderBox">
-                <el-radio v-model="subParams.sex" :label="1" border style="width: 108px"
-                  >男</el-radio
+      <el-form
+        :model="ruleForm"
+        :rules="rules"
+        ref="ruleForm"
+        label-width="100px"
+        class="demo-ruleForm"
+      >
+        <div class="baseInfo">
+          <span class="title">基本信息</span>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="姓名" prop="name">
+                <el-input
+                  class="elInput"
+                  placeholder="请输入姓名"
+                  v-model="ruleForm.name"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="员工号" prop="job_number">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.job_number"
+                  placeholder="请输入员工号"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="姓别" prop="sex">
+                <el-radio-group v-model="ruleForm.sex">
+                  <el-radio border="" style="width: 90px" :label="1"
+                    >男</el-radio
+                  >
+                  <el-radio border="" style="width: 90px" :label="2"
+                    >女</el-radio
+                  >
+                </el-radio-group>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="员工性质" prop="type">
+                <el-select
+                  v-model="ruleForm.type"
+                  placeholder="请选择员工性质"
+                  class="elInput"
                 >
-                <el-radio v-model="subParams.sex" :label="2" border style="width: 108px"
-                  >女</el-radio
+                  <el-option
+                    v-for="item in fixedData.status_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="职位" prop="position_id">
+                <el-select
+                  v-model="ruleForm.position_id"
+                  multiple
+                  placeholder="请选择职位"
+                  class="elInput"
                 >
-              </div>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">员工号</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.job_number"
-                placeholder="请输入员工号"
-              ></el-input>
-            </div>
-          </li>
-          <!--  -->
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">员工性质</span>
-              </div>
-              <el-select
-                v-model="subParams.type"
-                placeholder="请选择员工性质"
-                class="elInput"
+                  <el-option
+                    v-for="(item, key) in fixedData.job_options"
+                    :key="key"
+                    :label="item.name"
+                    :value="item.id"
+                  >
+                    <span style="float: left">{{ item.name }}</span>
+                    <span
+                      style="float: right; color: #8492a6; font-size: 13px"
+                      >{{ item.p_name }}</span
+                    >
+                  </el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="职位类别" prop="position_type">
+                <el-select
+                  v-model="ruleForm.position_type"
+                  multiple
+                  placeholder="请选择职位类别"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.position_types"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="业务线" prop="lob">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.lob"
+                  placeholder="请输入业务线"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="部门" prop="department_id">
+                <el-select
+                  v-model="ruleForm.department_id"
+                  multiple
+                  placeholder="请选择部门"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.department_options"
+                    :key="item.id"
+                    :label="item.name"
+                    :value="item.id"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="身份证号" prop="card">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.card"
+                  placeholder="请输入身份证号"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="身份证有效期"
+                prop="card_valid"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.status_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">职位</span>
-              </div>
-              <el-select
-                v-model="subParams.position_id"
-                multiple
-                placeholder="请选择职位"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.card_valid"
+                  type="date"
+                  placeholder="选择身份证有效期"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="年龄" prop="age">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.age"
+                  placeholder="请输入年龄"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="所属公司">
+                <el-select
+                  v-model="ruleForm.company_id"
+                  :disabled="userInfo.is_root == 1 ? false : true"
+                  @change="companyChange"
+                  placeholder="请选择所属公司"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.company_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="baseInfo">
+          <span class="title">教育信息</span>
+          <h5 class="innerTitle">全日制教育</h5>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="学校名称" prop="full_school">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.full_school"
+                  placeholder="请输入学校名称"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="专业" prop="full_major">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.full_major"
+                  placeholder="请输入专业"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="学历" prop="full_education">
+                <el-select
+                  v-model="ruleForm.full_education"
+                  placeholder="请选择学历"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.study_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="学位" prop="full_degree">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.full_degree"
+                  placeholder="请输入学位"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="毕业时间" prop="full_graduation_time">
+                <el-date-picker
+                  v-model="ruleForm.full_graduation_time"
+                  type="date"
+                  placeholder="选择毕业时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <h5 class="innerTitle">在职教育</h5>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="学校名称" prop="part_school">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.part_school"
+                  placeholder="请输入学校名称"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="专业" prop="part_major">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.part_major"
+                  placeholder="请输入专业"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="学历" prop="part_education">
+                <el-select
+                  v-model="ruleForm.part_education"
+                  placeholder="请选择学历"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.study_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="学位" prop="part_degree">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.part_degree"
+                  placeholder="请输入学位"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="毕业时间" prop="part_graduation_time">
+                <el-date-picker
+                  v-model="ruleForm.part_graduation_time"
+                  type="date"
+                  placeholder="选择毕业时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="baseInfo">
+          <span class="title">工作信息</span>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="职称" prop="professional">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.professional"
+                  placeholder="请输入职称"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="职称级别" prop="professional_level">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.professional_level"
+                  placeholder="请输入职称级别"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="参工时间" prop="work_time">
+                <el-date-picker
+                  v-model="ruleForm.work_time"
+                  type="date"
+                  placeholder="选择参工时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="华录入职时间" prop="hualu_join_time">
+                <el-date-picker
+                  v-model="ruleForm.hualu_join_time"
+                  type="date"
+                  placeholder="选择华录入职时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="新媒入职时间" prop="newmedia_join_time">
+                <el-date-picker
+                  v-model="ruleForm.newmedia_join_time"
+                  type="date"
+                  placeholder="选择新媒入职时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="劳动合同到期时间"
+                prop="labor_contract_deadline"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.job_options"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">职位类别</span>
-              </div>
-              <el-select
-                v-model="subParams.position_type"
-                multiple
-                placeholder="请选择职位类别"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.labor_contract_deadline"
+                  type="date"
+                  placeholder="选择劳动合同到期时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="第一期劳动合同到期时间"
+                prop="first_labor_contract_deadline"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.position_types"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">业务线</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.lob"
-                placeholder="请输入业务线内容"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">部门</span>
-              </div>
-              <el-select
-                v-model="subParams.department_id"
-                multiple
-                placeholder="请选择部门"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.first_labor_contract_deadline"
+                  type="date"
+                  placeholder="选择第一期劳动合同到期时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="第二期劳动合同到期时间"
+                prop="second_labor_contract_deadline"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.department_options"
-                  :key="item.id"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">身份证号</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.card"
-                placeholder="请输入身份证号"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">身份证有效期</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.card_valid"
-                type="date"
-                placeholder="选择身份证有效期"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">年龄</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.age"
-                placeholder="请输入年龄"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">所属公司</span>
-              </div>
-              <el-select
-                v-model="subParams.company_id"
-                :disabled="userInfo.is_root == 1 ? false : true"
-                @change="companyChange"
-                placeholder="请选择所属公司"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.second_labor_contract_deadline"
+                  type="date"
+                  placeholder="选择第二期劳动合同到期时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="第三期劳动合同到期时间"
+                prop="third_labor_contract_deadline"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.company_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!-- 教育信息 -->
-      <div class="baseInfo">
-        <span class="title">教育信息</span>
-        <h5 class="innerTitle">全日制教育</h5>
-        <ul class="inputBox">
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学校名称</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.full_school"
-                placeholder="请输入学校名称"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">专业</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.full_major"
-                placeholder="请输入专业"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学历</span>
-              </div>
-              <el-select
-                v-model="subParams.full_education"
-                placeholder="请选择学历"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.third_labor_contract_deadline"
+                  type="date"
+                  placeholder="选择劳动合同到期时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="预计试用期截止时间"
+                prop="trial_deadline"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.study_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学位</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.full_degree"
-                placeholder="请输入学位"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">毕业时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.full_graduation_time"
-                type="date"
-                placeholder="选择毕业时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-          </li>
-        </ul>
-        <h5 class="innerTitle">在职教育</h5>
-        <ul class="inputBox">
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学校名称</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.part_school"
-                placeholder="请输入学校名称"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">专业</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.part_major"
-                placeholder="请输入专业"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学历</span>
-              </div>
-              <el-select
-                v-model="subParams.part_education"
-                placeholder="请选择学历"
-                class="elInput"
+                <el-date-picker
+                  v-model="ruleForm.trial_deadline"
+                  type="date"
+                  placeholder="选择预计试用期截止时间"
+                  class="elInput"
+                ></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+        <div class="baseInfo">
+          <span class="title">其他信息</span>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="婚姻状况" prop="marriage">
+                <el-select
+                  v-model="ruleForm.marriage"
+                  placeholder="请选择婚姻状况"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.marrige_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="民族" prop="nation">
+                <el-select
+                  v-model="ruleForm.nation"
+                  placeholder="请选择民族"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.nation_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="政治面貌" prop="politics">
+                <el-select
+                  v-model="ruleForm.politics"
+                  placeholder="请选择政治面貌"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.politics_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="党群关系" prop="party_masses_relation">
+                <el-select
+                  v-model="ruleForm.party_masses_relation"
+                  placeholder="请选择党群关系"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.masses_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="工会关系" prop="union_relation">
+                <el-select
+                  v-model="ruleForm.union_relation"
+                  placeholder="请选择工会关系"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.masses_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="籍贯" prop="native_place">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.native_place"
+                  placeholder="请输入籍贯"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="户口所在地" prop="domicile_place">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.domicile_place"
+                  placeholder="请输入户口所在地"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="户口性质" prop="category">
+                <el-select
+                  v-model="ruleForm.category"
+                  placeholder="请选择户口性质"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.category_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="社保情况" prop="social_security">
+                <el-select
+                  v-model="ruleForm.social_security"
+                  placeholder="请选择社保情况"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.social_security_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="公积金情况" prop="accumulation_fund">
+                <el-select
+                  v-model="ruleForm.accumulation_fund"
+                  placeholder="请选择公积金情况"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="item in fixedData.social_security_options"
+                    :key="item.value"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="手机号" prop="mobile">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.mobile"
+                  placeholder="请输入手机号"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="公司邮箱" prop="company_email">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.company_email"
+                  placeholder="请输入公司邮箱"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="个人邮箱" prop="personal_email">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.personal_email"
+                  placeholder="请输入个人邮箱"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="可收信件地址" prop="mail_address">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.mail_address"
+                  placeholder="请输入可收信件地址"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="紧急联系人" prop="emergency_contact">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.emergency_contact"
+                  placeholder="请输入紧急联系人"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item
+                label="紧急联系电话"
+                prop="emergency_mobile"
+                class="label"
               >
-                <el-option
-                  v-for="item in fixedData.study_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">学位</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.part_degree"
-                placeholder="请输入学位"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">毕业时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.part_graduation_time"
-                type="date"
-                placeholder="选择毕业时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-          </li>
-        </ul>
-        <h5 class="innerTitle">其他</h5>
-        <ul class="inputBox">
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">留学</span>
-              </div>
-              <el-select
-                v-model="subParams.abroad"
-                placeholder="是否留学"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.abroad_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">英语水平</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.english_level"
-                placeholder="请输入英语水平"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!-- 工作信息 -->
-      <div class="baseInfo">
-        <span class="title">工作信息</span>
-        <ul class="inputBox">
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">职称</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.professional"
-                placeholder="请输入职称"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">职称级别</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.professional_level"
-                placeholder="请输入职称级别"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">参工时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.work_time"
-                type="date"
-                placeholder="选择参工时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">华录入职时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.hualu_join_time"
-                type="date"
-                placeholder="选择华录入职时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">新媒入职时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.newmedia_join_time"
-                type="date"
-                placeholder="选择新媒入职时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">劳动合同到期时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.labor_contract_deadline"
-                type="date"
-                placeholder="选择劳动合同到期时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">第一期劳动合同到期时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.first_labor_contract_deadline"
-                type="date"
-                placeholder="选择华录入职时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">第二期劳动合同到期时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.second_labor_contract_deadline"
-                type="date"
-                placeholder="选择新媒入职时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">第三期劳动合同到期时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.third_labor_contract_deadline"
-                type="date"
-                placeholder="选择劳动合同到期时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">预计试用期截止时间</span>
-              </div>
-              <el-date-picker
-                v-model="subParams.trial_deadline"
-                type="date"
-                placeholder="选择参工时间"
-                class="elInput"
-              ></el-date-picker>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!--  -->
-      <div class="baseInfo">
-        <span class="title">其他信息</span>
-        <ul class="inputBox">
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">婚姻状况</span>
-              </div>
-              <el-select
-                v-model="subParams.marriage"
-                placeholder="请选择婚姻状况"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.marrige_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">民族</span>
-              </div>
-              <el-select
-                v-model="subParams.nation"
-                placeholder="请选择民族"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.nation_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">政治面貌</span>
-              </div>
-              <el-select
-                v-model="subParams.politics"
-                placeholder="请选择政治面貌"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.politics_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">党群关系</span>
-              </div>
-              <el-select
-                v-model="subParams.party_masses_relation"
-                placeholder="请选择党群关系"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.masses_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">工会关系</span>
-              </div>
-              <el-select
-                v-model="subParams.union_relation"
-                placeholder="请选择工会关系"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.masses_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">籍贯</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.native_place"
-                placeholder="请输入籍贯"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">户口所在地</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.domicile_place"
-                placeholder="请输入户口所在地"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">户口性质</span>
-              </div>
-              <el-select
-                v-model="subParams.category"
-                placeholder="请选择户口性质"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.category_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">社保情况</span>
-              </div>
-              <el-select
-                v-model="subParams.social_security"
-                placeholder="请选择社保情况"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.social_security_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">公积金情况</span>
-              </div>
-              <el-select
-                v-model="subParams.accumulation_fund"
-                placeholder="请选择公积金情况"
-                class="elInput"
-              >
-                <el-option
-                  v-for="item in fixedData.social_security_options"
-                  :key="item.value"
-                  :label="item.label"
-                  :value="item.value"
-                ></el-option>
-              </el-select>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">手机号</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.mobile"
-                placeholder="请输入手机号"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">公司邮箱</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.company_email"
-                placeholder="请输入公司邮箱"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">个人邮箱</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.personal_email"
-                placeholder="请输入个人邮箱"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">可收信件地址</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.mail_address"
-                placeholder="请输入可收信件地址"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">紧急联系人</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.emergency_contact"
-                placeholder="请输入紧急联系人"
-              ></el-input>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot">*</span>
-                <span class="label">紧急联系电话</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.emergency_mobile"
-                placeholder="请输入紧急联系电话"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">第二联系电话</span>
-              </div>
-              <el-input
-                class="elInput"
-                v-model="subParams.second_mobile"
-                placeholder="请输入第二联系电话"
-              ></el-input>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox"></div>
-              <div class="elInput"></div>
-            </div>
-          </li>
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">备注</span>
-              </div>
-              <el-input
-                class="areaInput"
-                type="textarea"
-                :autosize="{ minRows: 2, maxRows: 4 }"
-                v-model="subParams.remark"
-                placeholder="请输入备注"
-              ></el-input>
-            </div>
-          </li>
-        </ul>
-      </div>
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.emergency_mobile"
+                  placeholder="请输入紧急联系电话"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="第二联系电话" prop="second_mobile">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.second_mobile"
+                  placeholder="请输入第二联系电话"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="备注" prop="remark">
+                <el-input
+                  class="elInput"
+                  type="textarea"
+                  :autosize="{ minRows: 2, maxRows: 4 }"
+                  v-model="ruleForm.remark"
+                  placeholder="请输入备注"
+                ></el-input>
+              </el-form-item>
+            </el-col>
+          </el-row>
+        </div>
+      </el-form>
       <div class="btnBox">
         <div class="btns">
           <el-button style="width: 95px" @click="addStaff(0)">取消</el-button>
@@ -786,12 +661,12 @@
 
 <script>
 import http from "../../utils/request";
-// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
 import { mapState } from "vuex";
 import { STAFFS_API } from "@/api/staffs";
-import { DEPART_API } from "@/api/department"
-import {POSI_API} from "@/api/positions"
+import { DEPART_API } from "@/api/department";
+import { POSI_API } from "@/api/positions";
+import { renderTime } from "@/utils/function.js";
 export default {
   data() {
     return {
@@ -802,16 +677,12 @@ export default {
           title: "员工管理",
         },
         {
-          title: "新增员工",
+          title: "",
         },
       ],
-      title: "新增员工",
-      //   表单数据
-      //基本信息
-      staffId: "", //员工id（从员工信息页面跳转过来会有此值）
-      subParams: {
+      ruleForm: {
         name: "", //姓名
-        gender: null,
+        sex: "",
         job_number: "", //工号
         type: "", //性质  1：试用 2：正式 3:离职
         position_id: [], //职位id
@@ -862,8 +733,84 @@ export default {
         emergency_mobile: "", //紧急联系电话
         second_mobile: "", //第二联系电话
         remark: "", //备注
-        attachment_url: [], //附件地址
+        attachment_url: "", //附件地址
       },
+      rules: {
+        name: [
+          { required: true, message: "请输入姓名", trigger: "blur" },
+          { min: 3, max: 5, message: "长度在 3 到 5 个字符", trigger: "blur" },
+        ],
+        sex: [{ required: true, message: "请选择性别", trigger: "change" }],
+        job_number: [
+          { required: true, message: "请输入员工号", trigger: "blur" },
+        ],
+        type: [
+          { required: true, message: "请选择员工性质", trigger: "change" },
+        ],
+        position_id: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个职位",
+            trigger: "change",
+          },
+        ],
+        position_type: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个职位类别",
+            trigger: "change",
+          },
+        ],
+        lob: [{ required: true, message: "请输入业务线", trigger: "blur" }],
+        department_id: [
+          {
+            type: "array",
+            required: true,
+            message: "请至少选择一个部门",
+            trigger: "change",
+          },
+        ],
+        card: [{ required: true, message: "请输入身份证号", trigger: "blur" }],
+        card_valid: [
+          {
+            type: "date",
+            required: true,
+            message: "请选择身份证有效期",
+            trigger: "change",
+          },
+        ],
+        age: [{ required: true, message: "请输入年龄", trigger: "blur" }],
+        native_place: [
+          { required: true, message: "请输入籍贯", trigger: "blur" },
+        ],
+        domicile_place: [
+          { required: true, message: "请输入户口所在地", trigger: "blur" },
+        ],
+        category: [
+          { required: true, message: "请选择户口性质", trigger: "change" },
+        ],
+        social_security: [
+          { required: true, message: "请选择社保情况", trigger: "change" },
+        ],
+        accumulation_fund: [
+          { required: true, message: "请选择公积金情况", trigger: "change" },
+        ],
+        mobile: [{ required: true, message: "请输入手机号", trigger: "blur" }],
+        company_email: [
+          { required: true, message: "请输入公司邮箱", trigger: "blur" },
+        ],
+        emergency_contact: [
+          { required: true, message: "请输入紧急联系人", trigger: "blur" },
+        ],
+        emergency_mobile: [
+          { required: true, message: "请输入紧急联系电话", trigger: "blur" },
+        ],
+      },
+      //   表单数据
+      //基本信息
+      staffId: "", //员工id（从员工信息页面跳转过来会有此值）
       fixedData: {
         // 员工性质
         status_options: [
@@ -903,7 +850,7 @@ export default {
             label: "业务类",
           },
         ],
-        
+
         // 公司
         company_options: [
           {
@@ -1000,8 +947,8 @@ export default {
             label: "硕士",
           },
         ],
-        department_options:[],
-        job_options:[],
+        department_options: [],
+        job_options: [],
       }, //
       saveType: "", //保存类型（编辑保存/新增保存）
     };
@@ -1010,14 +957,14 @@ export default {
     ...mapState(["userInfo"]),
   },
   created() {
-    // this.staffId = this.$route.query.id;
-    // this.saveType = this.$route.query.saveType;
-    // this.company = this.userInfo.company_id;
+    this.staffId = this.$route.query.id;
+    this.saveType = this.$route.query.saveType;
+    this.company = this.userInfo.company_id;
     if (this.staffId && this.staffId != "") {
       this.getStaffInfo();
-      this.title = "编辑员工";
+      this.breadList[1].title = "编辑员工";
     } else {
-      console.log("从新增页面跳转过来");
+      this.breadList[1].title = '新增员工'
     }
   },
   mounted() {
@@ -1026,17 +973,24 @@ export default {
   },
   methods: {
     addStaff(type) {
-      console.log(this.subParams)
+      this.ruleForm.job_number = parseInt(this.ruleForm.job_number)
       if (type == 0) {
         history.go(-1);
       } else {
-        STAFFS_API.addStaff(this.subParams).then(res=>{
-          if(res.status == 200){
-            this.$message.success('添加成功！')
-          }else{
-            this.$message.error(res.error.message)
+        this.$refs["ruleForm"].validate((valid) => {
+          if (valid) {
+            STAFFS_API.addStaff(this.ruleForm).then((res) => {
+              if (res.status == 200) {
+                this.$message.success("添加成功！");
+              } else {
+                this.$message.error(res.error.message);
+              }
+            });
+          } else {
+            console.log("error submit!!");
+            return false;
           }
-        })
+        });
       }
     },
     //保存添加
@@ -1081,65 +1035,46 @@ export default {
     // 获取部门列表
     getDepart(val) {
       let params = {
-        page:1
+        is_paging: 1,
       };
       DEPART_API.getDeparts(params).then((res) => {
-        if(res.status == 200){
+        if (res.status == 200) {
           this.fixedData.department_options = res.data;
-        }else{
-          console.log('获取部门失败！')
+        } else {
+          console.log("获取部门失败！");
         }
       });
     },
     // 获取职位列表
     getPosis(val) {
       let params = {
-        page:1
+        is_paging: 1,
       };
       POSI_API.getPositions(params).then((res) => {
-        if(res.status == 200){
+        if (res.status == 200) {
           this.fixedData.job_options = res.data;
-          let temp = [{
-            id: 0,
-            name: "职位1",
-          },
-          {
-            id: 1,
-            name: "职位2",
-          },]
-          this.fixedData.job_options = temp
-        }else{
-          console.log('获取职位失败！')
+        } else {
+          console.log("获取职位失败！");
         }
       });
     },
     // 获取员工信息
     getStaffInfo() {
-      http.GET(`${configUrl.getStaffList}/${this.staffId}`).then((res) => {
-        if (res.status == 0) {
-          let info = res.data;
-          this.name = info.name;
-          this.gender = info.sex;
-          this.phone = info.mobile;
-          this.idCard = info.card;
-          this.birthday = info.birthday;
-          this.email = info.email;
-          this.status = info.status;
-          this.company = JSON.parse(info.company_id);
-          this.department = JSON.parse(info.department_id);
-          this.job = JSON.parse(info.position_id);
-          this.entryTime = info.entry_time;
-          this.positiveTime = info.positive_time;
-          this.probation = info.trial_period;
-          this.workNum = info.job_number;
-          this.marrige = info.marriage;
-          this.study = info.education;
-          this.emergency = info.emergency_contact;
+      STAFFS_API.staffInfo({}, this.staffId).then((res) => {
+        if (res.status == 200) {
+          this.ruleForm = res.data;
+          let a = [];//职位
+          let b = [];//部门
+          res.data.position.forEach(item=>{
+            a.push(item.id)
+          })
+          this.$set(this.ruleForm,'position_id',a)
+          res.data.department.forEach(item=>{
+            b.push(item.id)
+          })
+          this.$set(this.ruleForm,'department_id',b)
         } else {
-          this.$message({
-            message: "获取员工信息失败！",
-            type: "warning",
-          });
+          this.$message.error("员工信息获取失败！");
         }
       });
     },
@@ -1155,72 +1090,14 @@ export default {
 };
 </script>
 
-<style lang="less" scoped>
+<style lang="less" >
 .staffManage {
   .formCard {
     margin: 20px;
-    padding: 20px 40px;
-    .title {
-      font-size: 16px;
-      color: #999999;
-    }
+    padding: 20px;
     .baseInfo {
       border-bottom: 1px solid #f0f3f7;
       margin-bottom: 20px;
-      .inputBox {
-        margin-top: 20px;
-        li {
-          display: flex;
-          flex-direction: row;
-          align-items: center;
-          justify-content: space-between;
-          flex: 1 1 auto;
-          margin-bottom: 10px;
-          .itemBox {
-            min-width: 400px;
-            display: flex;
-            flex-direction: row;
-            justify-content: space-between;
-            align-items: center;
-            flex: 1 1 auto;
-            margin: 0 80px 20px 0;
-            &:last-child {
-              margin-right: 0;
-            }
-            .elInput,
-            .genderBox {
-              width: 200px;
-              flex: 1 1 auto;
-            }
-            .areaInput {
-              width: 500px;
-              flex: 1 1 auto;
-            }
-            // .genderBox {
-            //   width: 370px;
-            //   flex: 1 1 auto;
-            // }
-            .labelBox {
-              width: 120px;
-              margin-right: 20px;
-              text-align: right;
-              .redPot,
-              .label {
-                letter-spacing: 1px;
-                color: #f56c6c;
-                font-size: 20px;
-                font-weight: bold;
-                margin-right: 2px;
-              }
-              .label {
-                color: #333333;
-                margin-right: 0;
-                font-size: 16px;
-              }
-            }
-          }
-        }
-      }
     }
     .btnBox {
       .btns {
@@ -1233,12 +1110,27 @@ export default {
         justify-content: space-evenly;
       }
     }
-    .innerTitle {
-      margin-top: 20px;
-      font-size: 14px;
-      padding-left: 30px;
-      color: #999999;
+  }
+
+  .elInput {
+    width: 90%;
+  }
+  .title {
+    display: block;
+    font-size: 16px;
+    color: #999999;
+    margin-bottom: 20px;
+  }
+  .innerTitle {
+    font-size: 14px;
+    padding-left: 20px;
+    color: #999999;
+    margin-bottom: 20px;
+  }
+  .label {
+    .el-form-item__label {
+      line-height: 20px;
     }
   }
 }
-</style>
+</style> 
