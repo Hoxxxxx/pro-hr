@@ -28,8 +28,14 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="集团作业号"
+            label="集团凭证号"
             prop="fhd01"
+            min-width="100px"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="集团作业号"
+            prop="fhd12"
             min-width="100px"
           ></el-table-column>
           <el-table-column

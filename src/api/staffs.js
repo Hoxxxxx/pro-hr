@@ -21,11 +21,17 @@ const staffsUrl = [
     url: 'hr/staffs/typeCount',
     caller: 'staffsCount',
   },
-  // 获取待查字段列表
+  // 新增员工
   {
     requstType: 'post',
     url: 'hr/staffs',
     caller: 'addStaff',
+  },
+  // 修改员工
+  {
+    requstType: 'put',
+    url: 'hr/staffs',
+    caller: 'changeStaff',
   },
   // 获取员工详情
   {

@@ -51,8 +51,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.status_options"
-                    :key="item.value"
+                    v-for="(item, typeIndex) in fixedData.status_options"
+                    :key="typeIndex"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -68,8 +68,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="(item, key) in fixedData.job_options"
-                    :key="key"
+                    v-for="(item, positionIndex) in fixedData.job_options"
+                    :key="positionIndex"
                     :label="item.name"
                     :value="item.id"
                   >
@@ -91,8 +91,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.position_types"
-                    :key="item.value"
+                    v-for="(item, posiType) in fixedData.position_types"
+                    :key="posiType"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -117,8 +117,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.department_options"
-                    :key="item.id"
+                    v-for="(item, depaIndex) in fixedData.department_options"
+                    :key="depaIndex"
                     :label="item.name"
                     :value="item.id"
                   ></el-option>
@@ -144,6 +144,8 @@
                   v-model="ruleForm.card_valid"
                   type="date"
                   placeholder="选择身份证有效期"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -167,8 +169,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.company_options"
-                    :key="item.value"
+                    v-for="(item, companyIndex) in fixedData.company_options"
+                    :key="companyIndex"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -207,8 +209,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.study_options"
-                    :key="item.value"
+                    v-for="(item, studyIndex) in fixedData.study_options"
+                    :key="studyIndex"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -230,6 +232,8 @@
                   v-model="ruleForm.full_graduation_time"
                   type="date"
                   placeholder="选择毕业时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -263,8 +267,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.study_options"
-                    :key="item.value"
+                    v-for="(item, studyOp) in fixedData.study_options"
+                    :key="studyOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -286,8 +290,38 @@
                   v-model="ruleForm.part_graduation_time"
                   type="date"
                   placeholder="选择毕业时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <h5 class="innerTitle">其他</h5>
+          <el-row>
+            <el-col :span="8">
+              <el-form-item label="留学" prop="abroad">
+                <el-select
+                  v-model="ruleForm.abroad"
+                  placeholder="是否留学"
+                  class="elInput"
+                >
+                  <el-option
+                    v-for="(item, abroadOp) in fixedData.abroad_options"
+                    :key="abroadOp"
+                    :label="item.label"
+                    :value="item.value"
+                  ></el-option>
+                </el-select>
+              </el-form-item>
+            </el-col>
+            <el-col :span="8">
+              <el-form-item label="英语水平" prop="english_level">
+                <el-input
+                  class="elInput"
+                  v-model="ruleForm.english_level"
+                  placeholder="请输入英语水平"
+                ></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -319,6 +353,8 @@
                   v-model="ruleForm.work_time"
                   type="date"
                   placeholder="选择参工时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -329,6 +365,8 @@
                   v-model="ruleForm.hualu_join_time"
                   type="date"
                   placeholder="选择华录入职时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -339,6 +377,8 @@
                   v-model="ruleForm.newmedia_join_time"
                   type="date"
                   placeholder="选择新媒入职时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -353,6 +393,8 @@
                   v-model="ruleForm.labor_contract_deadline"
                   type="date"
                   placeholder="选择劳动合同到期时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -367,6 +409,8 @@
                   v-model="ruleForm.first_labor_contract_deadline"
                   type="date"
                   placeholder="选择第一期劳动合同到期时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -381,6 +425,8 @@
                   v-model="ruleForm.second_labor_contract_deadline"
                   type="date"
                   placeholder="选择第二期劳动合同到期时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -395,6 +441,8 @@
                   v-model="ruleForm.third_labor_contract_deadline"
                   type="date"
                   placeholder="选择劳动合同到期时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -409,6 +457,8 @@
                   v-model="ruleForm.trial_deadline"
                   type="date"
                   placeholder="选择预计试用期截止时间"
+                  format="yyyy-MM-dd"
+                  value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
                 ></el-date-picker>
               </el-form-item>
@@ -426,8 +476,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.marrige_options"
-                    :key="item.value"
+                    v-for="(item, marriageOp) in fixedData.marrige_options"
+                    :key="marriageOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -442,8 +492,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.nation_options"
-                    :key="item.value"
+                    v-for="(item, nationOp) in fixedData.nation_options"
+                    :key="nationOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -458,8 +508,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.politics_options"
-                    :key="item.value"
+                    v-for="(item, politicsOp) in fixedData.politics_options"
+                    :key="politicsOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -474,8 +524,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.masses_options"
-                    :key="item.value"
+                    v-for="(item, massesOp) in fixedData.masses_options"
+                    :key="massesOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -490,8 +540,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.masses_options"
-                    :key="item.value"
+                    v-for="(item, unionOp) in fixedData.masses_options"
+                    :key="unionOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -524,8 +574,8 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.category_options"
-                    :key="item.value"
+                    v-for="(item, categoryOp) in fixedData.category_options"
+                    :key="categoryOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -540,8 +590,10 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.social_security_options"
-                    :key="item.value"
+                    v-for="(
+                      item, socialOp
+                    ) in fixedData.social_security_options"
+                    :key="socialOp"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -556,8 +608,10 @@
                   class="elInput"
                 >
                   <el-option
-                    v-for="item in fixedData.social_security_options"
-                    :key="item.value"
+                    v-for="(
+                      item, accumulation_fund
+                    ) in fixedData.social_security_options"
+                    :key="accumulation_fund"
                     :label="item.label"
                     :value="item.value"
                   ></el-option>
@@ -682,28 +736,28 @@ export default {
       ],
       ruleForm: {
         name: "", //姓名
-        sex: "",
+        sex: null,
         job_number: "", //工号
-        type: "", //性质  1：试用 2：正式 3:离职
+        type: null, //性质  1：试用 2：正式 3:离职
         position_id: [], //职位id
         position_type: [], //职位类别 0：高管 1：职能类 2：职能支撑类 3：业务支撑类 4：业务类
         lob: "", //业务线
         department_id: [], //部门id
         card: "", //身份证号
         card_valid: "", //日期
-        age: "", //年龄
-        company_id: "", //公司 1：北京公司 2：成都公司 3：上海公司
+        age: null, //年龄
+        company_id: 2, //公司 1：北京公司 2：成都公司 3：上海公司
         full_school: "", //全日制学校名称
         full_major: "", //全日制专业
-        full_education: "", //全日制学历
+        full_education: 0, //全日制学历
         full_degree: "", //全日制学位
         full_graduation_time: "", //全日制毕业时间
         part_school: "", //在职教育学校名称
         part_major: "", //在职教育专业
-        part_education: "", //在职教育学历
+        part_education: 0, //在职教育学历
         part_degree: "", //在职教育学位
         part_graduation_time: "", //在职教育毕业时间
-        abroad: "", //留学信息 0：是 1：否
+        abroad: "", //留学信息 0：未知 1：是 2：否
         english_level: "", //英语水平
         professional: "", //职称
         professional_level: "", //职称级别
@@ -715,11 +769,11 @@ export default {
         second_labor_contract_deadline: "", //第二期劳动合同到期时间
         third_labor_contract_deadline: "", //第三期劳动合同到期时间
         trial_deadline: "", //预计使用期截止时间
-        marriage: "", //婚姻 0：未婚 1：已婚
-        nation: "", //民族 0：汉族 1：少数民族
-        politics: "", //政治面貌 0：党员 1：团员 2：群众
-        party_masses_relation: "", //党群关系 0：已转出 1：已转入 2：未转入
-        union_relation: "", //工会关系 0：已转出 1：已转入 2：未转入
+        marriage: 0, //婚姻  0：未知 1：已婚 2：未婚
+        nation: 0, //民族  0：未知 1：少数民族 2：汉族
+        politics: 2, //政治面貌  0：党员 1：团员 2：群众
+        party_masses_relation: 0, //党群关系  0：未知 1：已转出 2：已转入 3：未转入
+        union_relation: 0, //工会关系 0：未知 1：已转出 2：已转入 3：未转入
         native_place: "", //籍贯
         domicile_place: "", //户口所在地
         category: "", //户口性质 0：城镇 1：农村
@@ -775,7 +829,7 @@ export default {
         card: [{ required: true, message: "请输入身份证号", trigger: "blur" }],
         card_valid: [
           {
-            type: "date",
+            type: "string",
             required: true,
             message: "请选择身份证有效期",
             trigger: "change",
@@ -868,12 +922,14 @@ export default {
         ],
         // 留学信息
         abroad_options: [
-          { value: 0, label: "是" },
-          { value: 1, label: "否" },
+          { value: 0, label: "未知" },
+          { value: 1, label: "是" },
+          { value: 2, label: "否" },
         ],
         nation_options: [
-          { value: 0, label: "汉族" },
+          { value: 2, label: "汉族" },
           { value: 1, label: "少数民族" },
+          { value: 0, label: "未知" },
         ],
         politics_options: [
           { value: 0, label: "党员 " },
@@ -881,8 +937,9 @@ export default {
           { value: 2, label: "群众" },
         ],
         masses_options: [
-          { value: 0, label: "已转出 " },
-          { value: 1, label: "已转入" },
+          { value: 0, label: "未知" },
+          { value: 1, label: "已转出" },
+          { value: 2, label: "已转入" },
           { value: 2, label: "未转入" },
         ],
         category_options: [
@@ -926,25 +983,41 @@ export default {
         marrige_options: [
           {
             value: 0,
-            label: "未婚",
+            label: "未知",
           },
           {
             value: 1,
+            label: "未婚",
+          },
+          {
+            value: 2,
             label: "已婚",
           },
         ],
         study_options: [
           {
             value: 0,
-            label: "专科",
+            label: "未知",
           },
           {
             value: 1,
-            label: "本科",
+            label: "专科",
           },
           {
             value: 2,
+            label: "本科",
+          },
+          {
+            value: 3,
             label: "硕士",
+          },
+          {
+            value: 4,
+            label: "博士",
+          },
+          {
+            value: 5,
+            label: "专科以下",
           },
         ],
         department_options: [],
@@ -964,7 +1037,7 @@ export default {
       this.getStaffInfo();
       this.breadList[1].title = "编辑员工";
     } else {
-      this.breadList[1].title = '新增员工'
+      this.breadList[1].title = "新增员工";
     }
   },
   mounted() {
@@ -973,63 +1046,38 @@ export default {
   },
   methods: {
     addStaff(type) {
-      this.ruleForm.job_number = parseInt(this.ruleForm.job_number)
       if (type == 0) {
         history.go(-1);
       } else {
-        this.$refs["ruleForm"].validate((valid) => {
-          if (valid) {
-            STAFFS_API.addStaff(this.ruleForm).then((res) => {
+        if (this.saveType == "edit") {
+          console.log(this.saveType)
+          STAFFS_API.changeStaff(this.ruleForm, this.staffId).then((res) => {
               if (res.status == 200) {
-                this.$message.success("添加成功！");
+                this.$message.success("编辑成功！");
+                setTimeout(function () {
+                  history.go(-1);
+                }, 500);
               } else {
                 this.$message.error(res.error.message);
               }
-            });
-          } else {
-            console.log("error submit!!");
-            return false;
-          }
-        });
-      }
-    },
-    //保存添加
-    saveAdd(val) {
-      let that = this;
-      if (this.saveType == "edit") {
-        http.PUT(`/api/users/${this.staffId}`, val).then((res) => {
-          if (res.status == 0) {
-            this.$message({
-              message: "保存成功！",
-              type: "success",
-            });
-            setTimeout(function () {
-              history.go(-1);
-            }, 500);
-          } else {
-            this.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }
-        });
-      } else {
-        http.POST(configUrl.addStaff, val).then((res) => {
-          if (res.status == 0) {
-            this.$message({
-              message: "添加成功！",
-              type: "success",
-            });
-            setTimeout(function () {
-              history.go(-1);
-            }, 500);
-          } else {
-            this.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }
-        });
+            }
+          );
+        } else {
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              STAFFS_API.addStaff(this.ruleForm).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("添加成功！");
+                } else {
+                  this.$message.error(res.error.message);
+                }
+              });
+            } else {
+              console.log("error submit!!");
+              return false;
+            }
+          });
+        }
       }
     },
     // 获取部门列表
@@ -1062,17 +1110,51 @@ export default {
     getStaffInfo() {
       STAFFS_API.staffInfo({}, this.staffId).then((res) => {
         if (res.status == 200) {
-          this.ruleForm = res.data;
-          let a = [];//职位
-          let b = [];//部门
-          res.data.position.forEach(item=>{
-            a.push(item.id)
-          })
-          this.$set(this.ruleForm,'position_id',a)
-          res.data.department.forEach(item=>{
-            b.push(item.id)
-          })
-          this.$set(this.ruleForm,'department_id',b)
+          for(let key in this.ruleForm){
+            this.ruleForm[key] = res.data[key]
+          }
+          if (res.data.first_labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.ruleForm.first_labor_contract_deadline = "";
+          }
+          if (res.data.full_graduation_time == "1970-01-01 08:00:00") {
+            this.ruleForm.full_graduation_time = "";
+          }
+          if (res.data.hualu_join_time == "1970-01-01 08:00:00") {
+            this.ruleForm.hualu_join_time = "";
+          }
+          if (res.data.labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.ruleForm.labor_contract_deadline = "";
+          }
+          if (res.data.newmedia_join_time == "1970-01-01 08:00:00") {
+            this.ruleForm.newmedia_join_time = "";
+          }
+          if (res.data.part_graduation_time == "1970-01-01 08:00:00") {
+            this.ruleForm.part_graduation_time = "";
+          }
+          if (
+            res.data.second_labor_contract_deadline == "1970-01-01 08:00:00"
+          ) {
+            this.ruleForm.second_labor_contract_deadline = "";
+          }
+          if (res.data.third_labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.ruleForm.third_labor_contract_deadline = "";
+          }
+          if (res.data.trial_deadline == "1970-01-01 08:00:00") {
+            this.ruleForm.trial_deadline = "";
+          }
+          if (res.data.work_time == "1970-01-01 08:00:00") {
+            this.ruleForm.work_time = "";
+          }
+          let a = []; //职位
+          let b = []; //部门
+          res.data.position.forEach((item) => {
+            a.push(item.id);
+          });
+          this.$set(this.ruleForm, "position_id", a);
+          res.data.department.forEach((item) => {
+            b.push(item.id);
+          });
+          this.$set(this.ruleForm, "department_id", b);
         } else {
           this.$message.error("员工信息获取失败！");
         }

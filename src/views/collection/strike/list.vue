@@ -312,6 +312,9 @@ export default {
     },
     // 获取发票详情
     getstrikeDetail(id) {
+      this.detailList = []
+      this.detail = {}
+      this.searchData.detailList_searchLoading = true;
       let params = {
         id: id,
       };

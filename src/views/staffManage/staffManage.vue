@@ -102,6 +102,10 @@
       <div class="tableBox">
         <el-table
           :data="viewsList"
+          v-loading = "searchData.viewsList_searchLoading"
+          element-loading-background = "rgba(0, 0, 0, 0.5)"
+          element-loading-text = "数据正在加载中"
+          element-loading-spinner = "el-icon-loading"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
@@ -232,7 +236,7 @@
         </el-table>
       </div>
 
-      <el-dialog :visible.sync="showDialog" width="600px" center>
+      <el-dialog :visible.sync="showDialog" width="600px" :close-on-click-modal="false" center>
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
           <span>确认后该员工不可使用账号登录进入系统</span>
@@ -338,7 +342,7 @@
       </el-dialog>
 
       <!-- 转正弹框 -->
-      <el-dialog :visible.sync="showPositive" width="1000px" center>
+      <el-dialog :visible.sync="showPositive" width="1000px" :close-on-click-modal="false" center>
         <h3 class="positiveTitle">申请转正</h3>
         <div class="positiveEdit">
           <div class="baseInfo">
@@ -492,6 +496,9 @@ export default {
         { name: "正式", val: 0, status: 2 },
         { name: "试用", val: 0, status: 1 },
       ],
+      searchData: {
+        viewsList_searchLoading: true,
+      },
       curIndex: 0,
       // 筛选字段
       checkedBox: {
@@ -605,6 +612,7 @@ export default {
     },
     // 获取员工列表
     getStaffList(val) {
+      this.searchData.viewsList_searchLoading = true;
       let page = {
         page: this.listParams.page,
         is_paging: 0,
@@ -612,6 +620,7 @@ export default {
       let params = { ...val, ...page };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data[0].data;
           this.viewsList.forEach(item=>{
             item.positive_time = renderTime(item.positive_time)
@@ -1174,7 +1183,7 @@ export default {
 
     .btns {
       position: absolute;
-      right: 30px;
+      right: 0;
       .btn {
         color: #409efd;
         border-color: #409efd;

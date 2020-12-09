@@ -557,7 +557,7 @@
             <!-- 离职类型/离职日期 -->
             <li>
               <div class="itemBox">
-                <div class="labelBox">
+                <div class="labelBox labelNon">
                   <span class="label">离职类型</span>
                 </div>
                 <div class="elInput">
@@ -568,7 +568,7 @@
                 </div>
               </div>
               <div class="itemBox">
-                <div class="labelBox">
+                <div class="labelBox labelNon">
                   <span class="label">离职日期</span>
                 </div>
                 <div class="elInput">
@@ -588,7 +588,9 @@
             <span class="label">离职原因</span>
             <div class="turnover">
               {{
-                turnoverData.turnover_reason ? turnoverData.turnover_reason : "暂无"
+                turnoverData.turnover_reason
+                  ? turnoverData.turnover_reason
+                  : "暂无"
               }}
             </div>
           </div>
@@ -691,29 +693,42 @@ export default {
     },
     marriage(val) {
       if (val == 0) {
-        return "未婚";
+        return "未知";
       } else if (val == 1) {
         return "已婚";
       } else {
-        return "暂无";
+        return "未婚";
       }
     },
     education(val) {
-      if (val == 0) {
-        return "专科";
-      } else if (val == 1) {
-        return "本科";
-      } else if (val == 2) {
-        return "硕士";
-      } else {
-        return "暂无";
+      switch (val) {
+        case 1:
+          return "专科";
+          break;
+        case 2:
+          return "本科  ";
+          break;
+        case 3:
+          return "硕士 ";
+          break;
+        case 4:
+          return "博士   ";
+          break;
+        case 5:
+          return "专科以下 ";
+          break;
+        default:
+          return "未知";
+          break;
       }
     },
     nation(val) {
-      if (val == 0) {
+      if (val == 2) {
         return "汉族";
-      } else {
+      } else if (val == 1) {
         return "少数名族";
+      } else {
+        return "未知";
       }
     },
     politics(val) {
@@ -734,25 +749,31 @@ export default {
     },
     party_masses_relation(val) {
       switch (val) {
-        case 0:
+        case 1:
           return "已转出";
           break;
-        case 1:
+        case 2:
           return "已转入 ";
           break;
-        case 2:
+        case 3:
           return "未转入";
           break;
         default:
-          return "暂无";
+          return "未知";
           break;
       }
     },
     abroad(val) {
-      if (val == 0) {
-        return "是";
-      } else {
-        return "否";
+      switch (val) {
+        case 1:
+          return "是";
+          break;
+        case 2:
+          return "否 ";
+          break;
+        default:
+          return "未知";
+          break;
       }
     },
     category(val) {
@@ -865,7 +886,7 @@ export default {
       // 转正信息填写部分数据
       positiveData: {},
       // 离职数据
-      turnoverData:{},
+      turnoverData: {},
       turnoverStatus: 0,
       turnoverType_options: [
         {
@@ -937,38 +958,36 @@ export default {
       STAFFS_API.staffInfo({}, this.staffId).then((res) => {
         if (res.status == 200) {
           this.subParams = res.data;
-          this.subParams.card_valid = renderTime(this.subParams.card_valid);
-          this.subParams.created_at = renderTime(this.subParams.created_at);
-          this.subParams.deleted_at = renderTime(this.subParams.deleted_at);
-          this.subParams.first_labor_contract_deadline = renderTime(
-            this.subParams.first_labor_contract_deadline
-          );
-          this.subParams.full_graduation_time = renderTime(
-            this.subParams.full_graduation_time
-          );
-          this.subParams.hualu_join_time = renderTime(
-            this.subParams.hualu_join_time
-          );
-          this.subParams.labor_contract_deadline = renderTime(
-            this.subParams.labor_contract_deadline
-          );
-          this.subParams.newmedia_join_time = renderTime(
-            this.subParams.newmedia_join_time
-          );
-          this.subParams.part_graduation_time = renderTime(
-            this.subParams.part_graduation_time
-          );
-          this.subParams.second_labor_contract_deadline = renderTime(
-            this.subParams.second_labor_contract_deadline
-          );
-          this.subParams.third_labor_contract_deadline = renderTime(
-            this.subParams.third_labor_contract_deadline
-          );
-          this.subParams.trial_deadline = renderTime(
-            this.subParams.trial_deadline
-          );
-          this.subParams.updated_at = renderTime(this.subParams.updated_at);
-          this.subParams.work_time = renderTime(this.subParams.work_time);
+          if (res.data.first_labor_contract_deadline == '1970-01-01 08:00:00') {
+            this.subParams.first_labor_contract_deadline = "";
+          }
+          if (res.data.full_graduation_time == '1970-01-01 08:00:00') {
+            this.subParams.full_graduation_time = "";
+          }
+          if (res.data.hualu_join_time == '1970-01-01 08:00:00') {
+            this.subParams.hualu_join_time = "";
+          }
+          if (res.data.labor_contract_deadline == '1970-01-01 08:00:00') {
+            this.subParams.labor_contract_deadline = "";
+          }
+          if (res.data.newmedia_join_time == '1970-01-01 08:00:00') {
+            this.subParams.newmedia_join_time = "";
+          }
+          if (res.data.part_graduation_time == '1970-01-01 08:00:00') {
+            this.subParams.part_graduation_time = "";
+          }
+          if (res.data.second_labor_contract_deadline == '1970-01-01 08:00:00') {
+            this.subParams.second_labor_contract_deadline = "";
+          }
+          if (res.data.third_labor_contract_deadline == '1970-01-01 08:00:00') {
+            this.subParams.third_labor_contract_deadline = "";
+          }
+          if (res.data.trial_deadline == '1970-01-01 08:00:00') {
+            this.subParams.trial_deadline = "";
+          }
+          if (res.data.work_time == '1970-01-01 08:00:00') {
+            this.subParams.work_time = "";
+          }
           if (this.subParams.positive != null) {
             this.subParams.positive.positive_time = renderTime(
               this.subParams.positive.positive_time
@@ -979,7 +998,6 @@ export default {
               this.subParams.turnover.turnover_time
             );
           }
-          
           this.positiveData = this.subParams.positive;
           this.turnoverData = this.subParams.turnover;
         } else {
@@ -1314,9 +1332,9 @@ export default {
       font-weight: bold;
     }
   }
-  .nonTips{
+  .nonTips {
     font-size: 14px;
-    color:#666;
+    color: #666;
   }
 }
 </style>
