@@ -479,8 +479,21 @@
             </div>
           </li>
         </ul>
+        <div class="upload">
+          <span class="label">附件</span>
+          <ul v-if="subParams.attachment_url.length > 0">
+            <li v-for="(file, index) in subParams.attachment_url" :key="index">
+              <el-link
+                type="primary"
+                :underline="false"
+                @click="downFile(file)"
+                >{{ file }}</el-link
+              >
+            </li>
+          </ul>
+          <span class="tips" v-else>无附件</span>
+        </div>
       </div>
-
       <div class="btnBox">
         <div class="btns">
           <el-button style="width: 95px" type="primary" @click="editMsg()"
@@ -495,7 +508,6 @@
         <div class="positiveEdit" v-if="positiveData != null">
           <div class="baseInfo">
             <ul class="inputBox">
-              <!-- 申请时间/试用期 -->
               <li>
                 <div class="itemBox">
                   <div class="labelBox labelNon">
@@ -520,8 +532,8 @@
                 {{ positiveData.summary ? positiveData.summary : "暂无" }}
               </div>
             </div>
-            <div class="upload">
-              <span class="label">附件</span>
+            <div class="upload conclusion">
+              <span class="label mr0">附件</span>
               <ul
                 class="fileList"
                 v-if="
@@ -533,8 +545,12 @@
                   v-for="(item, index) in positiveData.attachment_url"
                   :key="index"
                 >
-                  <span class="fileName">{{ item }}</span>
-                  <span class="fileDownload" @click="download(item)">下载</span>
+                  <el-link
+                    type="primary"
+                    :underline="false"
+                    @click="downFile(item)"
+                    >{{ item }}</el-link
+                  >
                 </li>
               </ul>
               <span class="tips" v-else>无附件</span>
@@ -611,6 +627,7 @@ import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 import { STAFFS_API } from "@/api/staffs";
 import { mapState } from "vuex";
+import axios from "axios";
 export default {
   filters: {
     // 员工性质
@@ -939,53 +956,41 @@ export default {
         },
       });
     },
-    // 文件上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handleChange(file, fileList) {
-      this.fileList = fileList;
-    },
-    beforeRemove(file, fileList) {
-      console.log(fileList);
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
-    beforeUpload(file, fileList) {
-      return false;
-    },
     // 获取员工信息
     getStaffInfo() {
       STAFFS_API.staffInfo({}, this.staffId).then((res) => {
         if (res.status == 200) {
           this.subParams = res.data;
-          if (res.data.first_labor_contract_deadline == '1970-01-01 08:00:00') {
+          if (res.data.first_labor_contract_deadline == "1970-01-01 08:00:00") {
             this.subParams.first_labor_contract_deadline = "";
           }
-          if (res.data.full_graduation_time == '1970-01-01 08:00:00') {
+          if (res.data.full_graduation_time == "1970-01-01 08:00:00") {
             this.subParams.full_graduation_time = "";
           }
-          if (res.data.hualu_join_time == '1970-01-01 08:00:00') {
+          if (res.data.hualu_join_time == "1970-01-01 08:00:00") {
             this.subParams.hualu_join_time = "";
           }
-          if (res.data.labor_contract_deadline == '1970-01-01 08:00:00') {
+          if (res.data.labor_contract_deadline == "1970-01-01 08:00:00") {
             this.subParams.labor_contract_deadline = "";
           }
-          if (res.data.newmedia_join_time == '1970-01-01 08:00:00') {
+          if (res.data.newmedia_join_time == "1970-01-01 08:00:00") {
             this.subParams.newmedia_join_time = "";
           }
-          if (res.data.part_graduation_time == '1970-01-01 08:00:00') {
+          if (res.data.part_graduation_time == "1970-01-01 08:00:00") {
             this.subParams.part_graduation_time = "";
           }
-          if (res.data.second_labor_contract_deadline == '1970-01-01 08:00:00') {
+          if (
+            res.data.second_labor_contract_deadline == "1970-01-01 08:00:00"
+          ) {
             this.subParams.second_labor_contract_deadline = "";
           }
-          if (res.data.third_labor_contract_deadline == '1970-01-01 08:00:00') {
+          if (res.data.third_labor_contract_deadline == "1970-01-01 08:00:00") {
             this.subParams.third_labor_contract_deadline = "";
           }
-          if (res.data.trial_deadline == '1970-01-01 08:00:00') {
+          if (res.data.trial_deadline == "1970-01-01 08:00:00") {
             this.subParams.trial_deadline = "";
           }
-          if (res.data.work_time == '1970-01-01 08:00:00') {
+          if (res.data.work_time == "1970-01-01 08:00:00") {
             this.subParams.work_time = "";
           }
           if (this.subParams.positive != null) {
@@ -1005,24 +1010,35 @@ export default {
         }
       });
     },
-    // 转正文件下载
-    download(val) {
+    // 文件下载
+    async downFile(val) {
       let params = {
-        file_name: val,
+        file_path: val,
       };
-      http
-        .GET(configUrl.fileDownload, params, { responseType: "blob" })
-        .then((res) => {
-          this.downloadfile(res, val);
-        });
-    },
-    downloadfile(data, fileName) {
-      if (!data) {
-        return;
-      }
-      let blob = new Blob([data], {
-        type:
-          "application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=UTF-8",
+      const { data: res } = await this.axios({
+        method: "get",
+        url: `hr/files/down`,
+        params: params,
+        responseType: "blob",
+      });
+      let fileName = val;
+      let fileType = {
+        doc: "application/msword",
+        docx:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        xls: "application/vnd.ms-excel",
+        xlsx:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ppt: "application/vnd.ms-powerpoint",
+        pptx:
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        pdf: "application/pdf",
+      };
+      let type = fileName.split(".")[1]; //获取文件后缀名
+      let curType = fileType[type];
+      console.log("curType:", curType);
+      let blob = new Blob([res], {
+        type: curType,
       });
       let url = window.URL.createObjectURL(blob);
       let link = document.createElement("a");
@@ -1216,8 +1232,7 @@ export default {
       .turnover {
         margin-top: 20px;
       }
-      .conclusion,
-      .upload {
+      .conclusion {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -1227,15 +1242,15 @@ export default {
         .label {
           display: block;
           width: 120px;
-          margin-right: 2px;
           letter-spacing: 1px;
           font-size: 16px;
           font-weight: bold;
           margin-right: 8px;
+          text-align: left;
         }
         .turnover {
           width: 100%;
-          height: 500px;
+          min-height: 500px;
           padding: 15px;
           line-height: 34px;
           border-radius: 4px;
@@ -1244,44 +1259,14 @@ export default {
           color: #909399;
           font-weight: 400;
         }
-      }
-      .upload {
-        align-items: normal;
-        justify-content: flex-start;
-        .label {
-          margin-right: 0;
-          line-height: 32px;
+        ul {
+          flex: 1 1 auto;
         }
         .tips {
-          font-size: 14px;
-          color: #909399;
-          font-weight: 400;
-          line-height: 32px;
+          flex: 1 1 auto;
         }
-        .fileList {
-          li {
-            margin-bottom: 10px;
-            span {
-              display: inline-block;
-              height: 32px;
-              line-height: 32px;
-            }
-            .fileName {
-              font-size: 14px;
-              color: #3b4859;
-            }
-            .fileDownload {
-              width: 60px;
-              height: 20px;
-              cursor: pointer;
-              line-height: 20px;
-              color: #fff;
-              background: #409efd;
-              text-align: center;
-              border-radius: 4px;
-              margin-left: 20px;
-            }
-          }
+        .mr0 {
+          margin-right: 0;
         }
       }
     }
@@ -1335,6 +1320,31 @@ export default {
   .nonTips {
     font-size: 14px;
     color: #666;
+  }
+  .upload {
+    display: flex;
+    flex-direction: row;
+    align-items: normal;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    .label {
+      width: 120px;
+      height: 40px;
+      margin-right: 20px;
+      padding-right: 0;
+      line-height: 40px;
+      text-align: right;
+    }
+    ul {
+      li {
+        height: 40px;
+        line-height: 38px;
+      }
+    }
+    .tips {
+      flex: 1 1 auto;
+      line-height: 40px;
+    }
   }
 }
 </style>

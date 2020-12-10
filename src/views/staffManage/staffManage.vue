@@ -49,7 +49,7 @@
             clearable
             style="width: 300px; border-radius: 4px"
           ></el-input>
-          <div class="range">
+          <!-- <div class="range">
             <span>年龄段：</span>
             <el-input
               v-model="ageMin"
@@ -62,7 +62,7 @@
               placeholder=""
               style="width: 80px; border-radius: 4px"
             ></el-input>
-          </div>
+          </div> -->
           <div class="btnBox">
             <el-button type="primary" size="medium" @click="search(0)"
               >搜索</el-button
@@ -71,14 +71,6 @@
               >重置</el-button
             >
           </div>
-          <!-- <el-select v-model="status" placeholder="请选择状态" style="width: 360px;border-radius: 4px;">
-          <el-option
-            v-for="item in adStatus"
-            :key="item.value"
-            :label="item.lable"
-            :value="item.value"
-          ></el-option>
-        </el-select> -->
         </div>
       </div>
     </el-card>
@@ -102,10 +94,10 @@
       <div class="tableBox">
         <el-table
           :data="viewsList"
-          v-loading = "searchData.viewsList_searchLoading"
-          element-loading-background = "rgba(0, 0, 0, 0.5)"
-          element-loading-text = "数据正在加载中"
-          element-loading-spinner = "el-icon-loading"
+          v-loading="searchData.viewsList_searchLoading"
+          element-loading-background="rgba(0, 0, 0, 0.5)"
+          element-loading-text="数据正在加载中"
+          element-loading-spinner="el-icon-loading"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
@@ -116,7 +108,7 @@
             type="selection"
             width="55"
           ></el-table-column>
-          <el-table-column
+          <!-- <el-table-column
             align="center"
             label="员工姓名"
             prop="name"
@@ -145,61 +137,55 @@
                 >{{ i.name }}</span
               >
             </template>
-          </el-table-column>
-          <el-table-column align="center" label="员工性质" prop="type">
-            <!-- <template slot-scope="scope">
-              <span>{{
-                scope.row.type == 1
-                  ? "试用"
-                  : scope.row.type == 2
-                  ? "正式"
-                  : scope.row.type == 3
-                  ? "离职"
-                  : "在职"
-              }}</span>
-            </template> -->
-          </el-table-column>
+          </el-table-column> -->
           <el-table-column
             align="center"
-            label="司龄"
-            prop="company_age"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="工龄"
-            prop="work_age"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="手机号"
-            prop="mobile"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="年龄"
-            prop="age"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="转正日期"
-            prop="positive_time"
-          ></el-table-column>
-          <el-table-column label="账号状态" prop="status" align="center">
+            v-for="(head, index) in headList"
+            :key="index"
+            :label="head.label"
+            :prop="head.prop"
+          >
             <template slot-scope="scope">
-              <span
-                v-if="scope.row.status == '未开通'"
-                :style="scope.row.status | color"
-                >未开通</span
-              >
-              <span
-                v-else-if="scope.row.status == '已开通'"
-                :style="scope.row.status | color"
-                >已开通</span
-              >
-              <span v-else :style="scope.row.status | color">已停用</span>
+              <div v-if="head.prop == 'department'">
+                <span
+                  v-for="(i, index) in scope.row.department"
+                  :key="index"
+                  style="margin: 0 10px"
+                  >{{ i.name }}</span
+                >
+              </div>
+              <div v-else-if="head.prop == 'position'">
+                <span
+                  v-for="(i, index) in scope.row.position"
+                  :key="index"
+                  style="margin: 0 10px"
+                  >{{ i.name }}</span
+                >
+              </div>
+              <div v-else-if="head.prop == 'status'">
+                <span :style="scope.row.status | color">{{
+                  scope.row.status
+                }}</span>
+              </div>
+              <div v-else-if="head.prop == 'position_type'">
+                <span
+                  v-for="(i, index) in scope.row.position_type"
+                  :key="index"
+                  style="margin: 0 10px"
+                  >{{ i }}</span
+                >
+              </div>
+              <div v-else>
+                <span>{{ scope.row[head.prop] }}</span>
+              </div>
             </template>
           </el-table-column>
-          <el-table-column label="操作" width="300px" align="center">
+          <el-table-column
+            label="操作"
+            width="300px"
+            align="center"
+            fixed="right"
+          >
             <template slot-scope="scope">
               <el-button type="text" @click="view(scope.row.id)"
                 >查看</el-button
@@ -227,7 +213,10 @@
               >
               <el-button
                 type="text"
-                v-if="scope.row.status != '已停用' || (scope.row.type == '离职' && scope.row.status == '已开通')"
+                v-if="
+                  scope.row.status != '已停用' ||
+                  (scope.row.type == '离职' && scope.row.status == '已开通')
+                "
                 @click="openDialog('stopUse', scope.row.id)"
                 >停用账号</el-button
               >
@@ -236,7 +225,12 @@
         </el-table>
       </div>
 
-      <el-dialog :visible.sync="showDialog" width="600px" :close-on-click-modal="false" center>
+      <el-dialog
+        :visible.sync="showDialog"
+        width="600px"
+        :close-on-click-modal="false"
+        center
+      >
         <div class="stopUse" v-if="dialogType == 'stopUse'">
           <span>确定停用该员工的账号？</span>
           <span>确认后该员工不可使用账号登录进入系统</span>
@@ -342,7 +336,12 @@
       </el-dialog>
 
       <!-- 转正弹框 -->
-      <el-dialog :visible.sync="showPositive" width="1000px" :close-on-click-modal="false" center>
+      <el-dialog
+        :visible.sync="showPositive"
+        width="1000px"
+        :close-on-click-modal="false"
+        center
+      >
         <h3 class="positiveTitle">申请转正</h3>
         <div class="positiveEdit">
           <div class="baseInfo">
@@ -359,7 +358,7 @@
                   <div class="labelBox">
                     <span class="label">入职日期</span>
                   </div>
-                  <div class="elInput">{{positiveData.entryDate}}</div>
+                  <div class="elInput">{{ positiveData.entryDate }}</div>
                 </div>
               </li>
               <!-- 手机号 -->
@@ -368,7 +367,7 @@
                   <div class="labelBox">
                     <span class="label">手机号</span>
                   </div>
-                  <div class="elInput">{{positiveData.mobile}}</div>
+                  <div class="elInput">{{ positiveData.mobile }}</div>
                 </div>
               </li>
             </ul>
@@ -407,14 +406,17 @@
               <span class="label">附件</span>
               <el-upload
                 class="upload-demo"
-                action
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
+                :action="$store.state.upload_url"
+                :headers="uploadParams.headers"
+                :data="uploadParams.data"
+                name="attachment[]"
                 :before-upload="beforeUpload"
+                :on-success="handleSuccess"
+                :before-remove="beforeRemove"
+                :on-remove="handleRemove"
+                :file-list="files"
                 :on-change="handleChange"
-                :auto-upload="false"
                 multiple
-                :file-list="positiveData.fileList"
               >
                 <el-button size="small" type="primary" style="width: 120px"
                   >新增附件</el-button
@@ -507,6 +509,9 @@ export default {
         cities: [],
         isIndeterminate: true,
       },
+      checked: [],
+      checkData: [],
+      // 
       adminName: "",
       ageMin: "", //
       ageMax: "", //
@@ -527,6 +532,7 @@ export default {
       ],
       listType: 0, //数据类型：3：离职、2：正式、1：试用、0：在职
       viewsList: [],
+      headList: [], //表头
       showDialog: false,
       dialogType: "",
       // 开通账号相关数据
@@ -558,13 +564,23 @@ export default {
       // 转正信息
       showPositive: false,
       positiveData: {
-        staff_id:"",
-        entryDate:"",
-        mobile:'',
+        staff_id: "",
+        entryDate: "",
+        mobile: "",
         positiveTime: "", //转正时间
         conclusion: "", //工作总结
         fileList: [], //附件
       },
+      uploadParams: {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        data: {
+          basket: "staff_positives",
+        },
+        limit: 1,
+      },
+      files: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -574,8 +590,14 @@ export default {
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
+    this.initHead()
   },
   methods: {
+    // 初始化表头
+    initHead(){
+      this.checked = ["name", "job_number", "department", "position","type","company_age","mobile","work_age","age","positive_time","status"]
+      this.checkedBox.checkedCities = ['员工姓名','工号','部门','职位','员工性质','司龄','手机号','工龄','年龄','转正时间','账号是否开通']
+    },
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
@@ -588,6 +610,15 @@ export default {
     // 筛选功能
     handleCheckAllChange(val) {
       this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
+      let temp = [];
+      for (let key in this.checkData) {
+        this.checkedBox.checkedCities.forEach((item) => {
+          if (this.checkData[key] == item) {
+            temp.push(key);
+          }
+        });
+      }
+      this.checked = [...this.checked, ...temp];
       this.checkedBox.isIndeterminate = false;
     },
     handleCheckedCitiesChange(value) {
@@ -595,38 +626,68 @@ export default {
       this.checkedBox.checkAll = checkedCount === this.checkedBox.cities.length;
       this.checkedBox.isIndeterminate =
         checkedCount > 0 && checkedCount < this.checkedBox.cities.length;
+      let temp = [];
+      for (let key in this.checkData) {
+        this.checkedBox.checkedCities.forEach((item) => {
+          if (this.checkData[key] == item) {
+            temp.push(key);
+          }
+        });
+      }
+      this.checked = [...this.checked, ...temp];
+      console.log(this.checkedBox.checkedCities)
     },
     // 搜索
     search(type) {
-      console.log(this.checkedBox.checkedCities);
       let params = {
         name: this.adminName,
-        field: this.checkedBox.checkedCities,
+        field: this.checked,
       };
       if (type == 1) {
         params.name = "";
         this.adminName = "";
-        this.checkedBox.checkedCities = [];
+        this.checked = ["name", "job_number", "department", "position"];
       }
       this.getStaffList(params);
     },
     // 获取员工列表
     getStaffList(val) {
       this.searchData.viewsList_searchLoading = true;
+      this.headList = [];
       let page = {
         page: this.listParams.page,
         is_paging: 0,
+        name: this.adminName,
+        field: this.checked,
       };
       let params = { ...val, ...page };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data[0].data;
-          this.viewsList.forEach(item=>{
-            item.positive_time = renderTime(item.positive_time)
-          })
+          this.viewsList.forEach((item) => {
+            item.positive_time = renderTime(item.positive_time);
+          });
+          let tempHead = [];
+          for (let key in res.data.head_arr) {
+            let temp = {};
+            temp.label = res.data.head_arr[key];
+            temp.prop = key;
+            tempHead.push(temp);
+          }
+          let a = [...tempHead, ...this.headList];
+          var arr2 = a.filter((x, index, self) => {
+            var arrnames = [];
+            a.forEach((item, i) => {
+              arrnames.push(item.prop);
+            });
+            var judgeTwo = arrnames.indexOf(x.prop) === index;
+            return judgeTwo;
+          });
+          this.headList = arr2;
           this.total = res.data[0].total;
         } else {
+          this.$message.error("列表数据获取失败！");
         }
       });
     },
@@ -639,6 +700,8 @@ export default {
             temp.push(res.data[key]);
           }
           this.checkedBox.cities = temp;
+          this.checkData = res.data;
+          console.log(this.checkData)
         }
       });
     },
@@ -656,7 +719,7 @@ export default {
         case "stopUse":
           break;
         case "openUse":
-          console.log(val)
+          console.log(val);
           for (let i = 0, len = this.viewsList.length; i < len; i++) {
             if (this.viewsList[i].id == this.tempId) {
               console.log(this.viewsList[i]);
@@ -755,38 +818,39 @@ export default {
     // 转正
     async positive(val) {
       this.showPositive = true;
-      let data = await STAFFS_API.staffInfo({}, val).then(res=>{
-        return res.data
-      })
+      let data = await STAFFS_API.staffInfo({}, val).then((res) => {
+        return res.data;
+      });
       this.positiveData = {
-        name:data.name,
-        mobile:data.mobile,
-        staff_id:data.id,
-        positiveTime:"",
-        conclusion:"",
-        fileList:[],
-        entryDate:data.hualu_join_time
-      }
+        name: data.name,
+        mobile: data.mobile,
+        staff_id: data.id,
+        positiveTime: "",
+        conclusion: "",
+        fileList: [],
+        entryDate: data.hualu_join_time,
+      };
     },
-    positiveClick(val){
-      let params={
-        staff_id:this.positiveData.staff_id,
-        positive_time:this.positiveData.positiveTime,
-        summary:this.positiveData.conclusion,
-        attachment_url:this.positiveData.fileList
-      }
-      if(val == 0 ){
-        this.showPositive = false
-      }else{
-        STAFFS_API.positive(params).then(res=>{
-          if(res.status == 200){
-            this.$message.success('转正成功！')
-            this.showPositive = false
-            this.getStaffList()
-          }else{
-            this.$message.error(res.error.message)
+    positiveClick(val) {
+      let params = {
+        staff_id: this.positiveData.staff_id,
+        positive_time: this.positiveData.positiveTime,
+        summary: this.positiveData.conclusion,
+        attachment_url: this.positiveData.fileList,
+      };
+      console.log(params);
+      if (val == 0) {
+        this.showPositive = false;
+      } else {
+        STAFFS_API.positive(params).then((res) => {
+          if (res.status == 200) {
+            this.$message.success("转正成功！");
+            this.showPositive = false;
+            this.getStaffList();
+          } else {
+            this.$message.error(res.error.message);
           }
-        })
+        });
       }
     },
     // 开通账号
@@ -898,18 +962,48 @@ export default {
     },
     // 转正相关
     // 文件上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
     handleChange(file, fileList) {
-      this.fileList = fileList;
+      this.files = fileList;
     },
+    handleSuccess(response, file, fileList) {
+      this.positiveData.fileList.push(response.data[0]);
+    },
+    handleRemove(file, fileList) {},
     beforeRemove(file, fileList) {
       console.log(fileList);
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     beforeUpload(file, fileList) {
-      return false;
+      const isXls = file.type === "application/vnd.ms-excel";
+      const isXlsx =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const isPPT = file.type === "application/vnd.ms-powerpoint";
+      const isPPTX =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      const isDoc = file.type === "application/msword";
+      const isDocx =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      const isPDF = file.type === "application/pdf";
+      const isNull = file.type === "";
+      if (
+        !isDoc &&
+        !isDocx &&
+        !isXls &&
+        !isXlsx &&
+        !isPPT &&
+        !isPPTX &&
+        !isPDF &&
+        !isNull
+      ) {
+        this.$message.warning(
+          "上传文件仅限 doc / docx / xls / xlsx / ppt / pptx / pdf 格式!"
+        );
+        return false;
+      }
+      console.log("上传");
     },
   },
   components: {
@@ -1015,13 +1109,13 @@ export default {
       }
     }
   }
-  .positiveTitle{
-      text-align: center;
-    }
+  .positiveTitle {
+    text-align: center;
+  }
   .baseInfo {
     border-bottom: 1px solid #f0f3f7;
     margin-bottom: 20px;
-    
+
     .inputBox {
       margin-top: 20px;
       li {
@@ -1042,7 +1136,7 @@ export default {
           &:last-child {
             margin-right: 0;
           }
-          .elInput{
+          .elInput {
             width: 200px;
             flex: 1 1 auto;
           }
@@ -1057,7 +1151,7 @@ export default {
           }
           .labelBox {
             width: 116px;
-            text-align:left;
+            text-align: left;
             .label {
               color: #606266;
               margin-right: 0;

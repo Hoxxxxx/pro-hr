@@ -700,6 +700,27 @@
             </el-col>
           </el-row>
         </div>
+        <div class="upload">
+          <span class="label">附件</span>
+          <el-upload
+            class="upload-demo"
+            :action="$store.state.upload_url"
+            :headers="uploadParams.headers"
+            :data="uploadParams.data"
+            name="attachment[]"
+            :before-upload="beforeUpload"
+            :on-success="handleSuccess"
+            :before-remove="beforeRemove"
+            :on-remove="handleRemove"
+            :file-list="files"
+            :on-change="handleChange"
+            multiple
+          >
+            <el-button size="small" type="primary" style="width: 120px"
+              >上传附件</el-button
+            >
+          </el-upload>
+        </div>
       </el-form>
       <div class="btnBox">
         <div class="btns">
@@ -714,7 +735,6 @@
 </template>
 
 <script>
-import http from "../../utils/request";
 import navBar from "@/components/navBar/navBar";
 import { mapState } from "vuex";
 import { STAFFS_API } from "@/api/staffs";
@@ -787,7 +807,7 @@ export default {
         emergency_mobile: "", //紧急联系电话
         second_mobile: "", //第二联系电话
         remark: "", //备注
-        attachment_url: "", //附件地址
+        attachment_url: [], //附件地址
       },
       rules: {
         name: [
@@ -1023,6 +1043,16 @@ export default {
         department_options: [],
         job_options: [],
       }, //
+      uploadParams: {
+        headers: {
+          Authorization: "Bearer " + sessionStorage.getItem("token"),
+        },
+        data: {
+          basket: "staff_attachments",
+        },
+        limit: 1,
+      },
+      files: [],
       saveType: "", //保存类型（编辑保存/新增保存）
     };
   },
@@ -1050,24 +1080,26 @@ export default {
         history.go(-1);
       } else {
         if (this.saveType == "edit") {
-          console.log(this.saveType)
+          console.log(this.saveType);
           STAFFS_API.changeStaff(this.ruleForm, this.staffId).then((res) => {
-              if (res.status == 200) {
-                this.$message.success("编辑成功！");
-                setTimeout(function () {
-                  history.go(-1);
-                }, 500);
-              } else {
-                this.$message.error(res.error.message);
-              }
+            if (res.status == 200) {
+              this.$message.success("编辑成功！");
+              setTimeout(function () {
+                history.go(-1);
+              }, 500);
+            } else {
+              this.$message.error(res.error.message);
             }
-          );
+          });
         } else {
           this.$refs["ruleForm"].validate((valid) => {
             if (valid) {
               STAFFS_API.addStaff(this.ruleForm).then((res) => {
                 if (res.status == 200) {
                   this.$message.success("添加成功！");
+                  setTimeout(function () {
+                    history.go(-1);
+                  }, 500);
                 } else {
                   this.$message.error(res.error.message);
                 }
@@ -1110,8 +1142,8 @@ export default {
     getStaffInfo() {
       STAFFS_API.staffInfo({}, this.staffId).then((res) => {
         if (res.status == 200) {
-          for(let key in this.ruleForm){
-            this.ruleForm[key] = res.data[key]
+          for (let key in this.ruleForm) {
+            this.ruleForm[key] = res.data[key];
           }
           if (res.data.first_labor_contract_deadline == "1970-01-01 08:00:00") {
             this.ruleForm.first_labor_contract_deadline = "";
@@ -1145,6 +1177,11 @@ export default {
           if (res.data.work_time == "1970-01-01 08:00:00") {
             this.ruleForm.work_time = "";
           }
+          res.data.attachment_url.forEach((item) => {
+            let temp = {};
+            temp.name = item.split("staff_attachments/")[1];
+            this.files.push(temp);
+          });
           let a = []; //职位
           let b = []; //部门
           res.data.position.forEach((item) => {
@@ -1164,6 +1201,52 @@ export default {
     companyChange(val) {
       this.getDepart(val);
       this.getJobs(val);
+    },
+    // 文件上传
+    handleChange(file, fileList) {
+      this.files = fileList;
+      console.log(this.files);
+    },
+    handleSuccess(response, file, fileList) {
+      this.ruleForm.attachment_url.push(response.data[0]);
+    },
+    handleRemove(file, fileList) {},
+    beforeRemove(file, fileList) {
+      console.log(fileList);
+      return this.$confirm(`确定移除 ${file.name}？`);
+    },
+    beforeUpload(file, fileList) {
+      console.log(file.type);
+      const isXls = file.type === "application/vnd.ms-excel";
+      const isXlsx =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
+      const isPPT = file.type === "application/vnd.ms-powerpoint";
+      const isPPTX =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation";
+      const isDoc = file.type === "application/msword";
+      const isDocx =
+        file.type ===
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      const isPDF = file.type === "application/pdf";
+      const isNull = file.type === "";
+      if (
+        !isDoc &&
+        !isDocx &&
+        !isXls &&
+        !isXlsx &&
+        !isPPT &&
+        !isPPTX &&
+        !isPDF &&
+        !isNull
+      ) {
+        this.$message.warning(
+          "上传文件仅限 doc / docx / xls / xlsx / ppt / pptx / pdf 格式!"
+        );
+        return false;
+      }
+      console.log("上传");
     },
   },
   components: {
@@ -1212,6 +1295,19 @@ export default {
   .label {
     .el-form-item__label {
       line-height: 20px;
+    }
+  }
+  .upload {
+    display: flex;
+    flex-direction: row;
+    align-items: normal;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    .label {
+      width: 88px;
+      padding-right: 12px;
+      text-align: right;
+      line-height: 32px;
     }
   }
 }
