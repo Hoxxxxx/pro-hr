@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList" ></nav-Bar>
     <div class="menuList">
       <ul>
         <li
@@ -626,8 +626,6 @@
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 import { STAFFS_API } from "@/api/staffs";
-import { mapState } from "vuex";
-import axios from "axios";
 export default {
   filters: {
     // 员工性质
@@ -836,7 +834,6 @@ export default {
           title: "员工信息",
         },
       ],
-      title: "员工信息",
       menuList: [
         { name: "基础信息", id: 0 },
         { name: "转正信息", id: 1 },
@@ -904,34 +901,7 @@ export default {
       positiveData: {},
       // 离职数据
       turnoverData: {},
-      turnoverStatus: 0,
-      turnoverType_options: [
-        {
-          value: 0,
-          label: "主动离职",
-        },
-        {
-          value: 1,
-          label: "被动离职",
-        },
-        {
-          value: 2,
-          label: "退休",
-        },
-      ],
-      turnoverType: null, //离职类型
-      turnoverTime: "", //离职时间
-      turnoverReason: "", //离职原因
     };
-  },
-  computed: {
-    ...mapState(["userInfo"]),
-    header() {
-      let token = sessionStorage.getItem("token");
-      return {
-        Authorization: "Bearer " + token,
-      };
-    },
   },
   created() {
     this.staffId = this.$route.query.id;
@@ -1036,7 +1006,6 @@ export default {
       };
       let type = fileName.split(".")[1]; //获取文件后缀名
       let curType = fileType[type];
-      console.log("curType:", curType);
       let blob = new Blob([res], {
         type: curType,
       });
