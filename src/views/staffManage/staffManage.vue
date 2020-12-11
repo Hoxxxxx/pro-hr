@@ -16,64 +16,83 @@
       </ul>
     </div>
 
-    <!-- 搜索框 -->
-    <el-card class="searchCard">
-      <div class="serchBox">
-        <div class="checkBoxs">
-          <div>
-            <el-checkbox
-              :indeterminate="checkedBox.isIndeterminate"
-              v-model="checkedBox.checkAll"
-              @change="handleCheckAllChange"
-              >全选</el-checkbox
-            >
-            <div style="margin: 15px 0"></div>
-            <el-checkbox-group
-              v-model="checkedBox.checkedCities"
-              @change="handleCheckedCitiesChange"
-            >
-              <el-checkbox
-                v-for="(key, value) in checkedBox.cities"
-                class="checkItem"
-                :label="key"
-                :key="value"
-                >{{ key }}</el-checkbox
-              >
-            </el-checkbox-group>
+    <!-- 筛选框 -->
+    <el-button
+      class="showSearch"
+      @click="showSearch = !showSearch"
+      type="text"
+      :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
+    >
+    <el-collapse-transition>
+      <div v-show="showSearch">
+        <el-card class="searchCard">
+          <div class="serchBox">
+            <div class="checkBoxs">
+              <div>
+                <el-checkbox
+                  :indeterminate="checkedBox.isIndeterminate"
+                  v-model="checkedBox.checkAll"
+                  @change="handleCheckAllChange"
+                  >全选</el-checkbox
+                >
+                <div style="margin: 15px 0"></div>
+                <el-checkbox-group
+                  v-model="checkedBox.checkedCities"
+                  @change="handleCheckedCitiesChange"
+                >
+                  <el-checkbox
+                    v-for="(key, value) in checkedBox.cities"
+                    class="checkItem"
+                    :label="key"
+                    :key="value"
+                    >{{ key }}</el-checkbox
+                  >
+                </el-checkbox-group>
+              </div>
+            </div>
+            <div class="rangeBox">
+              <el-input
+                v-model="adminName"
+                placeholder="请输入员工姓名"
+                clearable
+                style="width: 300px; border-radius: 4px"
+              ></el-input>
+              <div class="range">
+                <span>年龄段：</span>
+                <el-input
+                  v-model="ageMin"
+                  placeholder=""
+                  style="width: 80px; border-radius: 4px"
+                ></el-input>
+                <span style="margin: 0 10px">~</span>
+                <el-input
+                  v-model="ageMax"
+                  placeholder=""
+                  style="width: 80px; border-radius: 4px"
+                ></el-input>
+              </div>
+              <div class="btnBox">
+                <el-button
+                  type="primary"
+                  style="width: 90px"
+                  size="medium"
+                  @click="search(0)"
+                  >搜索</el-button
+                >
+                <el-button
+                  class="secondary"
+                  style="width: 90px"
+                  size="medium"
+                  @click="search(1)"
+                  >重置</el-button
+                >
+              </div>
+            </div>
           </div>
-        </div>
-        <div class="rangeBox">
-          <el-input
-            v-model="adminName"
-            placeholder="请输入员工姓名"
-            clearable
-            style="width: 300px; border-radius: 4px"
-          ></el-input>
-          <!-- <div class="range">
-            <span>年龄段：</span>
-            <el-input
-              v-model="ageMin"
-              placeholder=""
-              style="width: 80px; border-radius: 4px"
-            ></el-input>
-            <span style="margin: 0 10px">~</span>
-            <el-input
-              v-model="ageMax"
-              placeholder=""
-              style="width: 80px; border-radius: 4px"
-            ></el-input>
-          </div> -->
-          <div class="btnBox">
-            <el-button type="primary" size="medium" @click="search(0)"
-              >搜索</el-button
-            >
-            <el-button class="secondary" size="medium" @click="search(1)"
-              >重置</el-button
-            >
-          </div>
-        </div>
+        </el-card>
       </div>
-    </el-card>
+    </el-collapse-transition>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -85,6 +104,7 @@
             >新增员工</el-button
           >
           <el-button class="btn p40">批量导入</el-button>
+          <el-button class="btn p40">导出</el-button>
           <el-button class="btn p40" @click="deleteSelected()"
             >批量删除</el-button
           >
@@ -469,6 +489,7 @@ export default {
         { name: "正式", val: 0, status: 2 },
         { name: "试用", val: 0, status: 1 },
       ],
+      showSearch: false,
       searchData: {
         viewsList_searchLoading: true,
       },
@@ -482,8 +503,8 @@ export default {
       },
       checked: [],
       checkData: [],
-      defaultChecked:["name", "job_number", "department", "position"],//默认需要显示的表头
-      // 
+      defaultChecked: ["name", "job_number", "department", "position"], //默认需要显示的表头
+      //
       adminName: "",
       ageMin: "", //
       ageMax: "", //
@@ -562,33 +583,44 @@ export default {
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
-    
   },
   methods: {
     // 初始化表头
-    initHead(){
-      this.checked = ["name", "job_number", "department", "position","type","company_age","mobile","work_age","age","positive_time","status"]
-      let temp = []
-      this.checked.forEach(item=>{
+    initHead() {
+      this.checked = [
+        "name",
+        "job_number",
+        "department",
+        "position",
+        "type",
+        "company_age",
+        "mobile",
+        "work_age",
+        "age",
+        "positive_time",
+        "status",
+      ];
+      let temp = [];
+      this.checked.forEach((item) => {
         switch (item) {
-          case 'name':
-            temp.push('员工姓名')
+          case "name":
+            temp.push("员工姓名");
             break;
-          case 'job_number':
-            temp.push('工号')
-            break
-          case 'department':
-            temp.push('部门')
-            break
-          case 'position':
-            temp.push('职位')
-            break
+          case "job_number":
+            temp.push("工号");
+            break;
+          case "department":
+            temp.push("部门");
+            break;
+          case "position":
+            temp.push("职位");
+            break;
           default:
-            temp.push(this.checkData[item])
+            temp.push(this.checkData[item]);
             break;
         }
-      })
-      this.checkedBox.checkedCities = temp
+      });
+      this.checkedBox.checkedCities = temp;
     },
     // 顶部菜单选择
     changeStatus(index, status) {
@@ -610,7 +642,7 @@ export default {
       }
       this.checked = temp;
       this.checkedBox.isIndeterminate = false;
-      this.getStaffList()
+      this.getStaffList();
     },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length;
@@ -625,14 +657,14 @@ export default {
           }
         });
       }
-      this.checked = [...temp,...this.defaultChecked];
-      this.getStaffList()
+      this.checked = [...temp, ...this.defaultChecked];
+      this.getStaffList();
     },
     // 搜索
     search(type) {
       if (type == 1) {
         this.adminName = "";
-        this.initHead()
+        this.initHead();
       }
       this.getStaffList();
     },
@@ -641,7 +673,7 @@ export default {
       this.searchData.viewsList_searchLoading = true;
       this.headList = [];
       let params = {
-        type:this.listType,
+        type: this.listType,
         page: this.listParams.page,
         is_paging: 0,
         name: this.adminName,
@@ -651,18 +683,26 @@ export default {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data[0].data;
-          if(this.viewsList.length > 0){
+          if (this.viewsList.length > 0) {
             this.viewsList.forEach((item) => {
               item.positive_time = renderTime(item.positive_time);
               item.card_valid = renderTime(item.card_valid);
-              item.first_labor_contract_deadline = renderTime(item.first_labor_contract_deadline);
+              item.first_labor_contract_deadline = renderTime(
+                item.first_labor_contract_deadline
+              );
               item.full_graduation_time = renderTime(item.full_graduation_time);
               item.hualu_join_time = renderTime(item.hualu_join_time);
-              item.labor_contract_deadline = renderTime(item.labor_contract_deadline);
+              item.labor_contract_deadline = renderTime(
+                item.labor_contract_deadline
+              );
               item.newmedia_join_time = renderTime(item.newmedia_join_time);
               item.part_graduation_time = renderTime(item.part_graduation_time);
-              item.second_labor_contract_deadline = renderTime(item.second_labor_contract_deadline);
-              item.third_labor_contract_deadline = renderTime(item.third_labor_contract_deadline);
+              item.second_labor_contract_deadline = renderTime(
+                item.second_labor_contract_deadline
+              );
+              item.third_labor_contract_deadline = renderTime(
+                item.third_labor_contract_deadline
+              );
               item.trial_deadline = renderTime(item.trial_deadline);
               item.work_time = renderTime(item.work_time);
             });
@@ -674,7 +714,7 @@ export default {
             temp.prop = key;
             tempHead.push(temp);
           }
-          this.headList = tempHead
+          this.headList = tempHead;
           this.total = res.data[0].total;
         } else {
           this.searchData.viewsList_searchLoading = false;
@@ -694,7 +734,7 @@ export default {
           this.checkData = res.data;
         }
       });
-      this.initHead()
+      this.initHead();
     },
     // 新增员工
     addStaff() {
@@ -1009,6 +1049,9 @@ export default {
   .navBox {
     margin-bottom: 0 !important;
   }
+  .showSearch {
+    margin-left: 20px;
+  }
   .menuList {
     width: 100%;
     background: #fff;
@@ -1069,7 +1112,7 @@ export default {
     }
   }
   .searchCard {
-    margin: 20px;
+    margin: 0 20px 20px 20px;
     .checkBoxs {
       display: flex;
       flex-direction: row;
@@ -1094,6 +1137,7 @@ export default {
           height: 40px;
         }
         .secondary {
+          width: 90px;
           border: 1px solid #409efd;
           color: #409efd;
         }
@@ -1254,7 +1298,7 @@ export default {
 }
 
 .listCard {
-  margin: 20px;
+  margin: 0 20px;
   .clearfix {
     display: flex;
     align-items: center;

@@ -1,13 +1,13 @@
 <template>
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <!-- 搜索框 -->
+    <!-- 筛选框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
@@ -290,7 +290,7 @@ export default {
         },
       ],
       title: "管理员管理",
-      // 搜索框
+      // 筛选框
       showSearch: false,
       adStatus: [
         {
