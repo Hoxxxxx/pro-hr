@@ -1080,15 +1080,23 @@ export default {
         history.go(-1);
       } else {
         if (this.saveType == "edit") {
-          console.log(this.saveType);
-          STAFFS_API.changeStaff(this.ruleForm, this.staffId).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("编辑成功！");
-              setTimeout(function () {
-                history.go(-1);
-              }, 500);
+          this.$refs["ruleForm"].validate((valid) => {
+            if (valid) {
+              STAFFS_API.changeStaff(this.ruleForm, this.staffId).then(
+                (res) => {
+                  if (res.status == 200) {
+                    this.$message.success("编辑成功！");
+                    setTimeout(function () {
+                      history.go(-1);
+                    }, 500);
+                  } else {
+                    this.$message.error(res.error.message);
+                  }
+                }
+              );
             } else {
-              this.$message.error(res.error.message);
+              console.log("error submit!!");
+              return false;
             }
           });
         } else {

@@ -595,7 +595,6 @@ export default {
       this.curIndex = index;
       this.listType = status;
       this.adminName = "";
-      this.initHead();
       this.getStaffList();
     },
     // 筛选功能
