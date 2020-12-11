@@ -611,6 +611,7 @@ export default {
       }
       this.checked = temp;
       this.checkedBox.isIndeterminate = false;
+      this.getStaffList()
     },
     handleCheckedCitiesChange(value) {
       let checkedCount = value.length;
@@ -626,6 +627,7 @@ export default {
         });
       }
       this.checked = [...temp,...this.defaultChecked];
+      this.getStaffList()
     },
     // 搜索
     search(type) {
