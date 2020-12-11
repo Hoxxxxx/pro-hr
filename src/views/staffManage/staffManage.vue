@@ -980,14 +980,18 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
-          STAFFS_API.deleteStaff(params).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("删除成功！");
-              this.getStaffList();
-            } else {
-              this.$message.error("删除失败！");
-            }
-          });
+          if (params.ids.length == 0) {
+            this.$message.warning("未选择员工");
+          } else {
+            STAFFS_API.deleteStaff(params).then((res) => {
+              if (res.status == 200) {
+                this.$message.success("删除成功！");
+                this.getStaffList();
+              } else {
+                this.$message.error("删除失败！");
+              }
+            });
+          }
         })
         .catch(() => {});
     },
