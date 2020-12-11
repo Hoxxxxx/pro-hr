@@ -10,8 +10,15 @@
                       class="payForm">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="合同ID" prop="id">
-                <el-input v-model="dataForm.id" disabled></el-input>
+              <el-form-item label="部门" prop="department_id" style="height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                  {{dataShow.department_show}}
+                </div>
+                <div v-if="pageType!=='check'" class="selectbox">
+                  <div class="selector" @click="selectDialog('BM')">
+                    {{dataShow.department_show}}
+                  </div>
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -235,6 +242,7 @@ export default {
       // form
       dataForm: {
         id: '',
+        department_id: '',
         number: '',
         title: '',
         contract_value: '',
@@ -250,6 +258,7 @@ export default {
         files: []
       },
       dataShow: {
+        department_show: "",
         contract_type_show: "",
         operator_show: "",
         opposite_show: "",
@@ -262,6 +271,9 @@ export default {
         value: 2
       }],
       rules: {
+        department_id: [
+          { required: true, message: '请选择部门', trigger: 'change' },
+        ],
         number: [
           { required: true, message: '请输入合同编号', trigger: 'blur' },
         ],
@@ -316,6 +328,10 @@ export default {
         keyMsg: [], //需要显示在顶部的数据
       },
       tableHead: {
+        head_BM: [
+          { name: "id", title: "部门id" },
+          { name: "name", title: "部门名称" },
+        ],
         head_HTLX: [
           { name: "name", title: "合同类别" },
           { name: "number", title: "类别编号" },
@@ -415,6 +431,15 @@ export default {
       this.dataSelect.cur_input = type;
       this.dataSelect.choosedData = [];
       switch (type) {
+        case "BM":
+          let filter_BM = [{ label: "", model_key_search: "keyword" }];
+          this.dataSelect.filter = filter_BM;
+          this.dataSelect.searchType = "single"
+          this.dataSelect.editType = "entry"
+          this.dataSelect.searchApi = "oa/departments";
+          this.dataSelect.headList = this.tableHead.head_BM;
+          this.dataSelect.dialogTitle = "部门列表";
+        break;
         case "HTLX":
           let filter_HTLX = [
             { label: "合同类别", model_key_search: "name" },
@@ -469,6 +494,10 @@ export default {
       this.dataSelect.choosedData = val;
       if (val.length > 0) {
         switch (this.dataSelect.cur_input) {
+          case "BM":
+            this.dataForm.department_id = val[0].id;
+            this.dataShow.department_show = val[0].name;
+          break;
           case "HTLX":
             this.dataForm.contract_type = val[0].id;
             this.dataShow.contract_type_show = val[0].name;

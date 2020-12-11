@@ -60,8 +60,7 @@
           <el-table-column align="center" label="合同编号" prop="number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="归档日期" prop="archived_date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同金额" prop="contract_value" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="备注" prop="comment" min-width="200px"></el-table-column>
-          <el-table-column align="center" label="经办人id" prop="operator_id" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="经办人id" prop="operator" min-width="100px"></el-table-column>
           <el-table-column align="center" label="经办人名称" prop="operator_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门id" prop="department_id" min-width="100px"></el-table-column>
           <el-table-column align="center" label="副本数量" prop="copies_number" min-width="100px"></el-table-column>
@@ -69,6 +68,7 @@
           <el-table-column align="center" label="合同开始日期" prop="start_date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同类型" prop="contract_type" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="备注" prop="comment" min-width="200px"></el-table-column>
           <el-table-column align="center" label="电子文档" prop="files" min-width="100px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
