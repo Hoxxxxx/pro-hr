@@ -108,42 +108,13 @@
             type="selection"
             width="55"
           ></el-table-column>
-          <!-- <el-table-column
-            align="center"
-            label="员工姓名"
-            prop="name"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="工号"
-            prop="job_number"
-          ></el-table-column>
-          <el-table-column align="center" label="部门" prop="department">
-            <template slot-scope="scope">
-              <span
-                v-for="(i, index) in scope.row.department"
-                :key="index"
-                style="margin: 0 10px"
-                >{{ i.name }}</span
-              >
-            </template>
-          </el-table-column>
-          <el-table-column align="center" label="职位" prop="position">
-            <template slot-scope="scope">
-              <span
-                v-for="(i, index) in scope.row.position"
-                :key="index"
-                style="margin: 0 10px"
-                >{{ i.name }}</span
-              >
-            </template>
-          </el-table-column> -->
           <el-table-column
             align="center"
             v-for="(head, index) in headList"
             :key="index"
             :label="head.label"
             :prop="head.prop"
+            min-width="160px"
           >
             <template slot-scope="scope">
               <div v-if="head.prop == 'department'">
@@ -511,6 +482,7 @@ export default {
       },
       checked: [],
       checkData: [],
+      defaultChecked:["name", "job_number", "department", "position"],//默认需要显示的表头
       // 
       adminName: "",
       ageMin: "", //
@@ -590,22 +562,41 @@ export default {
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
-    this.initHead()
+    
   },
   methods: {
     // 初始化表头
     initHead(){
       this.checked = ["name", "job_number", "department", "position","type","company_age","mobile","work_age","age","positive_time","status"]
-      this.checkedBox.checkedCities = ['员工姓名','工号','部门','职位','员工性质','司龄','手机号','工龄','年龄','转正时间','账号是否开通']
+      let temp = []
+      this.checked.forEach(item=>{
+        switch (item) {
+          case 'name':
+            temp.push('员工姓名')
+            break;
+          case 'job_number':
+            temp.push('工号')
+            break
+          case 'department':
+            temp.push('部门')
+            break
+          case 'position':
+            temp.push('职位')
+            break
+          default:
+            temp.push(this.checkData[item])
+            break;
+        }
+      })
+      this.checkedBox.checkedCities = temp
     },
     // 顶部菜单选择
     changeStatus(index, status) {
       this.curIndex = index;
       this.listType = status;
-      let params = {
-        type: status,
-      };
-      this.getStaffList(params);
+      this.adminName = "";
+      this.initHead();
+      this.getStaffList();
     },
     // 筛选功能
     handleCheckAllChange(val) {
@@ -618,7 +609,7 @@ export default {
           }
         });
       }
-      this.checked = [...this.checked, ...temp];
+      this.checked = temp;
       this.checkedBox.isIndeterminate = false;
     },
     handleCheckedCitiesChange(value) {
@@ -634,40 +625,47 @@ export default {
           }
         });
       }
-      this.checked = [...this.checked, ...temp];
-      console.log(this.checkedBox.checkedCities)
+      this.checked = [...temp,...this.defaultChecked];
     },
     // 搜索
     search(type) {
-      let params = {
-        name: this.adminName,
-        field: this.checked,
-      };
       if (type == 1) {
-        params.name = "";
         this.adminName = "";
-        this.checked = ["name", "job_number", "department", "position"];
+        this.initHead()
       }
-      this.getStaffList(params);
+      this.getStaffList();
     },
     // 获取员工列表
-    getStaffList(val) {
+    getStaffList() {
       this.searchData.viewsList_searchLoading = true;
       this.headList = [];
-      let page = {
+      let params = {
+        type:this.listType,
         page: this.listParams.page,
         is_paging: 0,
         name: this.adminName,
         field: this.checked,
       };
-      let params = { ...val, ...page };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data[0].data;
-          this.viewsList.forEach((item) => {
-            item.positive_time = renderTime(item.positive_time);
-          });
+          if(this.viewsList.length > 0){
+            this.viewsList.forEach((item) => {
+              item.positive_time = renderTime(item.positive_time);
+              item.card_valid = renderTime(item.card_valid);
+              item.first_labor_contract_deadline = renderTime(item.first_labor_contract_deadline);
+              item.full_graduation_time = renderTime(item.full_graduation_time);
+              item.hualu_join_time = renderTime(item.hualu_join_time);
+              item.labor_contract_deadline = renderTime(item.labor_contract_deadline);
+              item.newmedia_join_time = renderTime(item.newmedia_join_time);
+              item.part_graduation_time = renderTime(item.part_graduation_time);
+              item.second_labor_contract_deadline = renderTime(item.second_labor_contract_deadline);
+              item.third_labor_contract_deadline = renderTime(item.third_labor_contract_deadline);
+              item.trial_deadline = renderTime(item.trial_deadline);
+              item.work_time = renderTime(item.work_time);
+            });
+          }
           let tempHead = [];
           for (let key in res.data.head_arr) {
             let temp = {};
@@ -675,25 +673,17 @@ export default {
             temp.prop = key;
             tempHead.push(temp);
           }
-          let a = [...tempHead, ...this.headList];
-          var arr2 = a.filter((x, index, self) => {
-            var arrnames = [];
-            a.forEach((item, i) => {
-              arrnames.push(item.prop);
-            });
-            var judgeTwo = arrnames.indexOf(x.prop) === index;
-            return judgeTwo;
-          });
-          this.headList = arr2;
+          this.headList = tempHead
           this.total = res.data[0].total;
         } else {
+          this.searchData.viewsList_searchLoading = false;
           this.$message.error("列表数据获取失败！");
         }
       });
     },
     //获取筛选字段
-    getFields() {
-      STAFFS_API.getFields().then((res) => {
+    async getFields() {
+      await STAFFS_API.getFields().then((res) => {
         if (res.status == 200) {
           let temp = [];
           for (let key in res.data) {
@@ -701,9 +691,9 @@ export default {
           }
           this.checkedBox.cities = temp;
           this.checkData = res.data;
-          console.log(this.checkData)
         }
       });
+      this.initHead()
     },
     // 新增员工
     addStaff() {

@@ -1293,7 +1293,7 @@ export default {
   .upload {
     display: flex;
     flex-direction: row;
-    align-items: normal;
+    align-items: normal!important;
     justify-content: flex-start;
     margin-bottom: 20px;
     .label {
