@@ -1,16 +1,16 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList" ></nav-Bar>
     <div class="menuList">
       <ul>
         <li
-          v-for="(item,index) in menuList"
+          v-for="(item, index) in menuList"
           :key="index"
           :class="index == curIndex ? 'active' : ''"
-          @click="changeStatus(index,item.id)"
+          @click="changeStatus(index, item.id)"
         >
           <div class="index"></div>
-          <div class="menuName">{{item.name}}</div>
+          <div class="menuName">{{ item.name }}</div>
         </li>
       </ul>
     </div>
@@ -26,278 +26,501 @@
               <div class="labelBox">
                 <span class="label">姓名</span>
               </div>
-              <div class="elInput">{{staffInfo.name}}</div>
+              <div class="elInput">{{ subParams.name }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">员工号</span>
+              </div>
+              <div class="elInput">{{ subParams.job_number }}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">姓别</span>
               </div>
               <div class="genderBox">
-                <el-radio v-model="gender" :label="1" disabled border style="width:108px">男</el-radio>
-                <el-radio v-model="gender" :label="2" disabled border style="width:108px">女</el-radio>
+                <el-radio
+                  v-model="subParams.sex"
+                  :label="1"
+                  border
+                  style="width: 108px"
+                  disabled
+                  >男</el-radio
+                >
+                <el-radio
+                  v-model="subParams.sex"
+                  :label="2"
+                  border
+                  style="width: 108px"
+                  disabled
+                  >女</el-radio
+                >
               </div>
             </div>
           </li>
-          <!-- 手机号/身份证号 -->
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">手机号</span>
+                <span class="label">员工性质</span>
               </div>
-              <div class="elInput">{{staffInfo.mobile}}</div>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">身份证号</span>
-              </div>
-              <div class="elInput">{{staffInfo.card}}</div>
-            </div>
-          </li>
-          <!-- 出生日期/邮箱 -->
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="redPot"></span>
-                <span class="label">出生日期</span>
-              </div>
-              <div class="elInput">{{staffInfo.birthday?staffInfo.birthday:'暂无'}}</div>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">邮箱</span>
-              </div>
-              <div class="elInput">{{staffInfo.email ? staffInfo.email :'暂无'}}</div>
-            </div>
-          </li>
-        </ul>
-      </div>
-      <!-- 职位信息 -->
-      <div class="baseInfo">
-        <span class="title">职位信息</span>
-        <ul class="inputBox">
-          <!-- 员工状态/所属公司 -->
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">员工状态</span>
-              </div>
-              <div class="elInput">{{staffInfo.status | status}}</div>
-            </div>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">所属公司</span>
-              </div>
-              <div class="elInput msgInput">
-                <span>{{staffInfo.company}}</span>
-              </div>
-            </div>
-          </li>
-          <!-- 部门/职位 -->
-          <li>
-            <div class="itemBox">
-              <div class="labelBox">
-                <span class="label">部门</span>
-              </div>
-              <div class="elInput msgInput">
-                <span v-for="(i,idx) in staffInfo.department" :key="idx">{{i.name}}</span>
-              </div>
+              <div class="elInput">{{ subParams.type | type }}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">职位</span>
               </div>
-              <div class="elInput msgInput">
-                <span v-for="(i,idx) in staffInfo.position" :key="idx">{{i.name}}</span>
+              <div class="elInput">
+                <span
+                  v-for="(position, index) in subParams.position"
+                  :key="index"
+                  class="forName"
+                  >{{ position.name }}</span
+                >
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">职位类别</span>
+              </div>
+              <div class="elInput">
+                <span
+                  v-for="(position_type, index) in subParams.position_type"
+                  :key="index"
+                  class="forName"
+                  >{{ position_type | position_type }}</span
+                >
               </div>
             </div>
           </li>
-          <!-- 入职时间/转正时间 -->
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">入职时间</span>
+                <span class="label">业务线</span>
               </div>
-              <div class="elInput">{{staffInfo.entry_time ? staffInfo.entry_time : '暂无'}}</div>
+              <div class="elInput">{{ subParams.lob }}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">转正时间</span>
+                <span class="label">部门</span>
               </div>
-              <div class="elInput">{{staffInfo.positive_time ? staffInfo.positive_time :'暂无'}}</div>
+              <div class="elInput">
+                <span
+                  v-for="(depart, index) in subParams.department"
+                  :key="index"
+                  class="forName"
+                  >{{ depart.name }}</span
+                >
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">身份证号</span>
+              </div>
+              <div class="elInput">{{ subParams.card }}</div>
             </div>
           </li>
-          <!-- 试用期/工号 -->
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">试用期</span>
+                <span class="label">身份证有效期</span>
               </div>
-              <div class="elInput">{{staffInfo.trial_period | trial}}</div>
+              <div class="elInput">{{ subParams.card_valid }}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">工号</span>
+                <span class="label">年龄</span>
               </div>
-              <div class="elInput">{{staffInfo.job_number?staffInfo.job_number:'暂无'}}</div>
+              <div class="elInput">{{ subParams.age }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">所属公司</span>
+              </div>
+              <div class="elInput">{{ subParams.company_id | company }}</div>
             </div>
           </li>
         </ul>
       </div>
-      <!-- 其他信息 -->
+      <!-- 教育信息 -->
       <div class="baseInfo">
-        <span class="title">其他信息</span>
+        <span class="title">教育信息</span>
+        <h5 class="innerTitle">全日制教育</h5>
         <ul class="inputBox">
-          <!-- 婚姻状况/学历 -->
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">婚姻状况</span>
+                <span class="label">学校名称</span>
               </div>
-              <div class="elInput">{{staffInfo.marriage | marriage}}</div>
+              <div class="elInput">{{ subParams.full_school }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">专业</span>
+              </div>
+              <div class="elInput">{{ subParams.full_major }}</div>
             </div>
             <div class="itemBox">
               <div class="labelBox">
                 <span class="label">学历</span>
               </div>
-              <div class="elInput">{{staffInfo.education | education}}</div>
+              <div class="elInput">
+                {{ subParams.full_education | education }}
+              </div>
             </div>
           </li>
-          <!-- 紧急联系人 -->
           <li>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">紧急联系人</span>
+                <span class="label">学位</span>
               </div>
-              <div class="elInput">{{staffInfo.emergency_contact}}</div>
+              <div class="elInput">{{ subParams.full_degree }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">毕业时间</span>
+              </div>
+              <div class="elInput">{{ subParams.full_graduation_time }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
+            </div>
+          </li>
+        </ul>
+        <h5 class="innerTitle">在职教育</h5>
+        <ul class="inputBox">
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">学校名称</span>
+              </div>
+              <div class="elInput">{{ subParams.part_school }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">专业</span>
+              </div>
+              <div class="elInput">{{ subParams.part_major }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">学历</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.part_education | education }}
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">学位</span>
+              </div>
+              <div class="elInput">{{ subParams.part_degree }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">毕业时间</span>
+              </div>
+              <div class="elInput">{{ subParams.part_graduation_time }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
+            </div>
+          </li>
+        </ul>
+        <h5 class="innerTitle">其他</h5>
+        <ul class="inputBox">
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">留学</span>
+              </div>
+              <div class="elInput">{{ subParams.abroad | abroad }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">英语水平</span>
+              </div>
+              <div class="elInput">{{ subParams.english_level }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
             </div>
           </li>
         </ul>
       </div>
+      <!-- 工作信息 -->
+      <div class="baseInfo">
+        <span class="title">工作信息</span>
+        <ul class="inputBox">
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">职称</span>
+              </div>
+              <div class="elInput">{{ subParams.professional }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">职称级别</span>
+              </div>
+              <div class="elInput">{{ subParams.professional_level }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">参工时间</span>
+              </div>
+              <div class="elInput">{{ subParams.work_time }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">华录入职时间</span>
+              </div>
+              <div class="elInput">{{ subParams.hualu_join_time }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">新媒入职时间</span>
+              </div>
+              <div class="elInput">{{ subParams.newmedia_join_time }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">劳动合同到期时间</span>
+              </div>
+              <div class="elInput">{{ subParams.labor_contract_deadline }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">第一期劳动合同到期时间</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.first_labor_contract_deadline }}
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">第二期劳动合同到期时间</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.second_labor_contract_deadline }}
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">第三期劳动合同到期时间</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.third_labor_contract_deadline }}
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">预计试用期截止时间</span>
+              </div>
+              <div class="elInput">{{ subParams.trial_deadline }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
+            </div>
+          </li>
+        </ul>
+      </div>
+      <!--  -->
+      <div class="baseInfo">
+        <span class="title">其他信息</span>
+        <ul class="inputBox">
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">婚姻状况</span>
+              </div>
+              <div class="elInput">{{ subParams.marriage | marriage }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">民族</span>
+              </div>
+              <div class="elInput">{{ subParams.nation | nation }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">政治面貌</span>
+              </div>
+              <div class="elInput">{{ subParams.politics | politics }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">党群关系</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.party_masses_relation | party_masses_relation }}
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">工会关系</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.union_relation | party_masses_relation }}
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">籍贯</span>
+              </div>
+              <div class="elInput">{{ subParams.native_place }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">户口所在地</span>
+              </div>
+              <div class="elInput">{{ subParams.domicile_place }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">户口性质</span>
+              </div>
+              <div class="elInput">{{ subParams.category | category }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">社保情况</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.social_security | social_security }}
+              </div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">公积金情况</span>
+              </div>
+              <div class="elInput">
+                {{ subParams.accumulation_fund | social_security }}
+              </div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">手机号</span>
+              </div>
+              <div class="elInput">{{ subParams.mobile }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">公司邮箱</span>
+              </div>
+              <div class="elInput">{{ subParams.company_email }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">个人邮箱</span>
+              </div>
+              <div class="elInput">{{ subParams.personal_email }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">可收信件地址</span>
+              </div>
+              <div class="elInput">{{ subParams.mail_address }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">紧急联系人</span>
+              </div>
+              <div class="elInput">{{ subParams.emergency_contact }}</div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">紧急联系电话</span>
+              </div>
+              <div class="elInput">{{ subParams.emergency_mobile }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">第二联系电话</span>
+              </div>
+              <div class="elInput">{{ subParams.second_mobile }}</div>
+            </div>
+            <div class="itemBox">
+              <div class="labelBox"></div>
+              <div class="elInputp"></div>
+            </div>
+          </li>
+          <li>
+            <div class="itemBox">
+              <div class="labelBox">
+                <span class="label">备注</span>
+              </div>
+              <div class="elInput areaInput">{{ subParams.remark }}</div>
+            </div>
+          </li>
+        </ul>
+        <div class="upload">
+          <span class="label">附件</span>
+          <ul v-if="subParams.attachment_url.length > 0">
+            <li v-for="(file, index) in subParams.attachment_url" :key="index">
+              <el-link
+                type="primary"
+                :underline="false"
+                @click="downFile(file)"
+                >{{ file }}</el-link
+              >
+            </li>
+          </ul>
+          <span class="tips" v-else>无附件</span>
+        </div>
+      </div>
       <div class="btnBox">
         <div class="btns">
-          <el-button style="width:95px;" type="primary" @click="editMsg()">编辑</el-button>
+          <el-button style="width: 95px" type="primary" @click="editMsg()"
+            >编辑</el-button
+          >
         </div>
       </div>
     </el-card>
     <!-- 转正信息 -->
     <el-card class="formCard" v-if="curIndex == 1">
-      <!-- 未转正时显示 -->
-      <div v-if="staffInfo.status == 1">
-        <!-- 转正信息填写 -->
-        <div class="positiveEdit" v-if="positiveStatus != 0">
+      <div>
+        <div class="positiveEdit" v-if="positiveData != null">
           <div class="baseInfo">
             <ul class="inputBox">
-              <!-- 姓名/入职日期 -->
               <li>
                 <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">姓名</span>
-                  </div>
-                  <div class="elInput">{{staffInfo.name}}</div>
-                </div>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">入职日期</span>
-                  </div>
-                  <div class="elInput">{{staffInfo.entry_time ? staffInfo.entry_time :'暂无'}}</div>
-                </div>
-              </li>
-              <!-- 手机号 -->
-              <li>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">手机号</span>
-                  </div>
-                  <div class="elInput">{{staffInfo.mobile}}</div>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <!-- 转正时间 -->
-          <div class="baseInfo">
-            <ul class="inputBoxPositive">
-              <!-- 转正时间 -->
-              <li>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="redPot">&#10052;</span>
+                  <div class="labelBox labelNon">
                     <span class="label">转正时间</span>
                   </div>
-                  <el-date-picker
-                    v-model="positiveTime"
-                    type="date"
-                    placeholder="选择转正时间"
-                    class="elInput"
-                  ></el-date-picker>
-                </div>
-              </li>
-            </ul>
-            <!-- 工作总结 -->
-            <div class="conclusion">
-              <span class="label">工作总结</span>
-              <el-input
-                type="textarea"
-                :rows="25"
-                placeholder="请输入内容"
-                minlength="30"
-                v-model="conclusion"
-              ></el-input>
-            </div>
-            <div class="upload">
-              <span class="label">附件</span>
-              <el-upload
-                class="upload-demo"
-                action
-                :on-remove="handleRemove"
-                :before-remove="beforeRemove"
-                :before-upload="beforeUpload"
-                :on-change="handleChange"
-                :headers="header"
-                :auto-upload="false"
-                multiple
-                :file-list="fileList"
-              >
-                <el-button size="small" type="primary" style="width:120px;">新增附件</el-button>
-              </el-upload>
-            </div>
-          </div>
-          <div class="btnBox">
-            <div class="btns">
-              <el-button style="width:95px;" @click="positive(0)">取消</el-button>
-              <el-button style="width:95px;" type="primary" @click="positiveSave()">保存</el-button>
-            </div>
-          </div>
-        </div>
-        <!-- 未转正 -->
-        <div class="positiveNull" v-if="positiveStatus == 0">
-          <div>
-            <img src="../../assets/img/dataNull.png" />
-            <el-button style="width:95px;" type="primary" @click="positive(1)">转正</el-button>
-          </div>
-        </div>
-      </div>
-      <!-- 已经转正时显示 -->
-      <div v-else>
-        <!-- 转正信息填写 -->
-        <div class="positiveEdit">
-          <div class="baseInfo">
-            <ul class="inputBox">
-              <!-- 申请时间/试用期 -->
-              <li>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">转正时间</span>
+                  <div class="elInput">
+                    {{
+                      positiveData.positive_time
+                        ? positiveData.positive_time
+                        : "暂无"
+                    }}
                   </div>
-                  <div
-                    class="elInput"
-                  >{{staffInfo.positive ? staffInfo.positive.positive_time :'暂无'}}</div>
                 </div>
-                <!-- <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">试用期</span>
-                  </div>
-                  <div class="elInput">{{staffInfo.positive ? staffInfo.positive.id+'个月' :'暂无'}}</div>
-                </div>-->
               </li>
             </ul>
           </div>
@@ -305,46 +528,72 @@
           <div class="baseInfo">
             <div class="conclusion">
               <span class="label">工作总结</span>
-              <div class="turnover">{{staffInfo.positive?staffInfo.positive.summary:'暂无'}}</div>
+              <div class="turnover">
+                {{ positiveData.summary ? positiveData.summary : "暂无" }}
+              </div>
             </div>
-            <div class="upload">
-              <span class="label">附件</span>
-              <ul class="fileList" v-if="staffInfo.positive && staffInfo.positive.attachment_url">
+            <div class="upload conclusion">
+              <span class="label mr0">附件</span>
+              <ul
+                class="fileList"
+                v-if="
+                  positiveData.attachment_url &&
+                  positiveData.attachment_url.length > 0
+                "
+              >
                 <li
-                  v-for="(item,index) in JSON.parse(staffInfo.positive.attachment_url)"
+                  v-for="(item, index) in positiveData.attachment_url"
                   :key="index"
                 >
-                  <span class="fileName">{{item}}</span>
-                  <span class="fileDownload" @click="download(item)">下载</span>
-                  <!-- <a :href="`http://luxy.hr.com/api/downfiles/index?file_name=${item}`">下载</a> -->
+                  <el-link
+                    type="primary"
+                    :underline="false"
+                    @click="downFile(item)"
+                    >{{ item }}</el-link
+                  >
                 </li>
               </ul>
               <span class="tips" v-else>无附件</span>
             </div>
           </div>
         </div>
+        <div class="positiveNull" v-else>
+          <div>
+            <img src="../../assets/img/dataNull.png" />
+            <h5 class="nonTips">暂无转正信息</h5>
+          </div>
+        </div>
       </div>
     </el-card>
     <!-- 离职信息 -->
     <el-card class="formCard" v-if="curIndex == 2">
-      <div class="positiveEdit" v-if="staffInfo.status == 3">
+      <div class="positiveEdit" v-if="turnoverData != null">
         <div class="baseInfo">
           <ul class="inputBox">
             <!-- 离职类型/离职日期 -->
             <li>
               <div class="itemBox">
-                <div class="labelBox">
+                <div class="labelBox labelNon">
                   <span class="label">离职类型</span>
                 </div>
-                <div
-                  class="elInput"
-                >{{staffInfo.turnover && staffInfo.turnover.turnover_type | turnover}}</div>
+                <div class="elInput">
+                  {{
+                    turnoverData.turnover_type &&
+                    turnoverData.turnover_type | turnover
+                  }}
+                </div>
               </div>
               <div class="itemBox">
-                <div class="labelBox">
+                <div class="labelBox labelNon">
                   <span class="label">离职日期</span>
                 </div>
-                <div class="elInput">{{staffInfo.turnover? staffInfo.turnover.turnover_time:'暂无'}}</div>
+                <div class="elInput">
+                  {{
+                    turnoverData.turnover_time
+                      ? turnoverData.turnover_time
+                      : "暂无"
+                  }}
+                </div>
               </div>
             </li>
           </ul>
@@ -353,75 +602,20 @@
           <!-- 离职原因 -->
           <div class="conclusion">
             <span class="label">离职原因</span>
-            <div class="turnover">{{staffInfo.turnover ? staffInfo.turnover.turnover_reason:'暂无'}}</div>
+            <div class="turnover">
+              {{
+                turnoverData.turnover_reason
+                  ? turnoverData.turnover_reason
+                  : "暂无"
+              }}
+            </div>
           </div>
         </div>
       </div>
-      <div class="positiveEdit" v-else>
-        <div v-if="turnoverStatus == 1">
-          <div class="baseInfo">
-            <ul class="inputBoxPositive turnover">
-              <!-- 离职类型/离职日期 -->
-              <li>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">离职类型</span>
-                  </div>
-                  <el-select
-                    v-model="turnoverType"
-                    placeholder="请选择离职类型"
-                    style="width:370px"
-                    class="elInput"
-                  >
-                    <el-option
-                      v-for="item in turnoverType_options"
-                      :key="item.value"
-                      :label="item.label"
-                      :value="item.value"
-                    ></el-option>
-                  </el-select>
-                </div>
-                <div class="itemBox">
-                  <div class="labelBox">
-                    <span class="label">离职日期</span>
-                  </div>
-                  <el-date-picker
-                    v-model="turnoverTime"
-                    type="date"
-                    placeholder="选择离职时间"
-                    style="width:370px"
-                    class="elInput"
-                  ></el-date-picker>
-                </div>
-              </li>
-            </ul>
-          </div>
-          <div class="baseInfo">
-            <!-- 离职原因 -->
-            <div class="conclusion">
-              <span class="label">离职原因</span>
-              <el-input
-                type="textarea"
-                :rows="25"
-                placeholder="请输入内容"
-                minlength="30"
-                v-model="turnoverReason"
-              ></el-input>
-            </div>
-          </div>
-          <div class="btnBox">
-            <div class="btns">
-              <el-button style="width:95px;" @click="turnover(0)">取消</el-button>
-              <el-button style="width:95px;" type="primary" @click="saveTurnover()">确认离职</el-button>
-            </div>
-          </div>
-        </div>
-        <!-- 未离职 -->
-        <div class="positiveNull" v-if="turnoverStatus == 0">
-          <div>
-            <img src="../../assets/img/dataNull.png" />
-            <el-button style="width:95px;" type="primary" @click="turnover(1)">离职</el-button>
-          </div>
+      <div class="positiveNull" v-else>
+        <div>
+          <img src="../../assets/img/dataNull.png" />
+          <h5 class="nonTips">暂无离职信息</h5>
         </div>
       </div>
     </el-card>
@@ -429,11 +623,44 @@
 </template>
 
 <script>
-import http from "../../utils/request";
-// import configUrl from "../../api/configUrl";
 import navBar from "@/components/navBar/navBar";
+import { renderTime } from "@/utils/function.js";
+import { STAFFS_API } from "@/api/staffs";
 export default {
   filters: {
+    // 员工性质
+    type(val) {
+      switch (val) {
+        case 1:
+          return "试用 ";
+          break;
+        case 2:
+          return "正式 ";
+          break;
+        case 3:
+          return "离职";
+          break;
+        default:
+          return "";
+          break;
+      }
+    },
+    company(val) {
+      switch (val) {
+        case 1:
+          return "北京公司";
+          break;
+        case 2:
+          return "成都公司";
+          break;
+        case 3:
+          return "上海公司";
+          break;
+        default:
+          return "";
+          break;
+      }
+    },
     status(val) {
       switch (val) {
         case 0:
@@ -450,6 +677,28 @@ export default {
           break;
       }
     },
+    position_type(val) {
+      switch (val) {
+        case 0:
+          return "高管";
+          break;
+        case 1:
+          return "职能类";
+          break;
+        case 2:
+          return "职能支撑类";
+          break;
+        case 3:
+          return "业务支撑类";
+          break;
+        case 4:
+          return "业务类";
+          break;
+        default:
+          return "";
+          break;
+      }
+    },
     trial(val) {
       if (val == 0) {
         return "无";
@@ -459,22 +708,101 @@ export default {
     },
     marriage(val) {
       if (val == 0) {
-        return "未婚";
+        return "未知";
       } else if (val == 1) {
         return "已婚";
       } else {
-        return "暂无";
+        return "未婚";
       }
     },
     education(val) {
-      if (val == 0) {
-        return "专科";
+      switch (val) {
+        case 1:
+          return "专科";
+          break;
+        case 2:
+          return "本科  ";
+          break;
+        case 3:
+          return "硕士 ";
+          break;
+        case 4:
+          return "博士   ";
+          break;
+        case 5:
+          return "专科以下 ";
+          break;
+        default:
+          return "未知";
+          break;
+      }
+    },
+    nation(val) {
+      if (val == 2) {
+        return "汉族";
       } else if (val == 1) {
-        return "本科";
-      } else if (val == 2) {
-        return "硕士";
+        return "少数名族";
       } else {
-        return "暂无";
+        return "未知";
+      }
+    },
+    politics(val) {
+      switch (val) {
+        case 0:
+          return "党员";
+          break;
+        case 1:
+          return "团员 ";
+          break;
+        case 2:
+          return "群众";
+          break;
+        default:
+          return "暂无";
+          break;
+      }
+    },
+    party_masses_relation(val) {
+      switch (val) {
+        case 1:
+          return "已转出";
+          break;
+        case 2:
+          return "已转入 ";
+          break;
+        case 3:
+          return "未转入";
+          break;
+        default:
+          return "未知";
+          break;
+      }
+    },
+    abroad(val) {
+      switch (val) {
+        case 1:
+          return "是";
+          break;
+        case 2:
+          return "否 ";
+          break;
+        default:
+          return "未知";
+          break;
+      }
+    },
+    category(val) {
+      if (val == 0) {
+        return "城镇 ";
+      } else {
+        return "农村";
+      }
+    },
+    social_security(val) {
+      if (val == 0) {
+        return "新参统 ";
+      } else {
+        return "转入";
       }
     },
     turnover(val) {
@@ -506,56 +834,82 @@ export default {
           title: "员工信息",
         },
       ],
-      title: "员工信息",
       menuList: [
         { name: "基础信息", id: 0 },
         { name: "转正信息", id: 1 },
         { name: "离职信息", id: 2 },
       ],
       curIndex: 0,
-      gender: 1,
       staffInfo: {}, //员工信息
       staffId: "", //员工id
+      subParams: {
+        name: "", //姓名
+        sex: "",
+        job_number: "", //工号
+        type: "", //性质  1：试用 2：正式 3:离职
+        position_id: [], //职位id
+        position_type: [], //职位类别 0：高管 1：职能类 2：职能支撑类 3：业务支撑类 4：业务类
+        lob: "", //业务线
+        department_id: [], //部门id
+        card: "", //身份证号
+        card_valid: "", //日期
+        age: "", //年龄
+        company_id: "", //公司 1：北京公司 2：成都公司 3：上海公司
+        full_school: "", //全日制学校名称
+        full_major: "", //全日制专业
+        full_education: "", //全日制学历
+        full_degree: "", //全日制学位
+        full_graduation_time: "", //全日制毕业时间
+        part_school: "", //在职教育学校名称
+        part_major: "", //在职教育专业
+        part_education: "", //在职教育学历
+        part_degree: "", //在职教育学位
+        part_graduation_time: "", //在职教育毕业时间
+        abroad: "", //留学信息 0：是 1：否
+        english_level: "", //英语水平
+        professional: "", //职称
+        professional_level: "", //职称级别
+        work_time: "", //参工时间
+        hualu_join_time: "", //华录入职之间
+        newmedia_join_time: "", //新媒入职时间
+        labor_contract_deadline: "", //劳动合同到期时间
+        first_labor_contract_deadline: "", //第一期劳动合同到期时间
+        second_labor_contract_deadline: "", //第二期劳动合同到期时间
+        third_labor_contract_deadline: "", //第三期劳动合同到期时间
+        trial_deadline: "", //预计使用期截止时间
+        marriage: "", //婚姻 0：未婚 1：已婚
+        nation: "", //民族 0：汉族 1：少数民族
+        politics: "", //政治面貌 0：党员 1：团员 2：群众
+        party_masses_relation: "", //党群关系 0：已转出 1：已转入 2：未转入
+        union_relation: "", //工会关系 0：已转出 1：已转入 2：未转入
+        native_place: "", //籍贯
+        domicile_place: "", //户口所在地
+        category: "", //户口性质 0：城镇 1：农村
+        social_security: "", //社保情况 0：新参统 1：转入
+        accumulation_fund: "", //公积金情况 0：新参统 1：转入
+        mobile: "", //手机号
+        company_email: "", //公司邮箱
+        mobipersonal_emaille: "", //个人邮箱
+        mail_address: "", //可收信件地址
+        emergency_contact: "", //紧急联系人
+        emergency_mobile: "", //紧急联系电话
+        second_mobile: "", //第二联系电话
+        remark: "", //备注
+        attachment_url: [], //附件地址
+      },
       // 转正信息填写部分数据
-      positiveStatus: 0,
-      positiveTime: "", //转正时间
-      conclusion: "", //工作总结
-      fileList: [], //附件
+      positiveData: {},
       // 离职数据
-      turnoverStatus: 0,
-      turnoverType_options: [
-        {
-          value: 0,
-          label: "主动离职",
-        },
-        {
-          value: 1,
-          label: "被动离职",
-        },
-        {
-          value: 2,
-          label: "退休",
-        },
-      ],
-      turnoverType: null, //离职类型
-      turnoverTime: "", //离职时间
-      turnoverReason: "", //离职原因
+      turnoverData: {},
     };
-  },
-  computed: {
-    header() {
-      let token = sessionStorage.getItem("token");
-      return {
-        Authorization: "Bearer " + token,
-      };
-    },
   },
   created() {
     this.staffId = this.$route.query.id;
+    this.staffInfo.status = this.$route.query.status;
     this.curIndex = this.$route.query.index ? this.$route.query.index : 0;
   },
   mounted() {
-    // this.getStaffInfo();
+    this.getStaffInfo();
   },
   methods: {
     // 顶部菜单选择
@@ -572,108 +926,88 @@ export default {
         },
       });
     },
-    // 文件上传
-    handleRemove(file, fileList) {
-      console.log(file, fileList);
-    },
-    handleChange(file, fileList) {
-      this.fileList = fileList;
-    },
-    beforeRemove(file, fileList) {
-      console.log(fileList);
-      return this.$confirm(`确定移除 ${file.name}？`);
-    },
-    beforeUpload(file, fileList) {
-      return false;
-    },
     // 获取员工信息
     getStaffInfo() {
-      http.GET(`${configUrl.getStaffList}/${this.staffId}`).then((res) => {
-        if (res.status == 0) {
-          this.staffInfo = res.data;
-          this.gender = res.data.sex;
-          this.title = `员工信息 - ${res.data.name}`;
-          console.log(this.staffInfo);
+      STAFFS_API.staffInfo({}, this.staffId).then((res) => {
+        if (res.status == 200) {
+          this.subParams = res.data;
+          if (res.data.first_labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.subParams.first_labor_contract_deadline = "";
+          }
+          if (res.data.full_graduation_time == "1970-01-01 08:00:00") {
+            this.subParams.full_graduation_time = "";
+          }
+          if (res.data.hualu_join_time == "1970-01-01 08:00:00") {
+            this.subParams.hualu_join_time = "";
+          }
+          if (res.data.labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.subParams.labor_contract_deadline = "";
+          }
+          if (res.data.newmedia_join_time == "1970-01-01 08:00:00") {
+            this.subParams.newmedia_join_time = "";
+          }
+          if (res.data.part_graduation_time == "1970-01-01 08:00:00") {
+            this.subParams.part_graduation_time = "";
+          }
+          if (
+            res.data.second_labor_contract_deadline == "1970-01-01 08:00:00"
+          ) {
+            this.subParams.second_labor_contract_deadline = "";
+          }
+          if (res.data.third_labor_contract_deadline == "1970-01-01 08:00:00") {
+            this.subParams.third_labor_contract_deadline = "";
+          }
+          if (res.data.trial_deadline == "1970-01-01 08:00:00") {
+            this.subParams.trial_deadline = "";
+          }
+          if (res.data.work_time == "1970-01-01 08:00:00") {
+            this.subParams.work_time = "";
+          }
+          if (this.subParams.positive != null) {
+            this.subParams.positive.positive_time = renderTime(
+              this.subParams.positive.positive_time
+            );
+          }
+          if (this.subParams.turnover != null) {
+            this.subParams.turnover.turnover_time = renderTime(
+              this.subParams.turnover.turnover_time
+            );
+          }
+          this.positiveData = this.subParams.positive;
+          this.turnoverData = this.subParams.turnover;
         } else {
-          this.$message({
-            message: "获取员工信息失败！",
-            type: "warning",
-          });
+          this.$message.error("员工信息获取失败！");
         }
       });
     },
-    // 转正按钮点击
-    positive(val) {
-      this.positiveStatus = val;
-    },
-    // 保存转正信息
-    positiveSave() {
-      let that = this;
+    // 文件下载
+    async downFile(val) {
       let params = {
-        uid: this.staffId,
-        positive_time: this.positiveTime,
-        summary: this.conclusion,
+        file_path: val,
       };
-      let formData = new FormData(); //  用FormData存放上传文件
-      this.fileList.forEach((item) => {
-        formData.append("attachment[]", item.raw);
+      const { data: res } = await this.axios({
+        method: "get",
+        url: `hr/files/down`,
+        params: params,
+        responseType: "blob",
       });
-      formData.append("uid", params.uid);
-      formData.append("positive_time", "2020-09-18");
-      formData.append("summary", params.summary);
-      switch (true) {
-        case params.positive_time == "":
-          this.$message({
-            message: "请填写转正时间！",
-            type: "warning",
-          });
-          break;
-        case params.summary == "":
-          this.$message({
-            message: "请填写工作总结！",
-            type: "warning",
-          });
-          break;
-        default:
-          http.POST(configUrl.positiveSave, formData).then((res) => {
-            if (res.status == 0) {
-              this.getStaffInfo();
-              this.curIndex = 1;
-              setTimeout(function () {
-                that.$message({
-                  message: "转正成功！",
-                  type: "success",
-                });
-              }, 500);
-            } else {
-              setTimeout(function () {
-                that.$message({
-                  message: res.msg,
-                  type: "warning",
-                });
-              }, 500);
-            }
-          });
-          break;
-      }
-    },
-    // 转正文件下载
-    download(val) {
-      let params = {
-        file_name: val,
+      let fileName = val;
+      let fileType = {
+        doc: "application/msword",
+        docx:
+          "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+        xls: "application/vnd.ms-excel",
+        xlsx:
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        ppt: "application/vnd.ms-powerpoint",
+        pptx:
+          "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        pdf: "application/pdf",
       };
-      http
-        .GET(configUrl.fileDownload, params, { responseType: "blob" })
-        .then((res) => {
-          this.downloadfile(res, val);
-        });
-    },
-    downloadfile(data, fileName) {
-      if (!data) {
-        return;
-      }
-      let blob = new Blob([data],{
-        type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document;charset=UTF-8'
+      let type = fileName.split(".")[1]; //获取文件后缀名
+      let curType = fileType[type];
+      let blob = new Blob([res], {
+        type: curType,
       });
       let url = window.URL.createObjectURL(blob);
       let link = document.createElement("a");
@@ -681,64 +1015,9 @@ export default {
       link.href = url;
       link.setAttribute("download", fileName);
       document.body.appendChild(link);
-      link.click();   
+      link.click();
       document.body.removeChild(link);
       window.URL.revokeObjectURL(url);
-    },
-    // 离职按钮点击val
-    turnover(val) {
-      this.turnoverStatus = val;
-    },
-    // 保存离职信息
-    saveTurnover() {
-      let that = this;
-      let params = {
-        uid: this.staffId,
-        turnover_type: this.turnoverType,
-        turnover_time: this.turnoverTime,
-        turnover_reason: this.turnoverReason,
-      };
-      switch (true) {
-        case params.turnover_type == null:
-          this.$message({
-            message: "请选择离职类型",
-            type: "warning",
-          });
-          break;
-        case !params.turnover_time:
-          this.$message({
-            message: "请选择离职时间",
-            type: "warning",
-          });
-          break;
-        case !params.turnover_reason:
-          this.$message({
-            message: "请填写离职原因",
-            type: "warning",
-          });
-          break;
-        default:
-          http.POST(configUrl.departure, params).then((res) => {
-            if (res.status == 0) {
-              this.getStaffInfo();
-              this.curIndex = 2;
-              setTimeout(function () {
-                that.$message({
-                  message: "离职成功！",
-                  type: "success",
-                });
-              }, 500);
-            } else {
-              setTimeout(function () {
-                that.$message({
-                  message: res.msg,
-                  type: "warning",
-                });
-              }, 500);
-            }
-          });
-          break;
-      }
     },
   },
   components: {
@@ -821,64 +1100,65 @@ export default {
       border-bottom: 1px solid #f0f3f7;
       margin-bottom: 20px;
       .inputBox {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
         margin-top: 20px;
         li {
-          margin-right: 50px;
           display: flex;
           flex-direction: row;
           align-items: center;
-          margin-bottom: 20px;
+          justify-content: space-between;
+          flex: 1 1 auto;
+          margin-bottom: 10px;
           .itemBox {
-            width: 480px;
-            max-width: 500px;
-            min-width: 450px;
+            min-width: 400px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
-            margin-right: 120px;
+            flex: 1 1 auto;
+            margin: 0 80px 20px 0;
+            &:last-child {
+              margin-right: 0;
+            }
+            .elInput,
+            .genderBox {
+              width: 200px;
+              flex: 1 1 auto;
+            }
             .elInput {
-              width: 370px;
-              height: 40px;
-              padding: 0 15px;
-              line-height: 40px;
               border-radius: 4px;
               border: 1px solid #dcdfe6;
               box-sizing: border-box;
-              color: #909399;
-              font-weight: 400;
+              color: #606266;
+              min-height: 40px;
+              line-height: 40px;
+              padding: 0 15px;
             }
-            .msgInput {
-              span {
-                margin-right: 20px;
-                &:last-child {
-                  margin-right: 0;
-                }
-              }
+            .elInputp {
+              width: 200px;
+              flex: 1 1 auto;
             }
-            .genderBox {
+            .areaInput {
+              width: 500px;
               flex: 1 1 auto;
             }
             .labelBox {
               width: 120px;
-              .redPot,
+              margin-right: 20px;
+              text-align: right;
               .label {
-                letter-spacing: 1px;
-                color: #f56c6c;
-                font-size: 16px;
-                font-weight: bold;
-                margin-right: 2px;
-              }
-              .label {
-                color: #333333;
+                color: #606266;
                 margin-right: 0;
+                font-size: 14px;
               }
             }
           }
         }
+      }
+      .innerTitle {
+        font-size: 14px;
+        padding-left: 30px;
+        color: #999999;
+        margin: 20px 0;
       }
       .inputBoxPositive {
         li {
@@ -902,7 +1182,7 @@ export default {
             }
             .labelBox {
               width: 120px;
-              .redPot,
+              text-align: left;
               .label {
                 letter-spacing: 1px;
                 color: #f56c6c;
@@ -921,8 +1201,7 @@ export default {
       .turnover {
         margin-top: 20px;
       }
-      .conclusion,
-      .upload {
+      .conclusion {
         display: flex;
         flex-direction: row;
         justify-content: space-between;
@@ -932,15 +1211,15 @@ export default {
         .label {
           display: block;
           width: 120px;
-          margin-right: 2px;
           letter-spacing: 1px;
           font-size: 16px;
           font-weight: bold;
           margin-right: 8px;
+          text-align: left;
         }
         .turnover {
           width: 100%;
-          height: 500px;
+          min-height: 500px;
           padding: 15px;
           line-height: 34px;
           border-radius: 4px;
@@ -949,44 +1228,14 @@ export default {
           color: #909399;
           font-weight: 400;
         }
-      }
-      .upload {
-        align-items: normal;
-        justify-content: flex-start;
-        .label {
-          margin-right: 0;
-          line-height: 32px;
+        ul {
+          flex: 1 1 auto;
         }
         .tips {
-          font-size: 14px;
-          color: #909399;
-          font-weight: 400;
-          line-height: 32px;
+          flex: 1 1 auto;
         }
-        .fileList {
-          li {
-            margin-bottom: 10px;
-            span {
-              display: inline-block;
-              height: 32px;
-              line-height: 32px;
-            }
-            .fileName {
-              font-size: 14px;
-              color: #3b4859;
-            }
-            .fileDownload {
-              width: 60px;
-              height: 20px;
-              cursor: pointer;
-              line-height: 20px;
-              color: #fff;
-              background: #409efd;
-              text-align: center;
-              border-radius: 4px;
-              margin-left: 20px;
-            }
-          }
+        .mr0 {
+          margin-right: 0;
         }
       }
     }
@@ -1017,6 +1266,53 @@ export default {
       img {
         margin-bottom: 20px;
       }
+    }
+  }
+  .forName {
+    background-color: #f4f4f5;
+    border-color: #e9e9eb;
+    border-radius: 4px;
+    height: 24px;
+    padding: 4px 8px;
+    line-height: 22px;
+    color: #909399;
+    margin-right: 4px;
+  }
+  .labelNon {
+    text-align: left !important;
+    margin-right: 0 !important;
+    .label {
+      font-size: 16px !important;
+      font-weight: bold;
+    }
+  }
+  .nonTips {
+    font-size: 14px;
+    color: #666;
+  }
+  .upload {
+    display: flex;
+    flex-direction: row;
+    align-items: normal!important;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+    .label {
+      width: 120px;
+      height: 40px;
+      margin-right: 20px;
+      padding-right: 0;
+      line-height: 40px;
+      text-align: right;
+    }
+    ul {
+      li {
+        height: 40px;
+        line-height: 38px;
+      }
+    }
+    .tips {
+      flex: 1 1 auto;
+      line-height: 40px;
     }
   }
 }

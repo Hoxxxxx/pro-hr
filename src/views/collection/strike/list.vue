@@ -162,7 +162,7 @@
             <div class="infobox selectbox last_row brNone">
               {{ detail.ooa32d }}
             </div>
-            <div class="titlebox brNone">本币借方金额合计</div>
+            <div class="titlebox brNone">本币贷方金额合计</div>
             <div class="infobox">
               {{ detail.ooa32c }}
             </div>
@@ -312,14 +312,17 @@ export default {
     },
     // 获取发票详情
     getstrikeDetail(id) {
+      this.detailList = []
+      this.detail = {}
+      this.searchData.detailList_searchLoading = true;
       let params = {
         id: id,
       };
       strikeDetail(params).then((res) => {
         if (res.status == 200) {
-          this.detailList = res.data[0].oob;
+          this.detailList = res.data.details;
           this.searchData.detailList_searchLoading = false;
-          this.detail = res.data[0];
+          this.detail = res.data;
         } else {
           this.$message.error("列表获取失败！");
         }

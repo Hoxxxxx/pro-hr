@@ -1,13 +1,13 @@
 <template>
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <!-- 搜索框 -->
+    <!-- 筛选框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
+      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
@@ -215,7 +215,7 @@
           <li>
             <span>用户名称</span>
             <el-input
-              v-model="addParams.name"
+              v-model="editParams.name"
               class="elInput"
               placeholder="请输入用户名称"
             ></el-input>
@@ -223,7 +223,7 @@
           <li>
             <span>选择员工</span>
             <el-select
-              v-model="addParams.staff_id"
+              v-model="editParams.staff_id"
               placeholder="请选择员工"
               class="elInput"
             >
@@ -239,7 +239,7 @@
             <span>选择角色</span>
             <el-select
               multiple
-              v-model="addParams.role_ids"
+              v-model="editParams.role_ids"
               placeholder="请选择角色"
               class="elInput"
             >
@@ -290,7 +290,7 @@ export default {
         },
       ],
       title: "管理员管理",
-      // 搜索框
+      // 筛选框
       showSearch: false,
       adStatus: [
         {
@@ -315,12 +315,17 @@ export default {
       // 编辑管理员
       showEditPop: false,
       editID: "", //当前编辑的管理员
+      editParams: {
+        name: "", //用户名
+        role_ids: "", //角色
+        staff_id: "", //员工id
+      },
       // 批量删除
       ids: [], //批量选中的管理员
       // 筛选列表的参数
       filterList: {
         name: "",
-        status: "",
+        status: null,
       },
       // 分页
       total: 0,
@@ -328,7 +333,6 @@ export default {
     };
   },
   mounted() {
-    // this.getAdmins()
     this.getUsers();
     this.rolesList();
     this.getAdminsList();
@@ -337,11 +341,11 @@ export default {
     // 获取所有员工
     getUsers() {
       let params = {
-        page: 1,
+        is_paging:1
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
-          this.staffList = res.data[0].data;
+          this.staffList = res.data;
         } else {
           this.$message.error(res.error);
         }
@@ -374,23 +378,16 @@ export default {
         }
       });
     },
-    // 查看某个管理员
-    getAdmins() {
-      let id = 4;
-      ADMINS_API.getAdmins({}, id).then((res) => {
-        console.log(res);
-      });
-    },
     // 搜索列表
     search() {
-      console.log(this.filterList);
+      this.listParams.page = 1
       let params = {
         page: this.listParams.page,
       };
       if (this.filterList.name != "") {
         params.name = this.filterList.name;
       }
-      if (this.filterList.status != "") {
+      if (this.filterList.status != null) {
         params.status = this.filterList.status;
       }
       ADMINS_API.getAdmins(params).then((res) => {
@@ -405,7 +402,7 @@ export default {
     // 重置
     reset() {
       this.filterList.name = "";
-      this.filterList.status = "";
+      this.filterList.status = null;
       this.search();
     },
     // 新增管理员
@@ -429,9 +426,8 @@ export default {
           }
         });
       } else if (type == 3) {
-        ADMINS_API.editAdmins(this.addParams, this.editID).then((res) => {
+        ADMINS_API.editAdmins(this.editParams, this.editID).then((res) => {
           if (res.status == 200) {
-            console.log(res);
             this.$message.success("修改成功！");
             this.getAdminsList();
             this.showEditPop = false;
@@ -466,17 +462,16 @@ export default {
     // 编辑管理员、
     edit(val) {
       this.showEditPop = true;
-      this.editID = val.staff_id;
+      this.editID = val.id;
       let temp = [];
       val.roles.forEach((item) => {
         temp.push(item.id);
       });
-      this.addParams = {
+      this.editParams = {
         name: val.adm_name,
         role_ids: temp,
         staff_id: val.staff_id,
       };
-      console.log(val);
     },
     // 删除管理员
     removeById(val) {

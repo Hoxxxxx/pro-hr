@@ -9,6 +9,7 @@ const error = () => import('@/components/error')
 const staffManage = () => import('@/views/staffManage/staffManage')
 const staffAdd = () => import('@/views/staffManage/staffAdd')
 const staffMsg = () => import('@/views/staffManage/staffMsg')
+const staffChange = () => import('@/views/staffManage/staffChange')
 // 组织管理
 const department = () => import('@/views/organization/department')
 const position = () => import('@/views/organization/position')
@@ -70,7 +71,12 @@ const routes = [{
         path: '/staffMsg',
         name: 'staffMsg',
         component: staffMsg
-      }
+      },
+      {
+        path: '/staffChange',
+        name: 'staffChange',
+        component: staffChange
+      },
     ]
   },
   // 权限管理

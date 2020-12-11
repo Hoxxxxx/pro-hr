@@ -68,37 +68,16 @@
             prop="fp08"
             min-width="100px"
           ></el-table-column>
-          <el-table-column
-            align="center"
-            label="OA workid"
-            prop="fp10"
-            min-width="100px"
-          ></el-table-column>
-          <el-table-column align="center" label="OA申请单" width="160px"
+          <el-table-column align="center" label="操作" width="260px" fixed="right"
             ><template slot-scope="scope">
-              <el-link type="primary" @click="jump(scope.row.id)"
+              <el-link type="primary" style="margin-right:20px" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
-            </template></el-table-column
-          >
-          <el-table-column align="center" label="发货单列表" width="160px"
-            ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发货单</el-link
               >
             </template></el-table-column
           >
-          <!-- <el-table-column label="操作" width="300px" align="center">
-            <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)">查看</el-button>
-              <el-button
-                type="text"
-                v-if="scope.row.status == 1 && scope.row.ac_open_status !=2"
-                @click="positive(scope.row.id)"
-              >编辑</el-button>
-              <el-button type="text" @click="openDialog('remove',scope.row.id)">删除</el-button>
-            </template>
-          </el-table-column> -->
         </el-table>
       </div>
       <el-dialog

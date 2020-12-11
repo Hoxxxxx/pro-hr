@@ -14,11 +14,32 @@
         <el-card class="searchCard">
           <div class="serchBox">
             <el-input
-              v-model="deName"
-              placeholder="请输入部门名称"
+              v-model="filterList.name"
+              placeholder="请输入姓名"
               clearable
-              style="width: 360px; margin-right: 20px; border-radius: 4px"
+              style="width: 260px; margin-right: 20px; border-radius: 4px"
             ></el-input>
+            <el-select
+              v-model="filterList.status"
+              placeholder="请选择异动类型"
+              style="width: 200px; margin-right: 20px; border-radius: 4px"
+            >
+              <el-option
+                v-for="item in adStatus"
+                :key="item.value"
+                :label="item.lable"
+                :value="item.value"
+              ></el-option>
+            </el-select>
+            <el-date-picker
+              v-model="filterList.timeRange"
+              type="datetimerange"
+              range-separator="至"
+              start-placeholder="开始日期"
+              end-placeholder="结束日期"
+              style="width: 400px; margin-right: 20px; border-radius: 4px"
+            >
+            </el-date-picker>
           </div>
           <div class="btnBox">
             <el-button type="primary" size="medium" @click="search()"
@@ -36,25 +57,30 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">部门列表</span>
+        <span class="tableTitle">人员异动表</span>
         <div class="btns">
           <el-button type="primary" class="p40" @click="openDialog(0)"
-            >新增部门</el-button
+            >新增</el-button
           >
-          <el-button class="btn p40" @click="deleteIds()">批量删除</el-button>
+          <el-button class="btn p40" @click="deleteIds()">导出</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
           :data="viewsList"
+          v-loading="searchData.viewsList_searchLoading"
+          element-loading-background="rgba(0, 0, 0, 0.2)"
+          element-loading-text="数据正在加载中"
+          element-loading-spinner="el-icon-loading"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           @selection-change="handleSelectionChange"
         >
           >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="index" width="50" prop="序号">
+          </el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"
             :key="index"
@@ -62,18 +88,6 @@
             :prop="item.prop"
             align="center"
           ></el-table-column>
-          <el-table-column label="操作" width="300px" align="center">
-            <template slot-scope="scope">
-              <!-- edit -->
-              <el-button type="text" @click="openDialog(1, scope.row)"
-                >编辑</el-button
-              >
-              <!-- delete -->
-              <el-button type="text" @click="deleteById(scope.row.id)"
-                >删除</el-button
-              >
-            </template>
-          </el-table-column>
         </el-table>
       </div>
 
@@ -231,19 +245,52 @@ export default {
           title: "首页",
         },
         {
-          title: "组织管理",
+          title: "员工管理",
         },
         {
-          title: "部门管理",
+          title: "人员异动表",
         },
       ],
-      title: "部门管理",
+      title: "人员异动表",
       // 筛选框
+      // 筛选列表的参数
+      filterList: {
+        name: "",
+        status: null,
+        timeRange: [new Date(), new Date()],
+      },
+      adStatus: [
+        {
+          lable: "新进",
+          value: 0,
+        },
+        {
+          lable: "转正",
+          value: 1,
+        },
+        {
+          lable: "离职",
+          value: 2,
+        },
+        {
+          lable: "调岗",
+          value: 3,
+        },
+        {
+          lable: "劳动合同续签",
+          value: 4,
+        },
+      ],
       showSearch: false,
-      deName: "",
       tHeadList: [
-        { label: "部门名称", prop: "name" },
-        { label: "部门主管", prop: "manager_name" },
+        { label: "员工姓名", prop: "name" },
+        { label: "工号", prop: "manager_name" },
+        { label: "部门", prop: "name" },
+        { label: "职位", prop: "name" },
+        { label: "身份证号码", prop: "name" },
+        { label: "异动类型", prop: "name" },
+        { label: "异动时间", prop: "name" },
+        { label: "备注", prop: "name" },
       ],
       viewsList: [],
       ids: [], //批量删除
@@ -256,6 +303,9 @@ export default {
       depart: "", //上级部门
       departMsg: "", //部门描述
       editId: "",
+      searchData: {
+        viewsList_searchLoading: true
+      },
       // 分页
       total: 4,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -268,6 +318,7 @@ export default {
   methods: {
     // 获取部门列表
     getDepartmentList(val) {
+      this.searchData.viewsList_searchLoading = true;
       let params = {
         page: this.listParams.page,
         is_paging: 0,
@@ -276,9 +327,12 @@ export default {
         params = { ...params, ...val };
       }
       DEPART_API.getDeparts(params).then((res) => {
-        this.viewsList = res.data;
-        this.total = res.pagination.total;
-        this.depart_options = [...res.data, ...this.depart_options];
+        if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
+          this.viewsList = res.data;
+          this.total = res.pagination.total;
+          this.depart_options = [...res.data, ...this.depart_options];
+        }
       });
     },
     search() {

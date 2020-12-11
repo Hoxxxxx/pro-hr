@@ -6,7 +6,7 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">发货单列表</span>
+        <span class="tableTitle">发票申请单列表</span>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
@@ -28,8 +28,14 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="集团作业号"
+            label="集团凭证号"
             prop="fhd01"
+            min-width="100px"
+          ></el-table-column>
+          <el-table-column
+            align="center"
+            label="集团作业号"
+            prop="fhd12"
             min-width="100px"
           ></el-table-column>
           <el-table-column
@@ -78,7 +84,7 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="合同金额"
+            label="总金额"
             prop="fhd07"
             min-width="100px"
           ></el-table-column>
@@ -90,27 +96,28 @@
             prop="fhd09"
             min-width="100px"
           ></el-table-column>
-          <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
+          <!-- <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
             <template slot-scope="scope">
               <el-link @click="jump(scope.row.id)">{{
                 scope.row.fhd10
               }}</el-link>
             </template>
-          </el-table-column>
-          <el-table-column align="center" label="OA申请单" width="160px"
-            ><template slot-scope="scope">
-              <el-link type="primary" @click="jump(scope.row.id)"
+          </el-table-column> -->
+          <el-table-column align="center" label="操作" width="260px" fixed="right">
+            <template slot-scope="scope">
+              <el-link type="primary" style="margin-right:20px" @click="jump(scope.row.id)"
                 >查看申请单</el-link
               >
-            </template></el-table-column
-          >
-          <el-table-column align="center" label="发票列表" width="160px"
-            ><template slot-scope="scope">
               <el-link type="primary" @click="open(scope.row.id)"
                 >查看发票</el-link
               >
             </template></el-table-column
           >
+          <!-- <el-table-column align="center" label="发票列表" width="160px" fixed="right"
+            ><template slot-scope="scope">
+              
+            </template></el-table-column
+          > -->
         </el-table>
       </div>
       <el-dialog
@@ -212,10 +219,10 @@ export default {
           title: "发货单",
         },
         {
-          title: "发货单列表",
+          title: "发票申请单列表",
         },
       ],
-      title: "发货单列表",
+      title: "发票申请单列表",
       searchData: {
         viewsList_searchLoading: true,
         viewsList1_searchLoading: true,
