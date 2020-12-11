@@ -28,6 +28,11 @@ const payDeliver = () => import('@/views/collection/deliver/list')
 const payInvoice = () => import('@/views/collection/invoice/list')
 const payStrike = () => import('@/views/collection/strike/list')
 const payStrikeDetail = () => import('@/views/collection/strike/detail')
+// 合同
+const contractList = () => import('@/views/contract/contractList/index')
+const contractInfo = () => import('@/views/contract/contractList/contractInfo')
+const contractType = () => import('@/views/contract/contractType/index')
+
 
 
 Vue.use(VueRouter)
@@ -170,6 +175,28 @@ const routes = [{
         path: 'strike/detail',
         name: 'strike_detail',
         component: payStrikeDetail
+      },
+    ]
+  },
+  // 合同管理
+  {
+    path: '/contract',
+    component: Home,
+    redirect: '/contract/contractList',
+    children: [{
+        path: 'contractList',
+        name: 'contractList',
+        component: contractList
+      },
+      {
+        path: 'contractInfo',
+        name: 'contractInfo',
+        component: contractInfo
+      },
+      {
+        path: 'contractType',
+        name: 'contractType',
+        component: contractType
       },
     ]
   },

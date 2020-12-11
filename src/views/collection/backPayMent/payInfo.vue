@@ -24,7 +24,8 @@
                   :on-success="handleSuccess"
                   :on-preview="handlePictureCardPreview"
                   :on-remove="handleRemove"
-                  :on-exceed="handleExceed">
+                  :on-exceed="handleExceed"
+                  accept=".png,.jpg,.jpeg">
                   <i class="el-icon-plus"></i>
                 </el-upload>
                 <!-- check时imgbox -->

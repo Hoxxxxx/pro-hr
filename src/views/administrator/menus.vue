@@ -253,6 +253,7 @@ export default {
           { id: 12, name: "el-icon-s-grid" },
           { id: 13, name: "el-icon-s-ticket" },
           { id: 14, name: "el-icon-s-home" },
+          { id: 15, name: "el-icon-s-order" },
         ],
       },
       addParams: {
