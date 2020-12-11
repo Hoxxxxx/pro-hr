@@ -6,7 +6,7 @@
     <el-card class="listCard">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">发货单列表</span>
+        <span class="tableTitle">发票申请单列表</span>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
@@ -84,7 +84,7 @@
           ></el-table-column>
           <el-table-column
             align="center"
-            label="合同金额"
+            label="总金额"
             prop="fhd07"
             min-width="100px"
           ></el-table-column>
@@ -219,10 +219,10 @@ export default {
           title: "发货单",
         },
         {
-          title: "发货单列表",
+          title: "发票申请单列表",
         },
       ],
-      title: "发货单列表",
+      title: "发票申请单列表",
       searchData: {
         viewsList_searchLoading: true,
         viewsList1_searchLoading: true,
