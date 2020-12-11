@@ -44,13 +44,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
-              <el-form-item label="合同类型" prop="contract_type_show">
+              <el-form-item label="合同类型" prop="contract_type">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.contract_type_show}}
+                  {{dataShow.contract_type_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('HTLX')">
-                    {{dataForm.contract_type_show}}
+                    {{dataShow.contract_type_show}}
                   </div>
                 </div>
               </el-form-item>
@@ -61,13 +61,13 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
-              <el-form-item label="经办人" prop="operator_show">
+              <el-form-item label="经办人" prop="operator">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.operator_show}}
+                  {{dataShow.operator_show}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('JBR')">
-                    {{dataForm.operator_show}}
+                    {{dataShow.operator_show}}
                   </div>
                 </div>
               </el-form-item>
@@ -88,21 +88,21 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="单位名称" prop="opposite_show">
+              <el-form-item label="单位名称" prop="opposite_id">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.opposite_show}}
+                  {{dataShow.opposite_show}}
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==''" class="selectbox editNot" style="height:42px">
                   <span>请先选择单位类型</span>
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==1" class="selectbox">
                   <div class="selector" @click="selectDialog('GYS')">
-                    {{dataForm.opposite_show}}
+                    {{dataShow.opposite_show}}
                   </div>
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==2" class="selectbox">
                   <div class="selector" @click="selectDialog('KH')">
-                    {{dataForm.opposite_show}}
+                    {{dataShow.opposite_show}}
                   </div>
                 </div>
               </el-form-item>
@@ -145,6 +145,7 @@
             <el-col :span="24">
               <el-form-item label="上传文件" prop="files">
                 <el-upload
+                  class="upload"
                   v-if="pageType!=='check'"
                   :disabled="pageType == 'check'"
                   :file-list="uploadParams.fileList"
@@ -239,17 +240,19 @@ export default {
         contract_value: '',
         archived_date: '',
         contract_type: '',
-        contract_type_show: "",
         copies_number: '',
         operator: "",
-        operator_show: "",
         opposite_type: '',
         opposite_id: "",
-        opposite_show: "",
         start_date: '',
         end_date: '',
         comment: '',
         files: []
+      },
+      dataShow: {
+        contract_type_show: "",
+        operator_show: "",
+        opposite_show: "",
       },
       opposite_type_options: [{
         label: '供应商',
@@ -271,19 +274,19 @@ export default {
         archived_date: [
           { required: true, message: '请输入归档日期', trigger: 'blur' },
         ],
-        contract_type_show: [
+        contract_type: [
           { required: true, message: '请选择合同类型', trigger: 'change' },
         ],
         copies_number: [
           { required: true, message: '请输入副本数量', trigger: 'blur' }
         ],
-        operator_show: [
+        operator: [
           { required: true, message: '请选择经办人', trigger: 'change' },
         ],
         opposite_type: [
           { required: true, message: '请选择单位类型', trigger: 'change' },
         ],
-        opposite_show: [
+        opposite_id: [
           { required: true, message: '请输入单位名称', trigger: 'blur' }
         ],
         start_date: [
@@ -354,8 +357,6 @@ export default {
       if (this.pageType == 'add') {
         this.breadList[1].title = '新增合同'
         this.title = '新增合同'
-        this.dataForm.currency = 'RMB'
-        this.dataForm.currency_show = '人民幣'
       } else if (this.pageType == 'edit') {
         this.breadList[1].title = '编辑合同'
         this.title = '编辑合同'
@@ -470,19 +471,19 @@ export default {
         switch (this.dataSelect.cur_input) {
           case "HTLX":
             this.dataForm.contract_type = val[0].id;
-            this.dataForm.contract_type_show = val[0].name;
+            this.dataShow.contract_type_show = val[0].name;
           break;
           case "JBR":
             this.dataForm.operator = val[0].id;
-            this.dataForm.operator_show = val[0].name;
+            this.dataShow.operator_show = val[0].name;
           break;
           case "GYS":
             this.dataForm.opposite_id = val[0].pmc01;
-            this.dataForm.opposite_show = val[0].pmc03;
+            this.dataShow.opposite_show = val[0].pmc03;
           break;
           case "KH":
             this.dataForm.opposite_id = val[0].occ01;
-            this.dataForm.opposite_show = val[0].occ02;
+            this.dataShow.opposite_show = val[0].occ02;
           break;
           default:
           return;
@@ -503,6 +504,8 @@ export default {
             addContract(this.dataForm)
             .then( res => {
               if (res.status == 200) {
+                loading.close()
+                clearTimeout(this.overloading)
                 this.dataForm = res.data
                 this.$message.success('新增成功！')
                 setTimeout(() => {
@@ -526,11 +529,11 @@ export default {
             const loading = OpenLoading(this, 1)
             editContract(this.dataForm)
             .then( res => {
-              loading.close()
-              clearTimeout(this.overloading)
               if (res.status == 200) {
+                loading.close()
+                clearTimeout(this.overloading)
                 this.dataForm = res.data
-                this.$message.success('新增成功！')
+                this.$message.success('编辑成功！')
                 setTimeout(() => {
                   this.$router.push('contractList')
                 },1000)
@@ -621,5 +624,8 @@ export default {
 .confirmed {
   background: url(../../../assets/img/confirm.png) no-repeat;
   background-size: 148px 148px;
+}
+.upload /deep/ .el-upload-list {
+  width: 300px;
 }
 </style>

@@ -65,16 +65,16 @@
           <el-table-column align="center" label="经办人名称" prop="operator_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门id" prop="department_id" min-width="100px"></el-table-column>
           <el-table-column align="center" label="副本数量" prop="copies_number" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="单位名称（对方）" prop="contract_type" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同开始日期" prop="copies_number" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同结束日期" prop="contract_type" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="单位id（对方）" prop="opposite_id" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="合同开始日期" prop="start_date" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同类型" prop="contract_type" min-width="100px"></el-table-column>
           <el-table-column align="center" label="电子文档" prop="files" min-width="100px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
               <el-button type="text" @click="goPage('edit', scope.row.id)">编辑</el-button>
-              <el-button type="text" @click="delTypeItem(scope.row.id)">删除</el-button>
+              <el-button type="text" @click="delContractItem(scope.row.id)">删除</el-button>
             </template>
           </el-table-column>
         </el-table>
@@ -99,7 +99,7 @@
 <script>
 import navBar from "@/components/navBar/navBar";
 //api
-import { contractList, addType, delType, typeInfo, editType } from '@/api/contract'
+import { contractList, delContract, } from '@/api/contract'
 
 // utils
 import { OpenLoading } from "@/utils/utils.js";
@@ -203,14 +203,14 @@ export default {
         })
       }
     },
-    delTypeItem(id){
+    delContractItem(id){
       this.$confirm('此操作将永久删除该合同类型, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
         const loading = OpenLoading(this, 1)
-        delType(id)
+        delContract(id)
         .then( res => {
           if (res.status == 200) {
             this.$message.success('删除成功！' )
