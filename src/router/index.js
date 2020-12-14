@@ -35,6 +35,8 @@ const payStrikeDetail = () => import('@/views/collection/strike/detail')
 const contractList = () => import('@/views/contract/contractList/index')
 const contractInfo = () => import('@/views/contract/contractList/contractInfo')
 const contractType = () => import('@/views/contract/contractType/index')
+// 无形资产
+const assList = () => import('@/views/intangibleAss/assList/index')
 
 
 
@@ -200,6 +202,28 @@ const routes = [{
         path: 'contractList',
         name: 'contractList',
         component: contractList
+      },
+      {
+        path: 'contractInfo',
+        name: 'contractInfo',
+        component: contractInfo
+      },
+      {
+        path: 'contractType',
+        name: 'contractType',
+        component: contractType
+      },
+    ]
+  },
+  // 无形资产管理
+  {
+    path: '/intangibleAss',
+    component: Home,
+    redirect: '/intangibleAss/assList',
+    children: [{
+        path: 'assList',
+        name: 'assList',
+        component: assList
       },
       {
         path: 'contractInfo',

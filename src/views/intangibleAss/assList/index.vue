@@ -15,11 +15,11 @@
         <el-card class="searchCard">
       <div class="serchBox">
         <el-input v-model="listParams.title" 
-                          placeholder="请输入合同名称"
+                          placeholder="请输入无形资产名称"
                           style="margin-right: 20px">
         </el-input>
         <el-input v-model="listParams.number" 
-                          placeholder="请输入合同编号"
+                          placeholder="请输入无形资产编号"
                           style="margin-right: 20px">
         </el-input>
       </div>
@@ -38,12 +38,13 @@
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">{{title}}</span>
         <div class="btns">
-          <el-button type="primary" class="p40" @click="goPage('add', null)">新增合同</el-button>
+          <el-button type="primary" class="p40" @click="goPage('add', null)" disabled>新增无形资产</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
+          v-show="false"
           ref="table"
           class="tableRef"
           :data="typeList"
@@ -55,18 +56,18 @@
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="合同ID" prop="id" fixed="left" min-width="50px"></el-table-column>
-          <el-table-column align="center" label="合同名称" prop="title" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同编号" prop="number" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产ID" prop="id" fixed="left" min-width="50px"></el-table-column>
+          <el-table-column align="center" label="无形资产名称" prop="title" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产编号" prop="number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="归档日期" prop="archived_date" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同金额" prop="contract_value" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产金额" prop="contract_value" min-width="100px"></el-table-column>
           <el-table-column align="center" label="经办人名称" prop="operator_name" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="部门" prop="department_name" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="部门id" prop="department_id" min-width="100px"></el-table-column>
           <el-table-column align="center" label="副本数量" prop="copies_number" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="单位（对方）" prop="opposite_name" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同开始日期" prop="start_date" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同类型" prop="contract_type_name" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="单位id（对方）" prop="opposite_id" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产开始日期" prop="start_date" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产结束日期" prop="end_date" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="无形资产类型" prop="contract_type" min-width="100px"></el-table-column>
           <el-table-column align="center" label="备注" prop="comment" min-width="200px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
@@ -112,13 +113,13 @@ export default {
           title: "首页",
         },
         {
-          title: "合同管理",
+          title: "无形资产管理",
         },
         {
-          title: "合同列表",
+          title: "无形资产列表",
         },
       ],
-      title: "合同列表",
+      title: "无形资产列表",
       overloading: '', //加载定时器
       showSearch: false,
       // 分页数据
@@ -138,7 +139,7 @@ export default {
     navBar,
   },
   created() {
-    this.getContractType()
+    // this.getContractType()
   },
   methods: {
     // **********翻页**********
@@ -202,7 +203,7 @@ export default {
       }
     },
     delContractItem(id){
-      this.$confirm('此操作将永久删除该合同类型, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该无形资产类型, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
