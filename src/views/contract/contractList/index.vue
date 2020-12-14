@@ -69,7 +69,6 @@
           <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同类型" prop="contract_type" min-width="100px"></el-table-column>
           <el-table-column align="center" label="备注" prop="comment" min-width="200px"></el-table-column>
-          <el-table-column align="center" label="电子文档" prop="files" min-width="100px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>

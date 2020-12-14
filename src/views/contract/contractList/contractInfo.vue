@@ -12,11 +12,11 @@
             <el-col :span="12">
               <el-form-item label="部门" prop="department_id" style="height:40px">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.department_show}}
+                  {{dataShow.department_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('BM')">
-                    {{dataShow.department_show}}
+                    {{dataShow.department_name}}
                   </div>
                 </div>
               </el-form-item>
@@ -53,11 +53,11 @@
             <el-col :span="12" style="height: 62px">
               <el-form-item label="合同类型" prop="contract_type">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.contract_type_show}}
+                  {{dataShow.contract_type_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('HTLX')">
-                    {{dataShow.contract_type_show}}
+                    {{dataShow.contract_type_name}}
                   </div>
                 </div>
               </el-form-item>
@@ -70,11 +70,11 @@
             <el-col :span="12" style="height: 62px">
               <el-form-item label="经办人" prop="operator">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.operator_show}}
+                  {{dataShow.operator_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('JBR')">
-                    {{dataShow.operator_show}}
+                    {{dataShow.operator_name}}
                   </div>
                 </div>
               </el-form-item>
@@ -97,19 +97,19 @@
             <el-col :span="12">
               <el-form-item label="单位名称" prop="opposite_id">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.opposite_show}}
+                  {{dataShow.opposite_name}}
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==''" class="selectbox editNot" style="height:42px">
                   <span>请先选择单位类型</span>
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==1" class="selectbox">
                   <div class="selector" @click="selectDialog('GYS')">
-                    {{dataShow.opposite_show}}
+                    {{dataShow.opposite_name}}
                   </div>
                 </div>
                 <div v-if="pageType!=='check' && dataForm.opposite_type==2" class="selectbox">
                   <div class="selector" @click="selectDialog('KH')">
-                    {{dataShow.opposite_show}}
+                    {{dataShow.opposite_name}}
                   </div>
                 </div>
               </el-form-item>
@@ -151,6 +151,17 @@
             </el-col>
             <el-col :span="24">
               <el-form-item label="上传文件" prop="files">
+                <!-- 已有文件部分 -->
+                <div class="saveList" v-if="pageType!=='add'">
+                  <div class="saveItem" v-for="(item, index) in saveList" :key="index">
+                    <i class="el-icon-document" style="margin-right: 7px"></i>
+                    <a style="cursor: pointer" @click="download(item.id, item.filename)"><span>{{ item.filename }}</span></a>
+                    <div class="btnBox">
+                      <el-button type="text" @click="download(item.id, item.filename)">下载</el-button>
+                      <el-button type="text" @click="del_file(item.id, item.filename)" style="margin-left: 10px; color: #F56C6C">删除</el-button>
+                    </div>
+                  </div>
+                </div>
                 <el-upload
                   class="upload"
                   v-if="pageType!=='check'"
@@ -258,11 +269,13 @@ export default {
         files: []
       },
       dataShow: {
-        department_show: "",
-        contract_type_show: "",
-        operator_show: "",
-        opposite_show: "",
+        department_name: "",
+        contract_type_name: "",
+        operator_name: "",
+        opposite_name: "",
       },
+      newfileList: [], // 新上传文件
+      saveList: [], // 已有文件
       opposite_type_options: [{
         label: '供应商',
         value: 1
@@ -405,24 +418,75 @@ export default {
       }
     },
     handleSuccess(response, file, fileList) {
-      this.dataForm.files.push({
-        id: response.data.id
+      this.newfileList.push({
+        id: response.data.id,
       })
-      // console.log('add', this.dataForm.files)
+      // console.log(this.newfileList)
     },
     handleRemove(file, fileList) {
-      this.dataForm.files.forEach( (item, index) => {
+      this.newfileList.forEach( (item, index) => {
         if (item.id == file.response.data.id) {
-          this.dataForm.files.splice(1, index)
+          this.newfileList.splice(1, index)
         }
       })
-      // console.log('de', this.dataForm.files)
+    },
+    
+    // 下载文件流
+    async download(id, filename) {
+      const { data: res } = await this.axios({
+          method: 'get',
+          url: `files/download/${id}`,
+          responseType: "blob",
+      })
+      let fileName = filename;
+      let fileType = {
+        doc: 'application/msword',
+        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        xls: 'application/vnd.ms-excel',
+        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ppt: 'application/vnd.ms-powerpoint',
+        pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        pdf: 'application/pdf',
+      }
+      let type=fileName.split('.')[1];//获取文件后缀名
+      let blob = new Blob([res],{
+        type:fileType.type
+      });
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    },
+
+    del_file(id, filename) {
+      this.$confirm(`确认删除文件：${filename}?`, '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.dataForm.files.forEach( (item, index) => {
+          if (item.id == id) {
+            this.dataForm.files.splice(index, 1)
+          }
+        })
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        });          
+      });
     },
     // *****************************************
     // ****************selectBox***************
+    // 切换用户类型
     oppositeChange() {
       this.dataForm.opposite_id = ''
-      this.dataForm.opposite_show = ''
+      this.dataShow.opposite_name = ''
     },
     // 数据选择
     selectDialog(type,rowIndex) {
@@ -496,23 +560,23 @@ export default {
         switch (this.dataSelect.cur_input) {
           case "BM":
             this.dataForm.department_id = val[0].id;
-            this.dataShow.department_show = val[0].name;
+            this.dataShow.department_name = val[0].name;
           break;
           case "HTLX":
             this.dataForm.contract_type = val[0].id;
-            this.dataShow.contract_type_show = val[0].name;
+            this.dataShow.contract_type_name = val[0].name;
           break;
           case "JBR":
             this.dataForm.operator = val[0].id;
-            this.dataShow.operator_show = val[0].name;
+            this.dataShow.operator_name = val[0].name;
           break;
           case "GYS":
             this.dataForm.opposite_id = val[0].pmc01;
-            this.dataShow.opposite_show = val[0].pmc03;
+            this.dataShow.opposite_name = val[0].pmc03;
           break;
           case "KH":
             this.dataForm.opposite_id = val[0].occ01;
-            this.dataShow.opposite_show = val[0].occ02;
+            this.dataShow.opposite_name = val[0].occ02;
           break;
           default:
           return;
@@ -535,11 +599,11 @@ export default {
               if (res.status == 200) {
                 loading.close()
                 clearTimeout(this.overloading)
-                this.dataForm = res.data
+                // this.dataForm = res.data
                 this.$message.success('新增成功！')
                 setTimeout(() => {
                   this.$router.push('contractList')
-                },1000)
+                },500)
               } else {
                 loading.close()
                 clearTimeout(this.overloading)
@@ -556,16 +620,17 @@ export default {
         this.$refs.dataForm.validate(valid => {
           if(valid){
             const loading = OpenLoading(this, 1)
+            this.dataForm.files = this.newfileList.concat(this.saveList)
             editContract(this.dataForm)
             .then( res => {
               if (res.status == 200) {
                 loading.close()
                 clearTimeout(this.overloading)
-                this.dataForm = res.data
+                // this.dataForm = res.data
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
                   this.$router.push('contractList')
-                },1000)
+                },500)
               } else {
                 loading.close()
                 clearTimeout(this.overloading)
@@ -583,7 +648,14 @@ export default {
       contractInfo(id)
       .then( res => {
         if (res.status == 200) {
-          this.dataForm = res.data
+          this.dataForm = res.data,
+          this.saveList = res.data.files,
+          this.dataShow = {
+            'department_name' : res.data.department_name,
+            'contract_type_name' : res.data.contract_type_name,
+            'operator_name' : res.data.operator_name,
+            'opposite_name' : res.data.opposite_name,
+          }
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
         }
@@ -591,6 +663,7 @@ export default {
         clearTimeout(this.overloading)
       })
     },
+
     // ***************************************
 
   },
@@ -656,5 +729,27 @@ export default {
 }
 .upload /deep/ .el-upload-list {
   width: 300px;
+}
+
+.saveList {
+  width: 300px;
+  color: #606266;
+  margin-bottom: 20px;
+
+  .saveItem {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 40px;
+    line-height: 20px;
+    margin-bottom: 4px;
+    .btnBox {
+      .el-button {
+        padding: 0;
+        margin-left: 15px;
+      }
+      float: right;
+    }
+  }
 }
 </style>
