@@ -591,6 +591,8 @@ export default {
         this.$router.push('contractList')
       } 
       else if (type == 1) {
+        // 赋值上传文件
+        this.dataForm.files = this.newfileList
         this.$refs.dataForm.validate(valid => {
           if(valid){
             const loading = OpenLoading(this, 1)
