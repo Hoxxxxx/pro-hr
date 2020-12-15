@@ -4,7 +4,6 @@ import VueRouter from 'vue-router'
 
 const Home = () => import('@/views/home/Home')
 const Welcome = () => import('@/views/home/Welcome')
-const error = () => import('@/components/error')
 // 员工管理
 const staffManage = () => import('@/views/staffManage/staffManage')
 const staffAdd = () => import('@/views/staffManage/staffAdd')
@@ -51,10 +50,6 @@ const routes = [{
       name: 'home',
       component: Welcome
     }]
-  },
-  {
-    path: '/error',
-    component: error,
   },
   // 员工管理
   {
@@ -227,12 +222,12 @@ const routes = [{
       },
       {
         path: 'contractInfo',
-        name: 'contractInfo',
+        name: '无形资产详情',
         component: contractInfo
       },
       {
         path: 'assInfo',
-        name: 'assInfo',
+        name: '新增无形资产',
         component: assInfo
       },
     ]
@@ -272,7 +267,6 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       window.sessionStorage.clear()
-      // next('/error')
       window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
     }
   } else {

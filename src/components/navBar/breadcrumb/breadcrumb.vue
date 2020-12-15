@@ -8,7 +8,7 @@
         :class="item.title == title ? 'now' : ''"
         >{{ item.title }}</el-breadcrumb-item
       > -->
-      <el-breadcrumb-item  v-for="(bread,index) in breads" :key="index" :to="bread.path">{{bread.name}}</el-breadcrumb-item>
+      <el-breadcrumb-item  v-for="(bread,index) in breads" :key="index" :to="bread.path" :class="index != breads.length ? '' : 'now'">{{bread.name}}</el-breadcrumb-item>
     </el-breadcrumb>
   </div>
 </template>
@@ -40,7 +40,6 @@ export default {
         matched = [{ path: "/", name: "首页"}].concat(matched);
       }
       this.breads = matched;
-      console.log(this.breads)
     },
   },
 };
