@@ -530,7 +530,7 @@ export default {
 
       .btns {
         position: absolute;
-        right: 30px;
+        right: 0px;
         .btn {
           color: #409efd;
           border-color: #409efd;
