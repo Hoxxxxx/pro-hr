@@ -609,11 +609,9 @@ export default {
         self.tableHeight =
           window.innerHeight - self.$refs.table.$el.offsetTop - 100;
       };
-      this.$refs.table.doLayout()
     });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
-
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
