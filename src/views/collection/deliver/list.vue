@@ -22,21 +22,21 @@
         >
           <el-table-column
             align="center"
-            label="发货单OA单号"
+            label="OA单号"
             prop="fhd00"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="集团凭证号"
             prop="fhd01"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="集团作业号"
             prop="fhd12"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -56,8 +56,6 @@
             prop="fhd03_show"
             min-width="100px"
           ></el-table-column>
-          <el-table-column align="center" label="摘要" prop="fhd04">
-          </el-table-column>
           <el-table-column
             align="center"
             label="客户编号"
@@ -68,19 +66,19 @@
             align="center"
             label="客户名称"
             prop="fhd05_show"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="所属部门编号"
             prop="fhd06"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="所属部门名称"
             prop="fhd06_show"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -88,7 +86,11 @@
             prop="fhd07"
             min-width="100px"
           ></el-table-column>
-          <el-table-column label="发票金额" prop="fhd08" align="center">
+          <el-table-column 
+            label="发票金额" 
+            prop="fhd08" 
+            align="center"
+            min-width="100px">
           </el-table-column>
           <el-table-column
             align="center"
@@ -96,13 +98,12 @@
             prop="fhd09"
             min-width="100px"
           ></el-table-column>
-          <!-- <el-table-column align="center" label="OA workid" prop="fhd10" min-width="100px">
-            <template slot-scope="scope">
-              <el-link @click="jump(scope.row.id)">{{
-                scope.row.fhd10
-              }}</el-link>
-            </template>
-          </el-table-column> -->
+          <el-table-column 
+            align="center" 
+            label="摘要" 
+            prop="fhd04"
+            min-width="160px">
+          </el-table-column>
           <el-table-column align="center" label="操作" width="260px" fixed="right">
             <template slot-scope="scope">
               <el-link type="primary" style="margin-right:20px" @click="jump(scope.row.id)"

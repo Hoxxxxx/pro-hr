@@ -10,7 +10,7 @@
                       class="payForm">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="部门" prop="department_id" style="height:40px">
+              <el-form-item label="部门" prop="ias02" style="height:40px">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.department_name}}
                 </div>
@@ -27,20 +27,20 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同名称" prop="title">
-                <el-input v-model="dataForm.title" :disabled="pageType == 'check'"></el-input>
+              <el-form-item label="合同名称" prop="ias04">
+                <el-input v-model="dataForm.ias04" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同金额（元）" prop="contract_value">
-                <el-input v-model="dataForm.contract_value" :disabled="pageType == 'check'"></el-input>
+              <el-form-item label="合同金额（元）" prop="ias05">
+                <el-input v-model="dataForm.ias05" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="归档日期" prop="archived_date">
+              <el-form-item label="归档日期" prop="ias06">
                 <el-date-picker
                   :disabled="pageType == 'check'"
-                  v-model="dataForm.archived_date"
+                  v-model="dataForm.ias06"
                   style="width: 100%"
                   type="date"
                   placeholder=""
@@ -51,7 +51,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
-              <el-form-item label="合同类型" prop="contract_type">
+              <el-form-item label="合同类型" prop="ias07">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.contract_type_name}}
                 </div>
@@ -68,7 +68,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
-              <el-form-item label="经办人" prop="operator">
+              <el-form-item label="经办人" prop="ias09">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.operator_name}}
                 </div>
@@ -80,8 +80,8 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="单位类型" prop="opposite_type">
-                <el-select v-model="dataForm.opposite_type" 
+              <el-form-item label="单位类型" prop="ias10">
+                <el-select v-model="dataForm.ias10" 
                                 :disabled="pageType == 'check'" 
                                 placeholder=""
                                 @change="oppositeChange()">
@@ -95,19 +95,19 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="单位名称" prop="opposite_id">
+              <el-form-item label="单位名称" prop="ias11">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.opposite_name}}
                 </div>
-                <div v-if="pageType!=='check' && dataForm.opposite_type==''" class="selectbox editNot" style="height:42px">
+                <div v-if="pageType!=='check' && dataForm.ias10==''" class="selectbox editNot" style="height:42px">
                   <span>请先选择单位类型</span>
                 </div>
-                <div v-if="pageType!=='check' && dataForm.opposite_type==1" class="selectbox">
+                <div v-if="pageType!=='check' && dataForm.ias10==1" class="selectbox">
                   <div class="selector" @click="selectDialog('GYS')">
                     {{dataShow.opposite_name}}
                   </div>
                 </div>
-                <div v-if="pageType!=='check' && dataForm.opposite_type==2" class="selectbox">
+                <div v-if="pageType!=='check' && dataForm.ias10==2" class="selectbox">
                   <div class="selector" @click="selectDialog('KH')">
                     {{dataShow.opposite_name}}
                   </div>
@@ -115,10 +115,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同开始时间" prop="start_date">
+              <el-form-item label="合同开始时间" prop="ias12">
                 <el-date-picker
                   :disabled="pageType == 'check'"
-                  v-model="dataForm.start_date"
+                  v-model="dataForm.ias12"
                   style="width: 100%"
                   type="date"
                   placeholder=""
@@ -140,42 +140,6 @@
                   value-format="yyyy/MM/dd"
                 >
                 </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="备注" prop="comment">
-                <el-input v-model="dataForm.comment" 
-                                :disabled="pageType == 'check'"
-                                type="textarea"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="24">
-              <el-form-item label="上传文件" prop="files">
-                <!-- 已有文件部分 -->
-                <div class="saveList" v-if="pageType!=='add'">
-                  <div class="saveItem" v-for="(item, index) in saveList" :key="index">
-                    <i class="el-icon-document" style="margin-right: 7px"></i>
-                    <a style="cursor: pointer" @click="download(item.id, item.filename)"><span>{{ item.filename }}</span></a>
-                    <div class="btnBox">
-                      <el-button type="text" @click="download(item.id, item.filename)">下载</el-button>
-                      <el-button type="text" @click="del_file(item.id, item.filename)" style="margin-left: 10px; color: #F56C6C">删除</el-button>
-                    </div>
-                  </div>
-                </div>
-                <el-upload
-                  class="upload"
-                  v-if="pageType!=='check'"
-                  :disabled="pageType == 'check'"
-                  :file-list="uploadParams.fileList"
-                  :action="$store.state.upload_pic_url"
-                  :headers="uploadParams.headers"
-                  :before-upload="beforeAvatarUpload"
-                  :on-success="handleSuccess"
-                  :on-remove="handleRemove"
-                  accept=".pdf,.doc,.dox,.xls,.xlsx,.ppt,.pptx"
-                  >
-                  <el-button size="small" type="primary">点击上传</el-button>
-                </el-upload>
               </el-form-item>
             </el-col>
           </el-row>
@@ -219,7 +183,7 @@
 import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 // api
-import { addContract, contractInfo, editContract } from '@/api/contract'
+import { addAsset, assetsInfo, editAsset } from '@/api/assets'
 // utils
 import { OpenLoading } from "@/utils/utils.js";
 
@@ -253,20 +217,17 @@ export default {
       // form
       dataForm: {
         id: '',
-        department_id: '',
-        number: '',
-        title: '',
-        contract_value: '',
-        archived_date: '',
-        contract_type: '',
-        copies_number: '',
-        operator: "",
-        opposite_type: '',
-        opposite_id: "",
-        start_date: '',
-        end_date: '',
-        comment: '',
-        files: []
+        ias02: '',
+        ias03: '',
+        ias04: '',
+        ias05: '',
+        ias06: '',
+        ias07: '',
+        ias08: '',
+        ias09: "",
+        ias10: '',
+        ias11: "",
+        ias12: '',
       },
       dataShow: {
         department_name: "",
@@ -284,37 +245,37 @@ export default {
         value: 2
       }],
       rules: {
-        department_id: [
+        ias02: [
           { required: true, message: '请选择部门', trigger: 'change' },
         ],
-        number: [
+        ias03: [
           { required: true, message: '请输入合同编号', trigger: 'blur' },
         ],
-        title: [
+        ias04: [
           { required: true, message: '请输入合同名称', trigger: 'blur' },
         ],
-        contract_value: [
+        ias05: [
           { required: true, message: '请输入合同金额（元）', trigger: 'blur' },
         ],
-        archived_date: [
+        ias06: [
           { required: true, message: '请输入归档日期', trigger: 'blur' },
         ],
-        contract_type: [
+        ias07: [
           { required: true, message: '请选择合同类型', trigger: 'change' },
         ],
-        copies_number: [
+        ias08: [
           { required: true, message: '请输入副本数量', trigger: 'blur' }
         ],
-        operator: [
+        ias09: [
           { required: true, message: '请选择经办人', trigger: 'change' },
         ],
-        opposite_type: [
+        ias10: [
           { required: true, message: '请选择单位类型', trigger: 'change' },
         ],
-        opposite_id: [
+        ias11: [
           { required: true, message: '请输入单位名称', trigger: 'blur' }
         ],
-        start_date: [
+        ias12: [
           { required: true, message: '请选择合同开始时间', trigger: 'change' }
         ],
         end_date: [
@@ -485,7 +446,7 @@ export default {
     // ****************selectBox***************
     // 切换用户类型
     oppositeChange() {
-      this.dataForm.opposite_id = ''
+      this.dataForm.ias11 = ''
       this.dataShow.opposite_name = ''
     },
     // 数据选择
@@ -559,23 +520,23 @@ export default {
       if (val.length > 0) {
         switch (this.dataSelect.cur_input) {
           case "BM":
-            this.dataForm.department_id = val[0].id;
+            this.dataForm.ias02 = val[0].id;
             this.dataShow.department_name = val[0].name;
           break;
           case "HTLX":
-            this.dataForm.contract_type = val[0].id;
+            this.dataForm.ias07 = val[0].id;
             this.dataShow.contract_type_name = val[0].name;
           break;
           case "JBR":
-            this.dataForm.operator = val[0].id;
+            this.dataForm.ias09 = val[0].id;
             this.dataShow.operator_name = val[0].name;
           break;
           case "GYS":
-            this.dataForm.opposite_id = val[0].pmc01;
+            this.dataForm.ias11 = val[0].pmc01;
             this.dataShow.opposite_name = val[0].pmc03;
           break;
           case "KH":
-            this.dataForm.opposite_id = val[0].occ01;
+            this.dataForm.ias11 = val[0].occ01;
             this.dataShow.opposite_name = val[0].occ02;
           break;
           default:
@@ -588,7 +549,7 @@ export default {
     // 0:取消 /1:新增/2:取消编辑/3:提交编辑
     btnClick(type) {
       if (type == 0) {
-        this.$router.push('contractList')
+        this.$router.push('assList')
       } 
       else if (type == 1) {
         // 赋值上传文件
@@ -604,7 +565,7 @@ export default {
                 // this.dataForm = res.data
                 this.$message.success('新增成功！')
                 setTimeout(() => {
-                  this.$router.push('contractList')
+                  this.$router.push('assList')
                 },500)
               } else {
                 loading.close()
@@ -616,7 +577,7 @@ export default {
         })
       }
       else if (type == 2) {
-        this.$router.push('contractList')
+        this.$router.push('assList')
       } 
       else if (type == 3) {
         this.$refs.dataForm.validate(valid => {
@@ -631,7 +592,7 @@ export default {
                 // this.dataForm = res.data
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
-                  this.$router.push('contractList')
+                  this.$router.push('assList')
                 },500)
               } else {
                 loading.close()

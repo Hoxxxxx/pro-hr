@@ -79,7 +79,7 @@
           @selection-change="handleSelectionChange"
         >
           >
-          <el-table-column type="index" width="50" prop="序号">
+          <el-table-column type="index" width="50" prop="index" label="#">
           </el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"

@@ -24,7 +24,7 @@
             align="center"
             label="冲账单号"
             prop="ooa01"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -42,13 +42,13 @@
             align="center"
             label="账款客户编号"
             prop="ooa03"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="账款客户简称"
             prop="ooa032"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
@@ -60,31 +60,31 @@
             align="center"
             label="汇率"
             prop="ooa24"
-            min-width="100px"
+            min-width="120px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="原币借方金额合计"
             prop="ooa31d"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="原币贷方金额合计"
             prop="ooa31c"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="本币借方金额合计"
             prop="ooa32d"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column>
           <el-table-column
             align="center"
             label="本币贷方金额合计"
             prop="ooa32c"
-            min-width="100px"
+            min-width="160px"
           ></el-table-column> -->
           <el-table-column label="操作" width="160px" align="center">
             <template slot-scope="scope">

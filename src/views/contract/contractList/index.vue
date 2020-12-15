@@ -55,7 +55,7 @@
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
-          <el-table-column align="center" label="合同ID" prop="id" fixed="left" min-width="50px"></el-table-column>
+          <el-table-column align="center" label="合同ID" prop="id" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同名称" prop="title" min-width="100px"></el-table-column>
           <el-table-column align="center" label="合同编号" prop="number" min-width="100px"></el-table-column>
           <el-table-column align="center" label="归档日期" prop="archived_date" min-width="100px"></el-table-column>
@@ -63,9 +63,9 @@
           <el-table-column align="center" label="经办人名称" prop="operator_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门" prop="department_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="副本数量" prop="copies_number" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="单位（对方）" prop="opposite_name" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同开始日期" prop="start_date" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="单位（对方）" prop="opposite_name" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="合同开始日期" prop="start_date" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="合同结束日期" prop="end_date" min-width="160px"></el-table-column>
           <el-table-column align="center" label="合同类型" prop="contract_type_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="备注" prop="comment" min-width="200px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
@@ -202,7 +202,7 @@ export default {
       }
     },
     delContractItem(id){
-      this.$confirm('此操作将永久删除该合同类型, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该合同, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
