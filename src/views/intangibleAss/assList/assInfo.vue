@@ -30,41 +30,31 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="保管人" prop="ias03" style="height:40px">
-                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.ias03_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('BGR')">
                     {{dataShow.ias03_name}}
                   </div>
-                </div> -->
-                <el-input v-model="dataForm.ias03" :disabled="pageType == 'check'"></el-input>
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="采购地" prop="ias04" style="height:40px">
-                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.ias04_name}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('CGD')">
-                    {{dataShow.ias04_name}}
-                  </div>
-                </div> -->
                 <el-input v-model="dataForm.ias04" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="供应商" prop="ias05" style="height:40px">
-                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.ias05_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('GYS')">
                     {{dataShow.ias05_name}}
                   </div>
-                </div> -->
-                <el-input v-model="dataForm.ias05" :disabled="pageType == 'check'"></el-input>
+                </div>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -126,15 +116,14 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="存放位置" prop="ias12">
-                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataShow.ias12_name}}
                 </div>
                 <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('CFWZ')">
                     {{dataShow.ias12_name}}
                   </div>
-                </div> -->
-                <el-input v-model="dataForm.ias12" :disabled="pageType == 'check'"></el-input>
+                </div>
               </el-form-item>
             </el-col>
           </el-row>
@@ -237,8 +226,6 @@ export default {
       },
       dataShow: {
         ias03_name: "",
-        ias04_name: "",
-        ias04_name: "",
         ias05_name: "",
         ias12_name: "",
       },
@@ -307,18 +294,11 @@ export default {
         keyMsg: [], //需要显示在顶部的数据
       },
       tableHead: {
-        head_BM: [
-          { name: "id", title: "部门id" },
-          { name: "name", title: "部门名称" },
-        ],
-        head_HTLX: [
-          { name: "name", title: "资产类别" },
-          { name: "number", title: "类别编号" },
-          { name: "comment", title: "备注" },
-        ],
-        head_JBR: [
-          { name: "id", title: "用户编号" },
-          { name: "name", title: "用户名称" },
+        head_BGR: [
+          { name: "gen01", title: "员工编号" },
+          { name: "gen02", title: "员工名称" },
+          { name: "gen03", title: "所属部门编号" },
+          { name: "gen04", title: "所属部门名称" },
         ],
         head_GYS: [
           { name: "pmc01", title: "供应厂商编号" },
@@ -331,9 +311,9 @@ export default {
           { name: "pmcud01", title: "开户银行" },
           { name: "pmcud04", title: "账户名称" },
         ],
-        head_KH: [
-          { name: "occ01", title: "客户编号" },
-          { name: "occ02", title: "客户名称" },
+        head_CFWZ: [
+          { name: "faf01", title: "位置编号" },
+          { name: "faf02", title: "位置名称" },
         ],
       },
 
@@ -370,34 +350,14 @@ export default {
       this.dataSelect.cur_input = type;
       this.dataSelect.choosedData = [];
       switch (type) {
-        case "BM":
-          let filter_BM = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_BM;
+        case "BGR":
+          let filter_BGR = [{ label: "", model_key_search: "keyword" }];
+          this.dataSelect.filter = filter_BGR;
           this.dataSelect.searchType = "single"
           this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "oa/departments";
-          this.dataSelect.headList = this.tableHead.head_BM;
-          this.dataSelect.dialogTitle = "部门列表";
-        break;
-        case "HTLX":
-          let filter_HTLX = [
-            { label: "资产类别", model_key_search: "name" },
-            { label: "", model_key_search: "page", value: '1', disabled: true, hide: true},];
-          this.dataSelect.filter = filter_HTLX;
-          this.dataSelect.searchType = "single"
-          this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "hr/contracttypes";
-          this.dataSelect.headList = this.tableHead.head_HTLX;
-          this.dataSelect.dialogTitle = "资产类别列表";
-        break;
-        case "JBR":
-          let filter_JBR = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_JBR;
-          this.dataSelect.searchType = "single"
-          this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "oa/users";
-          this.dataSelect.headList = this.tableHead.head_JBR;
-          this.dataSelect.dialogTitle = "用户列表";
+          this.dataSelect.searchApi = "meta/gens";
+          this.dataSelect.headList = this.tableHead.head_BGR;
+          this.dataSelect.dialogTitle = "员工列表";
         break;
         case "GYS":
           let filter_GYS = [{ label: "", model_key_search: "keyword" }];
@@ -408,14 +368,14 @@ export default {
           this.dataSelect.headList = this.tableHead.head_GYS;
           this.dataSelect.dialogTitle = "供应商列表";
         break;
-        case "KH":
-          let filter_KH = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_KH;
+        case "CFWZ":
+          let filter_CFWZ = [{ label: "", model_key_search: "keyword" }];
+          this.dataSelect.filter = filter_CFWZ;
           this.dataSelect.searchType = "single"
           this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "meta/occs";
-          this.dataSelect.headList = this.tableHead.head_KH;
-          this.dataSelect.dialogTitle = "供应商列表";
+          this.dataSelect.searchApi = "meta/fafs";
+          this.dataSelect.headList = this.tableHead.head_CFWZ;
+          this.dataSelect.dialogTitle = "位置列表";
         break;
         default:
         return;
@@ -433,25 +393,17 @@ export default {
       this.dataSelect.choosedData = val;
       if (val.length > 0) {
         switch (this.dataSelect.cur_input) {
-          case "BM":
-            this.dataForm.ias02 = val[0].id;
-            this.dataShow.department_name = val[0].name;
-          break;
-          case "HTLX":
-            this.dataForm.ias07 = val[0].id;
-            this.dataShow.contract_type_name = val[0].name;
-          break;
-          case "JBR":
-            this.dataForm.ias09 = val[0].id;
-            this.dataShow.operator_name = val[0].name;
+          case "BGR":
+            this.dataForm.ias03 = val[0].gen01;
+            this.dataShow.ias03_name = val[0].gen02;
           break;
           case "GYS":
-            this.dataForm.ias11 = val[0].pmc01;
-            this.dataShow.opposite_name = val[0].pmc03;
+            this.dataForm.ias05 = val[0].pmc01;
+            this.dataShow.ias05_name = val[0].pmc03;
           break;
-          case "KH":
-            this.dataForm.ias11 = val[0].occ01;
-            this.dataShow.opposite_name = val[0].occ02;
+          case "CFWZ":
+            this.dataForm.ias12 = val[0].faf01;
+            this.dataShow.ias12_name = val[0].faf02;
           break;
           default:
           return;
@@ -524,10 +476,9 @@ export default {
         if (res.status == 200) {
           this.dataForm = res.data,
           this.dataShow = {
-            'department_name' : res.data.department_name,
-            'contract_type_name' : res.data.contract_type_name,
-            'operator_name' : res.data.operator_name,
-            'opposite_name' : res.data.opposite_name,
+            ias03_name: res.data.ias03_name,
+            ias05_name: res.data.ias05_name,
+            ias12_name: res.data.ias12_name,
           }
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
