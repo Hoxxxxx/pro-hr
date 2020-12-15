@@ -13,11 +13,13 @@ const staffChange = () => import('@/views/staffManage/staffChange')
 // 组织管理
 const department = () => import('@/views/organization/department')
 const position = () => import('@/views/organization/position')
-// 管理员管理
+// 权限管理
 const admins = () => import('@/views/administrator/admins')
 const roles = () => import('@/views/administrator/roles')
 const permissions = () => import('@/views/administrator/permissions')
 const menus = () => import('@/views/administrator/menus')
+const system = () => import('@/views/administrator/system')
+
 // 对账单
 const income = () => import('@/views/finance/income')
 const receivable = () => import('@/views/finance/receivable')
@@ -106,6 +108,11 @@ const routes = [{
         path: '/menus',
         name: 'menus',
         component: menus
+      },
+      {
+        path: '/system',
+        name: 'system',
+        component: system
       }
     ]
   },

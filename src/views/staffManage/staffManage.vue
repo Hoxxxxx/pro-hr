@@ -574,6 +574,7 @@ export default {
         limit: 1,
       },
       files: [],
+      fileMark:[],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -1002,10 +1003,19 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       this.positiveData.fileList.push(response.data[0]);
+      this.fileMark.push({
+        name:file.name
+      })
     },
-    handleRemove(file, fileList) {},
+    handleRemove(file, fileList) {
+      this.fileMark.forEach( (item, index) => {
+        if (item.name == file.name) {
+          this.positiveData.fileList.splice( index, 1 )
+          this.fileMark.splice(index,1)
+        }
+      })
+    },
     beforeRemove(file, fileList) {
-      console.log(fileList);
       return this.$confirm(`确定移除 ${file.name}？`);
     },
     beforeUpload(file, fileList) {

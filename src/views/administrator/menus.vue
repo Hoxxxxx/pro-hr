@@ -289,6 +289,7 @@ export default {
       MENUS_API.getMenus().then((res) => {
         if (res.status == 200) {
           this.menusData = res.data;
+          this.viewsList = res.data;
           let resArr = [];
           this.fixedData.pers = [
             {
@@ -299,7 +300,6 @@ export default {
           ];
           this.recursive(res.data, resArr);
           this.fixedData.pers = [...this.fixedData.pers, ...resArr];
-          this.viewsList = res.data;
         }
       });
     },
