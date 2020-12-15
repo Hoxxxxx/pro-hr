@@ -24,6 +24,7 @@
           row-key="id"
           ref="persTable"
           :tree-props="{ children: 'sub', hasChildren: 'hasChildren' }"
+          :height="tableHeight"
         >
           >
           <!-- <el-table-column type="selection" width="55" align="center"></el-table-column> -->
@@ -195,6 +196,7 @@ export default {
         },
       ],
       title: "权限配置",
+      tableHeight: 500,
       // 表格数据
       tHeadList: [
         { label: "权限名称", prop: "name" },
@@ -236,6 +238,18 @@ export default {
     };
   },
   mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.persTable.$el.offsetTop - 50;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.persTable.$el.offsetTop - 50
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
+    
     this.getPermissions();
   },
   methods: {
