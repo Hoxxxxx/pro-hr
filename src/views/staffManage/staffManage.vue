@@ -137,6 +137,7 @@
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           @selection-change="handleSelectionChange"
           :height="tableHeight"
+          
         >
           <el-table-column
             align="center"
@@ -150,7 +151,7 @@
             :key="index"
             :label="head.label"
             :prop="head.prop"
-            min-width="160px"
+            min-width="165px"
           >
             <template slot-scope="scope">
               <div v-if="head.prop == 'department'">
@@ -499,7 +500,7 @@ export default {
           title: "员工列表",
         },
       ],
-      tableHeight: 500,
+      tableHeight: 0,
       menuList: [
         { name: "在职", val: 0, status: 0 },
         { name: "离职", val: 0, status: 3 },
@@ -606,7 +607,8 @@ export default {
       // 监听窗口大小变化
       let self = this;
       window.onresize = function () {
-        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100;
+        self.tableHeight =
+          window.innerHeight - self.$refs.table.$el.offsetTop - 100;
       };
     });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
@@ -664,15 +666,19 @@ export default {
     // 筛选功能
     handleCheckAllChange(val) {
       this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
-      let temp = [];
-      for (let key in this.checkData) {
-        this.checkedBox.checkedCities.forEach((item) => {
-          if (this.checkData[key] == item) {
-            temp.push(key);
-          }
-        });
+      if (this.checkedBox.isIndeterminate) {
+        let temp = [];
+        for (let key in this.checkData) {
+          this.checkedBox.checkedCities.forEach((item) => {
+            if (this.checkData[key] == item) {
+              temp.push(key);
+            }
+          });
+        }
+        this.checked = [...temp, ...this.defaultChecked];
+      } else {
+        this.initHead();
       }
-      this.checked = temp;
       this.checkedBox.isIndeterminate = false;
       this.getStaffList();
     },
@@ -710,9 +716,8 @@ export default {
         is_paging: 0,
         name: this.adminName,
         field: this.checked,
-        page_size:this.listParams.pageSize
+        page_size: this.listParams.pageSize,
       };
-      console.log(params)
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
@@ -991,8 +996,8 @@ export default {
     },
     // 分页数据变化处理
     handleSizeChange(newSize) {
-      this.listParams.pageSize = newSize
-      this.getStaffList()
+      this.listParams.pageSize = newSize;
+      this.getStaffList();
     },
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;
@@ -1447,16 +1452,15 @@ export default {
     }
   }
 }
-.tableFilter{
+.tableFilter {
   margin: -10px 0 10px 0;
   .checkBoxs {
-  display: flex;
-  flex-direction: row;
-  margin-bottom: 20px;
-  .checkItem {
-    margin-bottom: 10px;
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    .checkItem {
+      margin-bottom: 10px;
+    }
   }
 }
-}
-
 </style>
