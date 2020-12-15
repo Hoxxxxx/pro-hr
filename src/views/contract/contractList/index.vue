@@ -193,36 +193,30 @@ export default {
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'add',
-            meta: {
-              name: '新增合同'
-            }
+            pageType: 'add'
           }
         })
+        this.$route.meta.name = '新增合同'
       }
       else if (type == 'check') {
         this.$router.push({
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'check',
-            meta: {
-              name: '查看合同'
-            }
+            pageType: 'check'
           }
         })
+        this.$route.meta.name = '查看合同'
       }
       else if (type == 'edit') {
         this.$router.push({
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'edit',
-            meta: {
-              name: '编辑合同'
-            }
+            pageType: 'edit'
           }
         })
+        this.$route.meta.name = '编辑合同'
       }
     },
     delContractItem(id){

@@ -155,36 +155,30 @@ export default {
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'add',
-            meta: {
-              name: '新增无形资产'
-            }
+            pageType: 'add'
           }
         })
+        this.$route.meta.name = '新增无形资产'
       }
       else if (type == 'check') {
         this.$router.push({
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'check',
-            meta: {
-              name: '查看无形资产'
-            }
+            pageType: 'check'
           }
         })
+        this.$route.meta.name = '查看无形资产'
       }
       else if (type == 'edit') {
         this.$router.push({
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'edit',
-            meta: {
-              name: '编辑无形资产'
-            }
+            pageType: 'edit'
           }
         })
+        this.$route.meta.name = '编辑无形资产'
       }
     },
     delContractItem(id){
