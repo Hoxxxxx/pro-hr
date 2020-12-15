@@ -53,13 +53,14 @@ export default {
 
 <style lang="less" scoped>
 .breadcrumbBox {
+  position: relative;
+  top: 50%;
+  transform: translateY(-50%);
   width: 100%;
-  height: 12px;
   font-size: 12px;
   color: #999999;
   letter-spacing: 0;
   line-height: 12px;
-  margin-bottom: 14px;
 }
 
 .point/deep/ .el-breadcrumb__inner {
