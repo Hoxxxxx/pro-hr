@@ -115,12 +115,22 @@
 import navBar from "@/components/navBar/navBar";
 //api
 import { contractTypeList, addType, delType, typeInfo, editType } from '@/api/contract'
-
+// validate
+import { validNameNoCN_only, } from '@/utils/validate'
 // utils
 import { OpenLoading } from "@/utils/utils.js";
 
 export default {
   data() {
+
+    const validateNoCN = (rule, value, callback) => {
+      if (!validNameNoCN_only(value)) {
+        callback(new Error('仅限非中文'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       // 面包屑
       breadList: [
@@ -165,6 +175,7 @@ export default {
         ],
         number:[
           { required: true, message: '请输入合同类型编号', trigger: 'blur' },
+          { validator: validateNoCN, trigger: 'blur' }
         ],
         comment:[
           { required: true, message: '请输入备注', trigger: 'blur' },

@@ -193,7 +193,10 @@ export default {
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'add'
+            pageType: 'add',
+            meta: {
+              name: '新增合同'
+            }
           }
         })
       }
@@ -202,7 +205,10 @@ export default {
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'check'
+            pageType: 'check',
+            meta: {
+              name: '查看合同'
+            }
           }
         })
       }
@@ -211,7 +217,10 @@ export default {
           path: 'contractInfo',
           query: {
             id: id,
-            pageType: 'edit'
+            pageType: 'edit',
+            meta: {
+              name: '编辑合同'
+            }
           }
         })
       }

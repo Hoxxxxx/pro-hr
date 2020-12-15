@@ -155,7 +155,10 @@ export default {
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'add'
+            pageType: 'add',
+            meta: {
+              name: '新增无形资产'
+            }
           }
         })
       }
@@ -164,7 +167,10 @@ export default {
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'check'
+            pageType: 'check',
+            meta: {
+              name: '查看无形资产'
+            }
           }
         })
       }
@@ -173,7 +179,10 @@ export default {
           path: 'assInfo',
           query: {
             id: id,
-            pageType: 'edit'
+            pageType: 'edit',
+            meta: {
+              name: '编辑无形资产'
+            }
           }
         })
       }
