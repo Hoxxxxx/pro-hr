@@ -142,7 +142,7 @@
           <el-table-column
             align="center"
             type="selection"
-            width="55"
+            min-width="55"
             fixed="left"
           ></el-table-column>
           <el-table-column
@@ -189,7 +189,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="viewsList.length > 0 ? '操作' : ''"
             width="300px"
             align="center"
             fixed="right"
@@ -710,6 +710,7 @@ export default {
     getStaffList() {
       this.searchData.viewsList_searchLoading = true;
       this.headList = [];
+      this.viewsList =[];
       let params = {
         type: this.listType,
         page: this.listParams.page,
