@@ -30,7 +30,6 @@ const payInfo = () => import('@/views/collection/backPayMent/payInfo')
 const payDeliver = () => import('@/views/collection/deliver/list')
 const payInvoice = () => import('@/views/collection/invoice/list')
 const payStrike = () => import('@/views/collection/strike/list')
-const payStrikeDetail = () => import('@/views/collection/strike/detail')
 // 合同
 const contractList = () => import('@/views/contract/contractList/index')
 const contractInfo = () => import('@/views/contract/contractList/contractInfo')
@@ -44,11 +43,12 @@ Vue.use(VueRouter)
 
 const routes = [{
     path: '/',
+    name:'home',
     component: Home,
     redirect: '/welcome',
     children: [{
       path: '/welcome',
-      name: 'welcome',
+      name: 'home',
       component: Welcome
     }]
   },
@@ -59,26 +59,27 @@ const routes = [{
   // 员工管理
   {
     path: '/staffManage',
+    name: "员工管理",
     component: Home,
     redirect: '/staffManage',
     children: [{
         path: '/staffManage',
-        name: 'staffManage',
+        name: '员工列表',
         component: staffManage
       },
       {
         path: '/staffAdd',
-        name: 'staffAdd',
+        name: '新增员工',
         component: staffAdd
       },
       {
         path: '/staffMsg',
-        name: 'staffMsg',
+        name: '查看员工信息',
         component: staffMsg
       },
       {
         path: '/staffChange',
-        name: 'staffChange',
+        name: '人员异动表',
         component: staffChange
       },
     ]
@@ -86,32 +87,32 @@ const routes = [{
   // 权限管理
   {
     path: '/administrator',
-    name: 'administrator',
+    name: '权限管理',
     redirect: '/admins',
     component: Home,
     children: [{
         path: '/admins',
-        name: 'admins',
+        name: '管理员管理',
         component: admins
       },
       {
         path: '/roles',
-        name: 'roles',
+        name: '角色管理',
         component: roles
       },
       {
         path: '/permissions',
-        name: 'permissions',
+        name: '权限管理',
         component: permissions
       },
       {
         path: '/menus',
-        name: 'menus',
+        name: '菜单管理',
         component: menus
       },
       {
         path: '/system',
-        name: 'system',
+        name: '系统设置',
         component: system
       }
     ]
@@ -119,98 +120,96 @@ const routes = [{
   // 组织管理
   {
     path: '/organization',
-    name: 'organization',
+    name: '组织管理',
     redirect: '/department',
     component: Home,
     children: [{
         path: '/department',
-        name: 'department',
+        name: '部门管理',
         component: department
       },
       {
         path: '/position',
-        name: 'position',
+        name: '职位管理',
         component: position
       }
     ]
   },
-  // 财务管理
+  // 财务对账
   {
     path: '/finance',
+    name: "财务对账",
     component: Home,
     redirect: '/finance/income',
     children: [{
-      path: 'income',
-      name: 'income',
-      component: income
-    },
-    {
-      path: 'receivable',
-      name: 'receivable',
-      component: receivable
-    },
-    {
-      path: 'depReceivable',
-      name: 'depReceivable',
-      component: depReceivable
-    },
+        path: 'income',
+        name: '收入费用情况',
+        component: income
+      },
+      {
+        path: 'receivable',
+        name: '应收账款核对',
+        component: receivable
+      },
+      {
+        path: 'depReceivable',
+        name: '部门应收账款',
+        component: depReceivable
+      },
     ]
   },
   // 收款管理
   {
     path: '/collection',
+    name: "收款管理",
     component: Home,
     redirect: '/collection/backPayment/index',
     children: [{
         path: 'backPayment/index',
-        name: 'backPayment',
+        name: '汇款单管理',
         component: backPayment
       },
       {
         path: 'backPayment/payInfo',
-        name: 'payInfo',
+        name: '新增汇款单',
         component: payInfo
       },
       {
         path: 'deliver/list',
-        name: 'deliver_list',
+        name: '发票申请单列表',
         component: payDeliver
       },
       {
         path: 'invoice/list',
-        name: 'invoice_list',
+        name: '发票申请管理',
         component: payInvoice
       },
       {
         path: 'strike/list',
-        name: 'strike_list',
+        name: '收款冲账单',
         component: payStrike
-      },
-      {
-        path: 'strike/detail',
-        name: 'strike_detail',
-        component: payStrikeDetail
       },
     ]
   },
   // 合同管理
   {
     path: '/contract',
+    name: '合同管理',
     component: Home,
     redirect: '/contract/contractList',
     children: [{
         path: 'contractList',
-        name: 'contractList',
+        name: '合同列表',
         component: contractList
       },
       {
         path: 'contractInfo',
-        name: 'contractInfo',
+        name: '查看合同',
         component: contractInfo
       },
       {
         path: 'contractType',
-        name: 'contractType',
+        name: '合同类型',
         component: contractType
       },
     ]
@@ -218,11 +217,12 @@ const routes = [{
   // 无形资产管理
   {
     path: '/intangibleAss',
+    name: '无形资产管理',
     component: Home,
     redirect: '/intangibleAss/assList',
     children: [{
         path: 'assList',
-        name: 'assList',
+        name: '无形资产列表',
         component: assList
       },
       {
@@ -251,9 +251,13 @@ VueRouter.prototype.push = function push(location) {
 }
 
 
-import { BASE_API } from "@/api/baseApi"
+import {
+  BASE_API
+} from "@/api/baseApi"
 import jwtDecode from 'jwt-decode'
-import { btnPermission } from '@/api/Btnpermission'
+import {
+  btnPermission
+} from '@/api/Btnpermission'
 
 
 // 挂载路由导航守卫
@@ -288,20 +292,20 @@ router.beforeEach((to, from, next) => {
           let token = res.data.token
           const code = jwtDecode(token)
           let oauserinfo = {
-            oauserid:code.oauserid,
-            oaname:code.oaname
+            oauserid: code.oauserid,
+            oaname: code.oaname
           }
-          sessionStorage.setItem('exp',code.exp)
-          sessionStorage.setItem('oauserinfo',JSON.stringify(oauserinfo))
+          sessionStorage.setItem('exp', code.exp)
+          sessionStorage.setItem('oauserinfo', JSON.stringify(oauserinfo))
           sessionStorage.setItem('OrgId', code.orgid)
           sessionStorage.setItem('token', token)
           // 获取按钮权限
           btnPermission()
-          .then( res=> {
-            let permissionList = JSON.stringify( res.data )
-            sessionStorage.setItem('permissionList', permissionList)
-          })
-          delete allParams.code 
+            .then(res => {
+              let permissionList = JSON.stringify(res.data)
+              sessionStorage.setItem('permissionList', permissionList)
+            })
+          delete allParams.code
           next({
             path: to.path,
             query: allParams
@@ -310,7 +314,7 @@ router.beforeEach((to, from, next) => {
           console.log('token获取失败！')
           delete allParams.code
           let paraStr = ''
-          for(let key in allParams){
+          for (let key in allParams) {
             paraStr += `&${key}=${allParams[key]}`
           }
           let urlStr = window.location.href.split('?')[0]

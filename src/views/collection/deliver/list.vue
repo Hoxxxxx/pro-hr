@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList" ></nav-Bar>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -17,7 +17,7 @@
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
           :data="viewsList"
-          style="width: 100%"
+          style="width: 100%;"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           :height="tableHeight"
@@ -116,11 +116,6 @@
               >
             </template></el-table-column
           >
-          <!-- <el-table-column align="center" label="发票列表" width="160px" fixed="right"
-            ><template slot-scope="scope">
-              
-            </template></el-table-column
-          > -->
         </el-table>
       </div>
       <el-dialog
@@ -219,7 +214,7 @@ export default {
           title: "首页",
         },
         {
-          title: "发货单",
+          title: "收款管理",
         },
         {
           title: "发票申请单列表",
