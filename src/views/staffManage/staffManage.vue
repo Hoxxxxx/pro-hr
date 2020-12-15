@@ -16,41 +16,18 @@
       </ul>
     </div>
 
-    <!-- 筛选框 -->
+    <!-- 搜索框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
         <el-card class="searchCard">
           <div class="serchBox">
-            <div class="checkBoxs">
-              <div>
-                <el-checkbox
-                  :indeterminate="checkedBox.isIndeterminate"
-                  v-model="checkedBox.checkAll"
-                  @change="handleCheckAllChange"
-                  >全选</el-checkbox
-                >
-                <div style="margin: 15px 0"></div>
-                <el-checkbox-group
-                  v-model="checkedBox.checkedCities"
-                  @change="handleCheckedCitiesChange"
-                >
-                  <el-checkbox
-                    v-for="(key, value) in checkedBox.cities"
-                    class="checkItem"
-                    :label="key"
-                    :key="value"
-                    >{{ key }}</el-checkbox
-                  >
-                </el-checkbox-group>
-              </div>
-            </div>
             <div class="rangeBox">
               <el-input
                 v-model="adminName"
@@ -110,6 +87,42 @@
           >
         </div>
       </div>
+      <div class="tableFilter">
+        <el-button
+          @click="showfilter = !showfilter"
+          type="text"
+          :icon="showfilter ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+          >列表内容筛选</el-button
+        >
+        <el-collapse-transition>
+          <div v-show="showfilter">
+            <div class="checkBoxs">
+              <div>
+                <el-checkbox
+                  :indeterminate="checkedBox.isIndeterminate"
+                  v-model="checkedBox.checkAll"
+                  @change="handleCheckAllChange"
+                  >全选</el-checkbox
+                >
+                <div style="margin: 15px 0"></div>
+                <el-checkbox-group
+                  v-model="checkedBox.checkedCities"
+                  @change="handleCheckedCitiesChange"
+                >
+                  <el-checkbox
+                    v-for="(key, value) in checkedBox.cities"
+                    class="checkItem"
+                    :label="key"
+                    :key="value"
+                    >{{ key }}</el-checkbox
+                  >
+                </el-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </el-collapse-transition>
+      </div>
+
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
@@ -494,6 +507,7 @@ export default {
         { name: "试用", val: 0, status: 1 },
       ],
       showSearch: false,
+      showfilter: false,
       searchData: {
         viewsList_searchLoading: true,
       },
@@ -578,7 +592,7 @@ export default {
         limit: 1,
       },
       files: [],
-      fileMark:[],
+      fileMark: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -586,16 +600,17 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+      this.tableHeight =
+        window.innerHeight - this.$refs.table.$el.offsetTop - 100;
       // console.log( this.tableHeight)
       // 监听窗口大小变化
       let self = this;
-      window.onresize = function() {
-        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100
-      }
-    })  
+      window.onresize = function () {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100;
+      };
+    });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
 
     this.getStaffList();
     this.getFields(); //获取筛选字字段
@@ -695,7 +710,9 @@ export default {
         is_paging: 0,
         name: this.adminName,
         field: this.checked,
+        page_size:this.listParams.pageSize
       };
+      console.log(params)
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
@@ -973,7 +990,10 @@ export default {
       });
     },
     // 分页数据变化处理
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.listParams.pageSize = newSize
+      this.getStaffList()
+    },
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;
       this.getStaffList();
@@ -1020,16 +1040,16 @@ export default {
     handleSuccess(response, file, fileList) {
       this.positiveData.fileList.push(response.data[0]);
       this.fileMark.push({
-        name:file.name
-      })
+        name: file.name,
+      });
     },
     handleRemove(file, fileList) {
-      this.fileMark.forEach( (item, index) => {
+      this.fileMark.forEach((item, index) => {
         if (item.name == file.name) {
-          this.positiveData.fileList.splice( index, 1 )
-          this.fileMark.splice(index,1)
+          this.positiveData.fileList.splice(index, 1);
+          this.fileMark.splice(index, 1);
         }
-      })
+      });
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -1143,14 +1163,6 @@ export default {
   }
   .searchCard {
     margin: 0 20px 20px 20px;
-    .checkBoxs {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 20px;
-      .checkItem {
-        margin-bottom: 10px;
-      }
-    }
     .rangeBox {
       position: relative;
       display: flex;
@@ -1434,4 +1446,16 @@ export default {
     }
   }
 }
+.tableFilter{
+  margin: -10px 0 10px 0;
+  .checkBoxs {
+  display: flex;
+  flex-direction: row;
+  margin-bottom: 20px;
+  .checkItem {
+    margin-bottom: 10px;
+  }
+}
+}
+
 </style>

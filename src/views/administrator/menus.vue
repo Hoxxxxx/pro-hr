@@ -16,6 +16,10 @@
       <div class="tableBox">
         <el-table
           :data="viewsList"
+          v-loading="searchData.viewsList_searchLoading"
+          element-loading-background="rgba(0, 0, 0, 0.2)"
+          element-loading-text="数据正在加载中"
+          element-loading-spinner="el-icon-loading"
           style="width: 100%"
           @selection-change="handleSelectionChange"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
@@ -228,6 +232,9 @@ export default {
         { label: "创建时间", prop: "created_at" },
       ],
       viewsList: [],
+      searchData: {
+        viewsList_searchLoading: true,
+      },
       // 新增菜单的弹窗中的数据
       fixedData: {
         pers: [
@@ -286,8 +293,10 @@ export default {
   methods: {
     // 获取菜单列表
     getMenus() {
+      this.searchData.viewsList_searchLoading = true;
       MENUS_API.getMenus().then((res) => {
         if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
           this.menusData = res.data;
           this.viewsList = res.data;
           let resArr = [];
@@ -300,6 +309,9 @@ export default {
           ];
           this.recursive(res.data, resArr);
           this.fixedData.pers = [...this.fixedData.pers, ...resArr];
+        }else{
+          this.$message.error('菜单列表获取失败！')
+          this.searchData.viewsList_searchLoading = false;
         }
       });
     },

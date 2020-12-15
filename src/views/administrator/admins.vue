@@ -1,13 +1,13 @@
 <template>
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <!-- 筛选框 -->
+    <!-- 搜索框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
@@ -62,6 +62,10 @@
         <el-table
           ref="table"
           :data="viewsList"
+          v-loading="searchData.viewsList_searchLoading"
+          element-loading-background="rgba(0, 0, 0, 0.2)"
+          element-loading-text="数据正在加载中"
+          element-loading-spinner="el-icon-loading"
           style="width: 100%"
           @selection-change="handleSelectionChange"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
@@ -293,7 +297,7 @@ export default {
       ],
       title: "管理员管理",
       tableHeight: 500,
-      // 筛选框
+      // 搜索框
       showSearch: false,
       adStatus: [
         {
@@ -306,6 +310,9 @@ export default {
         },
       ],
       viewsList: [],
+      searchData: {
+        viewsList_searchLoading: true,
+      },
       // 新增管理员的弹窗中的数据
       showAddPop: false, //是否显示弹窗
       addParams: {
@@ -381,14 +388,20 @@ export default {
     },
     // 获取管理员列表
     getAdminsList() {
+      this.searchData.viewsList_searchLoading = true;
+      this.filterList.name = ''
+      this.filterList.status = null
       let params = {
         page: this.listParams.page,
+        page_size: this.listParams.pageSize,
       };
       ADMINS_API.getAdmins(params).then((res) => {
         if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data;
           this.total = res.pagination.total;
         } else {
+          this.searchData.viewsList_searchLoading = false;
           this.$message.error(res.error);
         }
       });
@@ -396,8 +409,10 @@ export default {
     // 搜索列表
     search() {
       this.listParams.page = 1
+      this.searchData.viewsList_searchLoading = true;
       let params = {
         page: this.listParams.page,
+        page_size: this.listParams.pageSize,
       };
       if (this.filterList.name != "") {
         params.name = this.filterList.name;
@@ -407,9 +422,11 @@ export default {
       }
       ADMINS_API.getAdmins(params).then((res) => {
         if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data;
           this.total = res.pagination.total;
         } else {
+          this.searchData.viewsList_searchLoading = false;
           this.$message.error(res.error);
         }
       });
@@ -547,7 +564,10 @@ export default {
       this.ids = temp;
     },
     // watch pagesize change
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.listParams.pageSize = newSize;
+      this.getAdminsList();
+    },
 
     handleCurrentChange(newPage) {
       this.listParams.page = newPage
