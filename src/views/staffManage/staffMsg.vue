@@ -925,6 +925,7 @@ export default {
           saveType: "edit",
         },
       });
+      this.$route.meta.name = '编辑员工信息'
     },
     // 获取员工信息
     getStaffInfo() {

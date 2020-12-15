@@ -13,7 +13,7 @@
         :key="index"
         :to="bread.path"
         :class="index != breads.length - 1 ? 'point' : ''"
-        >{{ bread.name }}</el-breadcrumb-item
+        >{{ bread.meta.name ? bread.meta.name : bread.name }}</el-breadcrumb-item
       >
     </el-breadcrumb>
   </div>
@@ -43,9 +43,10 @@ export default {
       let matched = this.$route.matched;
       //如果不是首页
       if (!this.isHome(matched[0])) {
-        matched = [{ path: "/", name: "首页" }].concat(matched);
+        matched = [{ path: "/", name: "首页",meta:{} }].concat(matched);
       }
       this.breads = matched;
+      console.log(this.breads)
     },
   },
 };
