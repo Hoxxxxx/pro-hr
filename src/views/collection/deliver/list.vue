@@ -12,7 +12,7 @@
       <div class="tableBox">
         <el-table
           ref="table"
-          v-loading = "searchData.viewsList_searchLoading"
+          v-loading="searchData.viewsList_searchLoading"
           element-loading-background = "rgba(0, 0, 0, 0.5)"
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
@@ -254,6 +254,7 @@ export default {
   methods: {
     // 获取发货单列表
     async getDeliverList() {
+      this.searchData.viewsList_searchLoading = true;
       let params = {
         page: this.listParams.page,
         perPage: this.listParams.pageSize,
@@ -265,6 +266,7 @@ export default {
           this.searchData.viewsList_searchLoading = false;
           this.total = res.pagination.total;
         } else {
+          this.searchData.viewsList_searchLoading = false;
           this.$message.error("列表获取失败！");
         }
       });
@@ -299,7 +301,8 @@ export default {
     },
     // 分页数据变化处理
     handleSizeChange(newSize) {
-      
+      this.listParams.pageSize = newSize;
+      this.getDeliverList();
     },
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;

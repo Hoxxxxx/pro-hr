@@ -16,41 +16,18 @@
       </ul>
     </div>
 
-    <!-- 筛选框 -->
+    <!-- 搜索框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
         <el-card class="searchCard">
           <div class="serchBox">
-            <div class="checkBoxs">
-              <div>
-                <el-checkbox
-                  :indeterminate="checkedBox.isIndeterminate"
-                  v-model="checkedBox.checkAll"
-                  @change="handleCheckAllChange"
-                  >全选</el-checkbox
-                >
-                <div style="margin: 15px 0"></div>
-                <el-checkbox-group
-                  v-model="checkedBox.checkedCities"
-                  @change="handleCheckedCitiesChange"
-                >
-                  <el-checkbox
-                    v-for="(key, value) in checkedBox.cities"
-                    class="checkItem"
-                    :label="key"
-                    :key="value"
-                    >{{ key }}</el-checkbox
-                  >
-                </el-checkbox-group>
-              </div>
-            </div>
             <div class="rangeBox">
               <el-input
                 v-model="adminName"
@@ -110,6 +87,42 @@
           >
         </div>
       </div>
+      <div class="tableFilter">
+        <el-button
+          @click="showfilter = !showfilter"
+          type="text"
+          :icon="showfilter ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+          >列表内容筛选</el-button
+        >
+        <el-collapse-transition>
+          <div v-show="showfilter">
+            <div class="checkBoxs">
+              <div>
+                <el-checkbox
+                  :indeterminate="checkedBox.isIndeterminate"
+                  v-model="checkedBox.checkAll"
+                  @change="handleCheckAllChange"
+                  >全选</el-checkbox
+                >
+                <div style="margin: 15px 0"></div>
+                <el-checkbox-group
+                  v-model="checkedBox.checkedCities"
+                  @change="handleCheckedCitiesChange"
+                >
+                  <el-checkbox
+                    v-for="(key, value) in checkedBox.cities"
+                    class="checkItem"
+                    :label="key"
+                    :key="value"
+                    >{{ key }}</el-checkbox
+                  >
+                </el-checkbox-group>
+              </div>
+            </div>
+          </div>
+        </el-collapse-transition>
+      </div>
+
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
@@ -124,11 +137,12 @@
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           @selection-change="handleSelectionChange"
           :height="tableHeight"
+          
         >
           <el-table-column
             align="center"
             type="selection"
-            width="55"
+            min-width="55"
             fixed="left"
           ></el-table-column>
           <el-table-column
@@ -137,7 +151,7 @@
             :key="index"
             :label="head.label"
             :prop="head.prop"
-            min-width="160px"
+            min-width="165px"
           >
             <template slot-scope="scope">
               <div v-if="head.prop == 'department'">
@@ -175,7 +189,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            label="操作"
+            :label="viewsList.length > 0 ? '操作' : ''"
             width="300px"
             align="center"
             fixed="right"
@@ -486,7 +500,7 @@ export default {
           title: "员工列表",
         },
       ],
-      tableHeight: 500,
+      tableHeight: 0,
       menuList: [
         { name: "在职", val: 0, status: 0 },
         { name: "离职", val: 0, status: 3 },
@@ -494,6 +508,7 @@ export default {
         { name: "试用", val: 0, status: 1 },
       ],
       showSearch: false,
+      showfilter: false,
       searchData: {
         viewsList_searchLoading: true,
       },
@@ -578,7 +593,7 @@ export default {
         limit: 1,
       },
       files: [],
-      fileMark:[],
+      fileMark: [],
       // 分页
       total: 0,
       listParams: { name: "", page: 1, pageSize: 10 },
@@ -586,16 +601,18 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+      this.tableHeight =
+        window.innerHeight - this.$refs.table.$el.offsetTop - 100;
       // console.log( this.tableHeight)
       // 监听窗口大小变化
       let self = this;
-      window.onresize = function() {
-        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100
-      }
-    })  
+      window.onresize = function () {
+        self.tableHeight =
+          window.innerHeight - self.$refs.table.$el.offsetTop - 100;
+      };
+    });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
 
     this.getStaffList();
     this.getFields(); //获取筛选字字段
@@ -649,15 +666,19 @@ export default {
     // 筛选功能
     handleCheckAllChange(val) {
       this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
-      let temp = [];
-      for (let key in this.checkData) {
-        this.checkedBox.checkedCities.forEach((item) => {
-          if (this.checkData[key] == item) {
-            temp.push(key);
-          }
-        });
+      if (this.checkedBox.isIndeterminate) {
+        let temp = [];
+        for (let key in this.checkData) {
+          this.checkedBox.checkedCities.forEach((item) => {
+            if (this.checkData[key] == item) {
+              temp.push(key);
+            }
+          });
+        }
+        this.checked = [...temp, ...this.defaultChecked];
+      } else {
+        this.initHead();
       }
-      this.checked = temp;
       this.checkedBox.isIndeterminate = false;
       this.getStaffList();
     },
@@ -689,12 +710,14 @@ export default {
     getStaffList() {
       this.searchData.viewsList_searchLoading = true;
       this.headList = [];
+      this.viewsList =[];
       let params = {
         type: this.listType,
         page: this.listParams.page,
         is_paging: 0,
         name: this.adminName,
         field: this.checked,
+        page_size: this.listParams.pageSize,
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
@@ -973,7 +996,10 @@ export default {
       });
     },
     // 分页数据变化处理
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.listParams.pageSize = newSize;
+      this.getStaffList();
+    },
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;
       this.getStaffList();
@@ -1020,16 +1046,16 @@ export default {
     handleSuccess(response, file, fileList) {
       this.positiveData.fileList.push(response.data[0]);
       this.fileMark.push({
-        name:file.name
-      })
+        name: file.name,
+      });
     },
     handleRemove(file, fileList) {
-      this.fileMark.forEach( (item, index) => {
+      this.fileMark.forEach((item, index) => {
         if (item.name == file.name) {
-          this.positiveData.fileList.splice( index, 1 )
-          this.fileMark.splice(index,1)
+          this.positiveData.fileList.splice(index, 1);
+          this.fileMark.splice(index, 1);
         }
-      })
+      });
     },
     beforeRemove(file, fileList) {
       return this.$confirm(`确定移除 ${file.name}？`);
@@ -1144,14 +1170,6 @@ export default {
   .searchCard {
     border-radius: 10px;
     margin: 0 20px 20px 20px;
-    .checkBoxs {
-      display: flex;
-      flex-direction: row;
-      margin-bottom: 20px;
-      .checkItem {
-        margin-bottom: 10px;
-      }
-    }
     .rangeBox {
       position: relative;
       display: flex;
@@ -1432,6 +1450,17 @@ export default {
       display: flex;
       flex-direction: row;
       justify-content: space-between;
+    }
+  }
+}
+.tableFilter {
+  margin: -10px 0 10px 0;
+  .checkBoxs {
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 20px;
+    .checkItem {
+      margin-bottom: 10px;
     }
   }
 }

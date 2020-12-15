@@ -1,13 +1,13 @@
 <template>
   <div class="staffManage">
     <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <!-- 筛选框 -->
+    <!-- 搜索框 -->
     <el-button
       class="showSearch"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-      >{{ showSearch ? "隐藏筛选框" : "打开筛选框" }}</el-button
+      >{{ showSearch ? "隐藏搜索框" : "打开搜索框" }}</el-button
     >
     <el-collapse-transition>
       <div v-show="showSearch">
@@ -49,6 +49,10 @@
         <el-table
           ref="table"
           :data="viewsList"
+          v-loading="searchData.viewsList_searchLoading"
+          element-loading-background="rgba(0, 0, 0, 0.2)"
+          element-loading-text="数据正在加载中"
+          element-loading-spinner="el-icon-loading"
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
@@ -225,8 +229,11 @@ export default {
       ],
       title: "职位管理",
       tableHeight: 500,
-      // 筛选框
+      // 搜索框
       showSearch: false,
+      searchData: {
+        viewsList_searchLoading: true,
+      },
       jobName: "",
       tHeadList: [
         { label: "职位名称", prop: "name" },
@@ -252,37 +259,47 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+      this.tableHeight =
+        window.innerHeight - this.$refs.table.$el.offsetTop - 100;
       // console.log( this.tableHeight)
       // 监听窗口大小变化
       let self = this;
-      window.onresize = function() {
-        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100
-      }
-    })  
+      window.onresize = function () {
+        self.tableHeight =
+          window.innerHeight - self.$refs.table.$el.offsetTop - 100;
+      };
+    });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
-    
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
+
     this.getPositionsList();
   },
   methods: {
     // 获取职位列表
     getPositionsList(val) {
+      this.searchData.viewsList_searchLoading = true;
       let params = {
         page: this.listParams.page,
-        is_paging: 0
+        is_paging: 0,
+        page_size: this.listParams.pageSize,
       };
       if (val) {
         params = { ...params, ...val };
       }
       POSI_API.getPositions(params).then((res) => {
-        res.data.forEach((item) => {
-          item.created_at = renderTime(item.created_at);
-          item.p_name = item.p_name == null ? '无' : item.p_name
-        });
-        this.viewsList = res.data;
-        this.total = res.pagination.total;
-        this.position_options = [...res.data, ...this.position_options];
+        if (res.status == 200) {
+          this.searchData.viewsList_searchLoading = false;
+          res.data.forEach((item) => {
+            item.created_at = renderTime(item.created_at);
+            item.p_name = item.p_name == null ? "无" : item.p_name;
+          });
+          this.viewsList = res.data;
+          this.total = res.pagination.total;
+          this.position_options = [...res.data, ...this.position_options];
+        }else{
+          this.$message.error('职位列表获取失败！')
+          this.searchData.viewsList_searchLoading = false;
+        }
       });
     },
     search() {
@@ -421,7 +438,10 @@ export default {
       this.ids = temp;
     },
     // watch pagesize change
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.listParams.pageSize = newSize;
+      this.getPositionsList();
+    },
     // watch page change
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;
