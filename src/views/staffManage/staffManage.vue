@@ -129,6 +129,7 @@
             align="center"
             type="selection"
             width="55"
+            fixed="left"
           ></el-table-column>
           <el-table-column
             align="center"
