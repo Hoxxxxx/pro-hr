@@ -734,7 +734,6 @@ export default {
 }
 
 .saveList {
-  width: 300px;
   color: #606266;
   margin-bottom: 20px;
 

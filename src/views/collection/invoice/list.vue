@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList" ></nav-Bar>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -157,13 +157,6 @@
               prop="fhd09"
             ></el-table-column>
           </el-table>
-          <!-- <el-link
-            v-for="(item, index) in links"
-            :key="index"
-            type="primary"
-            @click="openMore(item)"
-            >{{item}}</el-link
-          > -->
         </div>
         <span slot="footer" class="dialog-footer">
           <el-button
@@ -202,13 +195,12 @@ export default {
           title: "首页",
         },
         {
-          title: "发票申请",
+          title: "收款管理",
         },
         {
           title: "发票申请列表",
         },
       ],
-      title: "发票申请列表",
       searchData: {
         viewsList_searchLoading: true,
         viewsList1_searchLoading: true,

@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList" ></nav-Bar>
 
     <!-- 表格 -->
     <el-card class="listCard">
@@ -250,13 +250,12 @@ export default {
           title: "首页",
         },
         {
-          title: "收款冲账单",
+          title: "收款管理",
         },
         {
           title: "收款冲账单列表",
         },
       ],
-      title: "收款冲账单列表",
       searchData: {
         viewsList_searchLoading: true,
         detailList_searchLoading: true,
