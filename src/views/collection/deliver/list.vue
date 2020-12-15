@@ -112,7 +112,7 @@
                 >查看申请单</el-link
               >
               <el-link type="primary" @click="open(scope.row.id)"
-                >查看发票</el-link
+                >查看发票申请</el-link
               >
             </template></el-table-column
           >
