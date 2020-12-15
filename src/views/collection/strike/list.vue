@@ -88,7 +88,7 @@
             prop="ooa32c"
             min-width="160px"
           ></el-table-column> -->
-          <el-table-column label="操作" width="160px" align="center">
+          <el-table-column label="操作" width="160px" align="center" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" @click="view(scope.row.id)"
                 >查看详情</el-button
