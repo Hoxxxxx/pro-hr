@@ -194,7 +194,7 @@ export default {
           query: {
             id: id,
             pageType: 'add',
-            routename: '新增合同'
+            routeName: '新增合同'
           }
         })
       }
@@ -204,7 +204,7 @@ export default {
           query: {
             id: id,
             pageType: 'check',
-            routename: '查看合同'
+            routeName: '查看合同'
           }
         })
       }
@@ -214,7 +214,7 @@ export default {
           query: {
             id: id,
             pageType: 'edit',
-            routename: '编辑合同'
+            routeName: '编辑合同'
           }
         })
       }

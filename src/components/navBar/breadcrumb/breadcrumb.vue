@@ -13,7 +13,7 @@
         :key="index"
         :to="bread.path"
         :class="index != breads.length - 1 ? 'point' : ''"
-        >{{ bread.meta.name ? bread.meta.name : bread.name }}</el-breadcrumb-item
+        >{{ index == breads.length - 1 ? (routeName ? routeName : bread.name) : bread.name}}</el-breadcrumb-item
       >
     </el-breadcrumb>
   </div>
@@ -25,6 +25,7 @@ export default {
   data() {
     return {
       breads: [], // 路由集合
+      routeName:''
     };
   },
   watch: {
@@ -34,6 +35,7 @@ export default {
   },
   created() {
     this.getBreadcrumb();
+    this.routeName = this.$route.query.routeName
   },
   methods: {
     isHome(route) {
@@ -43,10 +45,9 @@ export default {
       let matched = this.$route.matched;
       //如果不是首页
       if (!this.isHome(matched[0])) {
-        matched = [{ path: "/", name: "首页",meta:{} }].concat(matched);
+        matched = [{ path: "/", name: "首页"}].concat(matched);
       }
       this.breads = matched;
-      console.log(this.breads)
     },
   },
 };

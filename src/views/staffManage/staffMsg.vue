@@ -923,9 +923,9 @@ export default {
         query: {
           id: this.staffId,
           saveType: "edit",
+          routeName:'编辑员工信息'
         },
       });
-      this.$route.meta.name = '编辑员工信息'
     },
     // 获取员工信息
     getStaffInfo() {

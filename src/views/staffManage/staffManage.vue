@@ -780,8 +780,10 @@ export default {
     addStaff() {
       this.$router.push({
         path: "/staffAdd",
+        query:{
+          routeName:'新增员工'
+        }
       });
-      this.$route.meta.name = '新增员工'
     },
     openDialog(type, val) {
       this.showDialog = true;
