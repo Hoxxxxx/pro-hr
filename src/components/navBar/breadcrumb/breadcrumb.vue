@@ -8,7 +8,13 @@
         :class="item.title == title ? 'now' : ''"
         >{{ item.title }}</el-breadcrumb-item
       > -->
-      <el-breadcrumb-item  v-for="(bread,index) in breads" :key="index" :to="bread.path" :class="index != breads.length ? '' : 'now'">{{bread.name}}</el-breadcrumb-item>
+      <el-breadcrumb-item
+        v-for="(bread, index) in breads"
+        :key="index"
+        :to="bread.path"
+        :class="index != breads.length - 1 ? 'point' : ''"
+        >{{ bread.name }}</el-breadcrumb-item
+      >
     </el-breadcrumb>
   </div>
 </template>
@@ -37,7 +43,7 @@ export default {
       let matched = this.$route.matched;
       //如果不是首页
       if (!this.isHome(matched[0])) {
-        matched = [{ path: "/", name: "首页"}].concat(matched);
+        matched = [{ path: "/", name: "首页" }].concat(matched);
       }
       this.breads = matched;
     },
@@ -56,7 +62,7 @@ export default {
   margin-bottom: 14px;
 }
 
-.now /deep/ .el-breadcrumb__inner {
-  font-weight: 700;
+.point/deep/ .el-breadcrumb__inner {
+  font-weight: bold;
 }
 </style>
