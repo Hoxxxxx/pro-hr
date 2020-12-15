@@ -28,12 +28,12 @@ export default {
 
 .navBox {
   position: fixed;
-  top: 52px;
+  top: 56px;
   width: 100%;
   height: 35px;
   background: #ffffff;
   box-sizing: border-box;
-  padding-top: 15px;
+  // padding-top: 10px;
   padding-left: 20px;
   z-index: 99;
 
