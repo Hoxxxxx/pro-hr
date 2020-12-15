@@ -72,7 +72,12 @@
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           :height="tableHeight"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column 
+            align="center"
+            type="selection" 
+            width="55"
+            fixed="left">
+          </el-table-column>
           <el-table-column
             label="用户名称"
             prop="adm_name"
@@ -599,8 +604,9 @@ export default {
     margin-left: 20px;
   }
   .searchCard {
+    border-radius: 10px;
     height: 80px;
-    margin: 20px 20px 0 20px;
+    margin: 0px 20px 0 20px;
     .btnBox {
       width: 180px;
       float: right;
