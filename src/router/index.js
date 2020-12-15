@@ -221,14 +221,9 @@ const routes = [{
         component: assList
       },
       {
-        path: 'contractInfo',
-        name: '无形资产详情',
-        component: contractInfo
-      },
-      {
         path: 'assInfo',
-        name: '新增无形资产',
-        component: assInfo
+        name: '无形资产详情',
+        component: assInfo,
       },
     ]
   },

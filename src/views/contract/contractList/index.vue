@@ -196,6 +196,7 @@ export default {
             pageType: 'add'
           }
         })
+        this.$route.meta.name = '新增合同'
       }
       else if (type == 'check') {
         this.$router.push({
@@ -205,6 +206,7 @@ export default {
             pageType: 'check'
           }
         })
+        this.$route.meta.name = '查看合同'
       }
       else if (type == 'edit') {
         this.$router.push({
@@ -214,6 +216,7 @@ export default {
             pageType: 'edit'
           }
         })
+        this.$route.meta.name = '编辑合同'
       }
     },
     delContractItem(id){

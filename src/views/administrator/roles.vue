@@ -60,7 +60,12 @@
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           :height="tableHeight"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column 
+            type="selection" 
+            width="55"
+            align="center"
+            fixed="left">
+          </el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"
             :key="index"

@@ -222,9 +222,34 @@ import SelectData from "@/components/selectData";
 import { addContract, contractInfo, editContract } from '@/api/contract'
 // utils
 import { OpenLoading } from "@/utils/utils.js";
+// validate
+import { validNameNoCN_only, validFloatNumber, validInt, } from '@/utils/validate'
 
 export default {
   data() {
+
+    const validateNoCN = (rule, value, callback) => {
+      if (!validNameNoCN_only(value)) {
+        callback(new Error('仅限非中文'))
+      } else {
+        callback()
+      }
+    }
+    const validateFNumber = (rule, value, callback) => {
+      if (!validFloatNumber(value)) {
+        callback(new Error('仅限数字'))
+      } else {
+        callback()
+      }
+    }
+    const validateIntNumber = (rule, value, callback) => {
+      if (!validInt(value)) {
+        callback(new Error('仅限整数'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       // 面包屑
       breadList: [
@@ -289,12 +314,14 @@ export default {
         ],
         number: [
           { required: true, message: '请输入合同编号', trigger: 'blur' },
+          { validator: validateNoCN, trigger: 'blur' }
         ],
         title: [
           { required: true, message: '请输入合同名称', trigger: 'blur' },
         ],
         contract_value: [
           { required: true, message: '请输入合同金额（元）', trigger: 'blur' },
+          { validator: validateFNumber, trigger: 'blur' }
         ],
         archived_date: [
           { required: true, message: '请输入归档日期', trigger: 'blur' },
@@ -303,7 +330,8 @@ export default {
           { required: true, message: '请选择合同类型', trigger: 'change' },
         ],
         copies_number: [
-          { required: true, message: '请输入副本数量', trigger: 'blur' }
+          { required: true, message: '请输入副本数量', trigger: 'blur' },
+          { validator: validateIntNumber, trigger: 'blur' }
         ],
         operator: [
           { required: true, message: '请选择经办人', trigger: 'change' },
@@ -619,10 +647,11 @@ export default {
         this.$router.push('contractList')
       } 
       else if (type == 3) {
+        // 赋值上传文件
+        this.dataForm.files = this.newfileList.concat(this.saveList)
         this.$refs.dataForm.validate(valid => {
           if(valid){
             const loading = OpenLoading(this, 1)
-            this.dataForm.files = this.newfileList.concat(this.saveList)
             editContract(this.dataForm)
             .then( res => {
               if (res.status == 200) {

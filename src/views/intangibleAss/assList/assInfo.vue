@@ -10,83 +10,17 @@
                       class="payForm">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="部门" prop="ias02" style="height:40px">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.department_name}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('BM')">
-                    {{dataShow.department_name}}
-                  </div>
-                </div>
+              <el-form-item label="资产ID" prop="id">
+                <el-input v-model="dataForm.ias04" disabled></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同编号" prop="number">
-                <el-input v-model="dataForm.number" :disabled="pageType == 'check'"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="合同名称" prop="ias04">
-                <el-input v-model="dataForm.ias04" :disabled="pageType == 'check'"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="合同金额（元）" prop="ias05">
-                <el-input v-model="dataForm.ias05" :disabled="pageType == 'check'"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="归档日期" prop="ias06">
-                <el-date-picker
-                  :disabled="pageType == 'check'"
-                  v-model="dataForm.ias06"
-                  style="width: 100%"
-                  type="date"
-                  placeholder=""
-                  format="yyyy/MM/dd"
-                  value-format="yyyy/MM/dd"
-                >
-                </el-date-picker>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" style="height: 62px">
-              <el-form-item label="合同类型" prop="ias07">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.contract_type_name}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('HTLX')">
-                    {{dataShow.contract_type_name}}
-                  </div>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="副本数量" prop="copies_number">
-                <el-input v-model="dataForm.copies_number" :disabled="pageType == 'check'"></el-input>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12" style="height: 62px">
-              <el-form-item label="经办人" prop="ias09">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.operator_name}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('JBR')">
-                    {{dataShow.operator_name}}
-                  </div>
-                </div>
-              </el-form-item>
-            </el-col>
-            <el-col :span="12">
-              <el-form-item label="单位类型" prop="ias10">
-                <el-select v-model="dataForm.ias10" 
+              <el-form-item label="资产类别" prop="ias02">
+                <el-select v-model="dataForm.ias02" 
                                 :disabled="pageType == 'check'" 
-                                placeholder=""
-                                @change="oppositeChange()">
+                                placeholder="">
                   <el-option
-                    v-for="item in opposite_type_options"
+                    v-for="item in ias02List"
                     :key="item.value"
                     :label="item.label"
                     :value="item.value">
@@ -94,31 +28,60 @@
                 </el-select>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
-              <el-form-item label="单位名称" prop="ias11">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataShow.opposite_name}}
+            <el-col :span="12" style="height: 62px">
+              <el-form-item label="保管人" prop="ias03" style="height:40px">
+                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                  {{dataShow.ias03_name}}
                 </div>
-                <div v-if="pageType!=='check' && dataForm.ias10==''" class="selectbox editNot" style="height:42px">
-                  <span>请先选择单位类型</span>
+                <div v-if="pageType!=='check'" class="selectbox">
+                  <div class="selector" @click="selectDialog('BGR')">
+                    {{dataShow.ias03_name}}
+                  </div>
+                </div> -->
+                <el-input v-model="dataForm.ias03" :disabled="pageType == 'check'"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" style="height: 62px">
+              <el-form-item label="采购地" prop="ias04" style="height:40px">
+                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                  {{dataShow.ias04_name}}
                 </div>
-                <div v-if="pageType!=='check' && dataForm.ias10==1" class="selectbox">
+                <div v-if="pageType!=='check'" class="selectbox">
+                  <div class="selector" @click="selectDialog('CGD')">
+                    {{dataShow.ias04_name}}
+                  </div>
+                </div> -->
+                <el-input v-model="dataForm.ias04" :disabled="pageType == 'check'"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" style="height: 62px">
+              <el-form-item label="供应商" prop="ias05" style="height:40px">
+                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                  {{dataShow.ias05_name}}
+                </div>
+                <div v-if="pageType!=='check'" class="selectbox">
                   <div class="selector" @click="selectDialog('GYS')">
-                    {{dataShow.opposite_name}}
+                    {{dataShow.ias05_name}}
                   </div>
-                </div>
-                <div v-if="pageType!=='check' && dataForm.ias10==2" class="selectbox">
-                  <div class="selector" @click="selectDialog('KH')">
-                    {{dataShow.opposite_name}}
-                  </div>
-                </div>
+                </div> -->
+                <el-input v-model="dataForm.ias05" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同开始时间" prop="ias12">
+              <el-form-item label="中文名称" prop="ias06">
+                <el-input v-model="dataForm.ias06" :disabled="pageType == 'check'"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="英文名称" prop="ias07">
+                <el-input v-model="dataForm.ias07" :disabled="pageType == 'check'"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="采购日期" prop="ias08">
                 <el-date-picker
                   :disabled="pageType == 'check'"
-                  v-model="dataForm.ias12"
+                  v-model="dataForm.ias08"
                   style="width: 100%"
                   type="date"
                   placeholder=""
@@ -129,10 +92,10 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="合同结束时间" prop="end_date">
+              <el-form-item label="授权开始日期" prop="ias09">
                 <el-date-picker
                   :disabled="pageType == 'check'"
-                  v-model="dataForm.end_date"
+                  v-model="dataForm.ias09"
                   style="width: 100%"
                   type="date"
                   placeholder=""
@@ -140,6 +103,38 @@
                   value-format="yyyy/MM/dd"
                 >
                 </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="授权结束日期" prop="ias10">
+                <el-date-picker
+                  :disabled="pageType == 'check'"
+                  v-model="dataForm.ias10"
+                  style="width: 100%"
+                  type="date"
+                  placeholder=""
+                  format="yyyy/MM/dd"
+                  value-format="yyyy/MM/dd"
+                >
+                </el-date-picker>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12">
+              <el-form-item label="采购成本" prop="ias11">
+                <el-input v-model="dataForm.ias11" :disabled="pageType == 'check'"></el-input>
+              </el-form-item>
+            </el-col>
+            <el-col :span="12" style="height: 62px">
+              <el-form-item label="存放位置" prop="ias12">
+                <!-- <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
+                  {{dataShow.ias12_name}}
+                </div>
+                <div v-if="pageType!=='check'" class="selectbox">
+                  <div class="selector" @click="selectDialog('CFWZ')">
+                    {{dataShow.ias12_name}}
+                  </div>
+                </div> -->
+                <el-input v-model="dataForm.ias12" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
           </el-row>
@@ -186,21 +181,32 @@ import SelectData from "@/components/selectData";
 import { addAsset, assetsInfo, editAsset } from '@/api/assets'
 // utils
 import { OpenLoading } from "@/utils/utils.js";
+// validate
+import { validFloatNumber, } from '@/utils/validate'
 
 export default {
   data() {
+
+    const validateFNumber = (rule, value, callback) => {
+      if (!validFloatNumber(value)) {
+        callback(new Error('仅限数字'))
+      } else {
+        callback()
+      }
+    }
+
     return {
       // 面包屑
       breadList: [
         {
           path: "index",
-          title: "合同列表",
+          title: "资产列表",
         },
         {
-          title: "新增合同",
+          title: "新增资产",
         },
       ],
-      title: "新增合同",
+      title: "新增资产",
       // 页面类型
       overloading: '', //加载定时器
       staffId: this.$route.query.id,
@@ -230,59 +236,58 @@ export default {
         ias12: '',
       },
       dataShow: {
-        department_name: "",
-        contract_type_name: "",
-        operator_name: "",
-        opposite_name: "",
+        ias03_name: "",
+        ias04_name: "",
+        ias04_name: "",
+        ias05_name: "",
+        ias12_name: "",
       },
       newfileList: [], // 新上传文件
       saveList: [], // 已有文件
-      opposite_type_options: [{
-        label: '供应商',
-        value: 1
+      ias02List: [{
+        label: '电影',
+        value: '0811'
       },{
-        label: '客户',
-        value: 2
+        label: '电视剧',
+        value: '0812'
+      },{
+        label: '其它',
+        value: '0813'
       }],
       rules: {
         ias02: [
-          { required: true, message: '请选择部门', trigger: 'change' },
+          { required: true, message: '请选择资产类别', trigger: 'change' },
         ],
         ias03: [
-          { required: true, message: '请输入合同编号', trigger: 'blur' },
+          { required: true, message: '请输入保管人', trigger: 'blur' },
         ],
         ias04: [
-          { required: true, message: '请输入合同名称', trigger: 'blur' },
+          // { required: true, message: '请选择采购地', trigger: 'change' },
         ],
         ias05: [
-          { required: true, message: '请输入合同金额（元）', trigger: 'blur' },
+          { required: true, message: '请选择供应商', trigger: 'change' },
         ],
         ias06: [
-          { required: true, message: '请输入归档日期', trigger: 'blur' },
+          { required: true, message: '请输入中文名称', trigger: 'blur' },
         ],
         ias07: [
-          { required: true, message: '请选择合同类型', trigger: 'change' },
+          // { required: true, message: '请输入英文名称', trigger: 'blur' },
         ],
         ias08: [
-          { required: true, message: '请输入副本数量', trigger: 'blur' }
+          // { required: true, message: '请选择采购日期', trigger: 'change' }
         ],
         ias09: [
-          { required: true, message: '请选择经办人', trigger: 'change' },
+          // { required: true, message: '请选择授权开始日期', trigger: 'change' },
         ],
         ias10: [
-          { required: true, message: '请选择单位类型', trigger: 'change' },
+          // { required: true, message: '请选择授权结束日期', trigger: 'change' },
         ],
         ias11: [
-          { required: true, message: '请输入单位名称', trigger: 'blur' }
+          { required: true, message: '请输入采购成本', trigger: 'blur' },
+          { validator: validateFNumber, trigger: 'blur' }
         ],
         ias12: [
-          { required: true, message: '请选择合同开始时间', trigger: 'change' }
-        ],
-        end_date: [
-          { required: true, message: '请选择合同结束时间', trigger: 'change' }
-        ],
-        files: [
-          { required: true, message: '请上传文件', trigger: 'change' }
+          // { required: true, message: '请选择存放位置', trigger: 'change' }
         ],
       },
       //数据选择弹出框
@@ -307,7 +312,7 @@ export default {
           { name: "name", title: "部门名称" },
         ],
         head_HTLX: [
-          { name: "name", title: "合同类别" },
+          { name: "name", title: "资产类别" },
           { name: "number", title: "类别编号" },
           { name: "comment", title: "备注" },
         ],
@@ -345,110 +350,19 @@ export default {
     // **************** init ********************
     initPage() {
       if (this.pageType == 'add') {
-        this.breadList[1].title = '新增合同'
-        this.title = '新增合同'
+        this.breadList[1].title = '新增资产'
+        this.title = '新增资产'
       } else if (this.pageType == 'edit') {
-        this.breadList[1].title = '编辑合同'
-        this.title = '编辑合同'
-        this.getContractInfo(this.staffId)
+        this.breadList[1].title = '编辑资产'
+        this.title = '编辑资产'
+        this.getAssetsInfo(this.staffId)
       } else if (this.pageType == 'check') {
-        this.breadList[1].title = '查看合同'
-        this.title = '查看合同'
-        this.getContractInfo(this.staffId)
+        this.breadList[1].title = '查看资产'
+        this.title = '查看资产'
+        this.getAssetsInfo(this.staffId)
       }
     },
-    // ****************upload*****************
-    beforeAvatarUpload(file) {
-      const isPDF = file.type === "application/pdf";
-      const isDOC = file.type === "application/msword";
-      const isDOCX = file.type === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-      const isXLS = file.type === "application/vnd.ms-excel";
-      const isXLSX = file.type === "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-      const isPPT = file.type === "application/vnd.ms-powerpoint";
-      const isPPTX = file.type === "application/vnd.openxmlformats-officedocument.presentationml.presentation";
-      const isNull = file.type === '';
-      const isLt50M = file.size / 1024 / 1024 < 50;
-
-      if (!isPDF && !isDOC && !isDOCX && !isXLS && !isXLSX && !isPPT && !isPPTX && !isNull) {
-        this.$message.warning("上传文件仅限 pdf / doc / docx / xls / xlsx / ppt / pptx  格式!");
-        return false;
-      }
-      if (!isLt50M) {
-        this.$message.warning("上传文件大小不能超过 50MB!");
-        return false;
-      }
-    },
-    handleSuccess(response, file, fileList) {
-      this.newfileList.push({
-        id: response.data.id,
-      })
-      // console.log(this.newfileList)
-    },
-    handleRemove(file, fileList) {
-      this.newfileList.forEach( (item, index) => {
-        if (item.id == file.response.data.id) {
-          this.newfileList.splice(1, index)
-        }
-      })
-    },
-    
-    // 下载文件流
-    async download(id, filename) {
-      const { data: res } = await this.axios({
-          method: 'get',
-          url: `files/download/${id}`,
-          responseType: "blob",
-      })
-      let fileName = filename;
-      let fileType = {
-        doc: 'application/msword',
-        docx: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-        xls: 'application/vnd.ms-excel',
-        xlsx: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-        ppt: 'application/vnd.ms-powerpoint',
-        pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-        pdf: 'application/pdf',
-      }
-      let type=fileName.split('.')[1];//获取文件后缀名
-      let blob = new Blob([res],{
-        type:fileType.type
-      });
-      let url = window.URL.createObjectURL(blob);
-      let link = document.createElement("a");
-      link.style.display = "none";
-      link.href = url;
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
-    },
-
-    del_file(id, filename) {
-      this.$confirm(`确认删除文件：${filename}?`, '提示', {
-        confirmButtonText: '确定',
-        cancelButtonText: '取消',
-        type: 'warning'
-      }).then(() => {
-        this.dataForm.files.forEach( (item, index) => {
-          if (item.id == id) {
-            this.dataForm.files.splice(index, 1)
-          }
-        })
-      }).catch(() => {
-        this.$message({
-          type: 'info',
-          message: '已取消删除'
-        });          
-      });
-    },
-    // *****************************************
     // ****************selectBox***************
-    // 切换用户类型
-    oppositeChange() {
-      this.dataForm.ias11 = ''
-      this.dataShow.opposite_name = ''
-    },
     // 数据选择
     selectDialog(type,rowIndex) {
       this.rowIndex = rowIndex;
@@ -467,14 +381,14 @@ export default {
         break;
         case "HTLX":
           let filter_HTLX = [
-            { label: "合同类别", model_key_search: "name" },
+            { label: "资产类别", model_key_search: "name" },
             { label: "", model_key_search: "page", value: '1', disabled: true, hide: true},];
           this.dataSelect.filter = filter_HTLX;
           this.dataSelect.searchType = "single"
           this.dataSelect.editType = "entry"
           this.dataSelect.searchApi = "hr/contracttypes";
           this.dataSelect.headList = this.tableHead.head_HTLX;
-          this.dataSelect.dialogTitle = "合同类别列表";
+          this.dataSelect.dialogTitle = "资产类别列表";
         break;
         case "JBR":
           let filter_JBR = [{ label: "", model_key_search: "keyword" }];
@@ -552,12 +466,10 @@ export default {
         this.$router.push('assList')
       } 
       else if (type == 1) {
-        // 赋值上传文件
-        this.dataForm.files = this.newfileList
         this.$refs.dataForm.validate(valid => {
           if(valid){
             const loading = OpenLoading(this, 1)
-            addContract(this.dataForm)
+            addAsset(this.dataForm)
             .then( res => {
               if (res.status == 200) {
                 loading.close()
@@ -583,8 +495,7 @@ export default {
         this.$refs.dataForm.validate(valid => {
           if(valid){
             const loading = OpenLoading(this, 1)
-            this.dataForm.files = this.newfileList.concat(this.saveList)
-            editContract(this.dataForm)
+            editAsset(this.dataForm)
             .then( res => {
               if (res.status == 200) {
                 loading.close()
@@ -606,13 +517,12 @@ export default {
     },
     // ****************其他操作*****************
     // 获取详情
-    getContractInfo(id) {
+    getAssetsInfo(id) {
       const loading = OpenLoading(this, 1)
-      contractInfo(id)
+      assetsInfo(id)
       .then( res => {
         if (res.status == 200) {
           this.dataForm = res.data,
-          this.saveList = res.data.files,
           this.dataShow = {
             'department_name' : res.data.department_name,
             'contract_type_name' : res.data.contract_type_name,
