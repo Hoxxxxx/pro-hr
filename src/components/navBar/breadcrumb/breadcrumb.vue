@@ -48,7 +48,6 @@ export default {
         matched = [{ path: "/", name: "首页"}].concat(matched);
       }
       this.breads = matched;
-      console.log(this.breads)
     },
   },
 };

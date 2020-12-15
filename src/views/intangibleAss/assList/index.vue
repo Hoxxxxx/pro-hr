@@ -156,7 +156,7 @@ export default {
           query: {
             id: id,
             pageType: 'add',
-            routename: '新增无形资产'
+            routeName: '新增无形资产'
           }
         })
       }
@@ -166,7 +166,7 @@ export default {
           query: {
             id: id,
             pageType: 'check',
-            routename: '查看无形资产'
+            routeName: '查看无形资产'
           }
         })
       }
@@ -176,7 +176,7 @@ export default {
           query: {
             id: id,
             pageType: 'edit',
-            routename: '编辑无形资产'
+            routeName: '编辑无形资产'
           }
         })
       }
