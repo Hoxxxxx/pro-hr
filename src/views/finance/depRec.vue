@@ -61,12 +61,12 @@
           <el-table-column align="center" label="id" prop="id" fixed="left" min-width="50px"></el-table-column>
           <el-table-column align="center" label="年" prop="year" min-width="100px"></el-table-column>
           <el-table-column align="center" label="月" prop="month" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="客户编号" prop="customer_id" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="客户名称" prop="customer_name" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="上期金额（万元）" prop="last_period_amount" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="本期增加（万元）" prop="current_period_increase" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="本期减少（万元）" prop="current_period_decrease" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="期末余额（万元）" prop="ending_balance" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户编号" prop="customer_id" min-width="120px"></el-table-column>
+          <el-table-column align="center" label="客户名称" prop="customer_name" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="上期金额（万元）" prop="last_period_amount" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="本期增加（万元）" prop="current_period_increase" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="本期减少（万元）" prop="current_period_decrease" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="期末余额（万元）" prop="ending_balance" min-width="160px"></el-table-column>
           <el-table-column align="center" label="0-90天" prop="day_0_90" min-width="100px"></el-table-column>
           <el-table-column align="center" label="90-180天" prop="day_90_180" min-width="100px"></el-table-column>
           <el-table-column align="center" label="180-270天" prop="day_180_270" min-width="100px"></el-table-column>

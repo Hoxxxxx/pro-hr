@@ -56,20 +56,20 @@
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
         >
           <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="流水号" prop="ssn" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="银行编号" prop="bank" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="200px"></el-table-column>
+          <el-table-column align="center" label="流水号" prop="ssn" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="银行编号" prop="bank" min-width="120px"></el-table-column>
+          <el-table-column align="center" label="银行名称" prop="bank_show" min-width="220px"></el-table-column>
           <el-table-column align="center" label="客户编号" prop="customer" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="客户名称" prop="customer_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="客户名称" prop="customer_show" min-width="160px"></el-table-column>
           <el-table-column align="center" label="日期" prop="date" min-width="100px"></el-table-column>
           <el-table-column align="center" label="币种编号" prop="currency" min-width="100px"></el-table-column>
           <el-table-column align="center" label="币种名称" prop="currency_show" min-width="100px"></el-table-column>
           <el-table-column align="center" label="金额" prop="amount" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="摘要" prop="summary" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="用途" prop="purpose" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="集团作业号" prop="jt_number" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="集团作业号" prop="jt_number" min-width="160px"></el-table-column>
           <el-table-column align="center" label="部门编号" prop="department" min-width="100px"></el-table-column>
           <el-table-column align="center" label="部门名称" prop="department_show" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="摘要" prop="summary" min-width="160px"></el-table-column>
+          <el-table-column align="center" label="用途" prop="purpose" min-width="160px"></el-table-column>
           <el-table-column align="center" label="审核否" prop="confirmed" min-width="100px">
             <template slot-scope="scope">
               <span style="color: #67C23A" v-if="scope.row.confirmed==1">已审核</span>

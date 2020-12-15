@@ -36,7 +36,7 @@ const contractInfo = () => import('@/views/contract/contractList/contractInfo')
 const contractType = () => import('@/views/contract/contractType/index')
 // 无形资产
 const assList = () => import('@/views/intangibleAss/assList/index')
-
+const assInfo = () => import('@/views/intangibleAss/assList/assInfo')
 
 
 Vue.use(VueRouter)
@@ -231,9 +231,9 @@ const routes = [{
         component: contractInfo
       },
       {
-        path: 'contractType',
-        name: 'contractType',
-        component: contractType
+        path: 'assInfo',
+        name: 'assInfo',
+        component: assInfo
       },
     ]
   },
