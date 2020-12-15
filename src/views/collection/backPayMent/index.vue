@@ -265,7 +265,7 @@ export default {
 .searchCard {
   border-radius: 10px;
   height: 80px;
-  margin: 20px 20px 0 20px;
+  margin: 0px 20px 0 20px;
   .serchBox {
     width: 600px;
     display: flex;

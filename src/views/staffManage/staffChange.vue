@@ -498,8 +498,9 @@ export default {
     margin-left: 20px;
   }
   .searchCard {
+    border-radius: 10px;
     height: 80px;
-    margin: 20px 20px 0 20px;
+    margin: 0px 20px 0 20px;
     .btnBox {
       width: 180px;
       float: right;

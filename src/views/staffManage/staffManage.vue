@@ -1142,6 +1142,7 @@ export default {
     }
   }
   .searchCard {
+    border-radius: 10px;
     margin: 0 20px 20px 20px;
     .checkBoxs {
       display: flex;
