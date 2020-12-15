@@ -54,6 +54,7 @@
           style="width: 100%"
           :header-cell-style="{background:'#F3F5F9',color:'#333333'}"
           :cell-style="{background:'#FCFDFF',color:'#666666' }"
+          :height="tableHeight"
         >
           <el-table-column align="center" label="回款单id" prop="id" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" label="流水号" prop="ssn" min-width="160px"></el-table-column>
@@ -126,6 +127,7 @@ export default {
         },
       ],
       title: "回款单管理",
+      tableHeight: 500,
       overloading: '', //加载定时器
       showSearch: false,
       // 分页数据
@@ -144,6 +146,19 @@ export default {
   },
   components: {
     navBar,
+  },
+  mounted() {
+    this.$nextTick(() => {
+      this.tableHeight = window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function() {
+        self.tableHeight = window.innerHeight - self.$refs.table.$el.offsetTop - 100
+      }
+    })  
+    //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
   },
   created() {
     this.getCollList()
