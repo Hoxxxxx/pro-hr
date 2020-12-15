@@ -137,7 +137,6 @@
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
           @selection-change="handleSelectionChange"
           :height="tableHeight"
-          
         >
           <el-table-column
             align="center"
@@ -148,7 +147,7 @@
           <el-table-column
             align="center"
             v-for="(head, index) in headList"
-            :key="index"
+            :key="index+Math.random()"
             :label="head.label"
             :prop="head.prop"
             min-width="165px"
@@ -500,7 +499,7 @@ export default {
           title: "员工列表",
         },
       ],
-      tableHeight: 0,
+      tableHeight: 500,
       menuList: [
         { name: "在职", val: 0, status: 0 },
         { name: "离职", val: 0, status: 3 },
@@ -613,7 +612,6 @@ export default {
     });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
-
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
@@ -756,6 +754,10 @@ export default {
           }
           this.headList = tempHead;
           this.total = res.data[0].total;
+          let that = this
+          this.$nextTick(() => {
+            that.$refs.table.doLayout()
+          })//重新渲染表格
         } else {
           this.searchData.viewsList_searchLoading = false;
           this.$message.error("列表数据获取失败！");
