@@ -189,7 +189,7 @@
           </el-table-column>
           <el-table-column
             :label="viewsList.length > 0 ? '操作' : ''"
-            width="250px"
+            width="230px"
             align="center"
             fixed="right"
           >
@@ -212,7 +212,10 @@
                   @click="openDialog('departure', scope.row.id)"
                   >离职</el-button
                 >
-                <el-button type="text" class="w56" @click="deleteStaff(scope.row.id)"
+                <el-button
+                  type="text"
+                  class="w56"
+                  @click="deleteStaff(scope.row.id)"
                   >删除</el-button
                 >
                 <el-button
@@ -1477,20 +1480,16 @@ export default {
     }
   }
 }
-.w56 {
-  width: 70px;
-  padding: 0 20px!important;
-  margin-left: 0!important;
-  text-align: center;
-  margin: 4px 0;
-  /deep/ span{
-    display: inline-block!important;
-    text-align: center!important;
-  }
-}
-.btnFixed{
+.btnFixed {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
+  .w56 {
+    width: 70px;
+    padding: 0 !important;
+    margin-left: 0 !important;
+    text-align: center;
+    margin: 4px 0;
+  }
 }
 </style>
