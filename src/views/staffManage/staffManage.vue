@@ -147,10 +147,10 @@
           <el-table-column
             align="center"
             v-for="(head, index) in headList"
-            :key="index+Math.random()"
+            :key="index + Math.random()"
             :label="head.label"
             :prop="head.prop"
-            min-width="165px"
+            min-width="120px"
           >
             <template slot-scope="scope">
               <div v-if="head.prop == 'department'">
@@ -189,44 +189,52 @@
           </el-table-column>
           <el-table-column
             :label="viewsList.length > 0 ? '操作' : ''"
-            width="300px"
+            width="250px"
             align="center"
             fixed="right"
           >
             <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)"
-                >查看</el-button
-              >
-              <el-button
-                type="text"
-                v-if="scope.row.type == '试用'"
-                @click="positive(scope.row.id)"
-                >转正</el-button
-              >
-              <el-button
-                type="text"
-                v-if="scope.row.type != '离职'"
-                @click="openDialog('departure', scope.row.id)"
-                >离职</el-button
-              >
-              <el-button type="text" @click="deleteStaff(scope.row.id)"
-                >删除</el-button
-              >
-              <el-button
-                type="text"
-                v-if="scope.row.type != '离职' && scope.row.status == '未开通'"
-                @click="openDialog('openUse', scope.row.id)"
-                >开通账号</el-button
-              >
-              <el-button
-                type="text"
-                v-if="
-                  scope.row.status != '已停用' ||
-                  (scope.row.type == '离职' && scope.row.status == '已开通')
-                "
-                @click="openDialog('stopUse', scope.row.id)"
-                >停用账号</el-button
-              >
+              <div class="btnFixed">
+                <el-button type="text" class="w56" @click="view(scope.row.id)"
+                  >查看</el-button
+                >
+                <el-button
+                  type="text"
+                  class="w56"
+                  v-if="scope.row.type == '试用'"
+                  @click="positive(scope.row.id)"
+                  >转正</el-button
+                >
+                <el-button
+                  type="text"
+                  class="w56"
+                  v-if="scope.row.type != '离职'"
+                  @click="openDialog('departure', scope.row.id)"
+                  >离职</el-button
+                >
+                <el-button type="text" class="w56" @click="deleteStaff(scope.row.id)"
+                  >删除</el-button
+                >
+                <el-button
+                  type="text"
+                  class="w56"
+                  v-if="
+                    scope.row.type != '离职' && scope.row.status == '未开通'
+                  "
+                  @click="openDialog('openUse', scope.row.id)"
+                  >开通账号</el-button
+                >
+                <el-button
+                  type="text"
+                  class="w56"
+                  v-if="
+                    scope.row.status != '已停用' ||
+                    (scope.row.type == '离职' && scope.row.status == '已开通')
+                  "
+                  @click="openDialog('stopUse', scope.row.id)"
+                  >停用账号</el-button
+                >
+              </div>
             </template>
           </el-table-column>
         </el-table>
@@ -708,7 +716,7 @@ export default {
     getStaffList() {
       this.searchData.viewsList_searchLoading = true;
       this.headList = [];
-      this.viewsList =[];
+      this.viewsList = [];
       let params = {
         type: this.listType,
         page: this.listParams.page,
@@ -754,10 +762,10 @@ export default {
           }
           this.headList = tempHead;
           this.total = res.data[0].total;
-          let that = this
+          let that = this;
           this.$nextTick(() => {
-            that.$refs.table.doLayout()
-          })//重新渲染表格
+            that.$refs.table.doLayout();
+          }); //重新渲染表格
         } else {
           this.searchData.viewsList_searchLoading = false;
           this.$message.error("列表数据获取失败！");
@@ -782,9 +790,9 @@ export default {
     addStaff() {
       this.$router.push({
         path: "/staffAdd",
-        query:{
-          routeName:'新增员工'
-        }
+        query: {
+          routeName: "新增员工",
+        },
       });
     },
     openDialog(type, val) {
@@ -1468,5 +1476,21 @@ export default {
       margin-bottom: 10px;
     }
   }
+}
+.w56 {
+  width: 70px;
+  padding: 0 20px!important;
+  margin-left: 0!important;
+  text-align: center;
+  margin: 4px 0;
+  /deep/ span{
+    display: inline-block!important;
+    text-align: center!important;
+  }
+}
+.btnFixed{
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
 }
 </style>

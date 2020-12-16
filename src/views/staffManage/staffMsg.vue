@@ -1110,13 +1110,12 @@ export default {
           flex: 1 1 auto;
           margin-bottom: 10px;
           .itemBox {
-            min-width: 400px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
             flex: 1 1 auto;
-            margin: 0 80px 20px 0;
+            margin: 0 20px 20px 0;
             &:last-child {
               margin-right: 0;
             }
@@ -1124,6 +1123,9 @@ export default {
             .genderBox {
               width: 200px;
               flex: 1 1 auto;
+            }
+            .genderBox{
+              display: flex;
             }
             .elInput {
               border-radius: 4px;
@@ -1143,7 +1145,7 @@ export default {
               flex: 1 1 auto;
             }
             .labelBox {
-              width: 120px;
+              width: 100px;
               margin-right: 20px;
               text-align: right;
               .label {

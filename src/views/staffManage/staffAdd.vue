@@ -33,8 +33,8 @@
             </el-col>
             <el-col :span="8">
               <el-form-item label="姓别" prop="sex">
-                <el-radio-group v-model="ruleForm.sex">
-                  <el-radio border="" style="width: 90px" :label="1"
+                <el-radio-group v-model="ruleForm.sex" style="display:flex">
+                  <el-radio border="" style="width: 90px;margin-right:10px" :label="1"
                     >男</el-radio
                   >
                   <el-radio border="" style="width: 90px" :label="2"

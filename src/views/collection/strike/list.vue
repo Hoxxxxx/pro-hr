@@ -177,7 +177,7 @@
           element-loading-text = "数据正在加载中"
           element-loading-spinner = "el-icon-loading"
           style="width: 100%"
-          height="550px"
+          height="450px"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
         >
