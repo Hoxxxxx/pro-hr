@@ -161,22 +161,22 @@ const routes = [{
     redirect: '/collection/backPayment/index',
     children: [{
         path: 'backPayment/index',
-        name: '汇款单管理',
+        name: '回款单管理',
         component: backPayment
       },
       {
         path: 'backPayment/payInfo',
-        name: '新增汇款单',
+        name: '新增回款单',
         component: payInfo
       },
       {
         path: 'deliver/list',
-        name: '发票申请单列表',
+        name: '发票申请单',
         component: payDeliver
       },
       {
         path: 'invoice/list',
-        name: '发票申请管理',
+        name: '发票申请',
         component: payInvoice
       },
       {

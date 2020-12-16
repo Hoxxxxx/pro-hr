@@ -528,7 +528,8 @@ export default {
           path: 'payInfo',
           query:{
             id: this.dataForm.id,
-            pageType: 'edit'
+            pageType: 'edit',
+            routeName:'编辑回款单'
           }
         })
         setTimeout(() => {
