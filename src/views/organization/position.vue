@@ -59,7 +59,7 @@
           @selection-change="handleSelectionChange"
           :height="tableHeight"
         >
-          <el-table-column type="selection" width="55"></el-table-column>
+          <el-table-column type="selection" width="55" align="center"></el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"
             :key="index"
