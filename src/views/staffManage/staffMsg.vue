@@ -1184,14 +1184,14 @@ export default {
               width: 370px;
             }
             .labelBox {
-              width: 120px;
+              width: 110px;
               text-align: left;
               .label {
                 letter-spacing: 1px;
                 color: #f56c6c;
                 font-size: 16px;
                 font-weight: bold;
-                margin-right: 2px;
+                margin-right: 8px;
               }
               .label {
                 color: #333333;
@@ -1283,7 +1283,7 @@ export default {
   }
   .labelNon {
     text-align: left !important;
-    margin-right: 0 !important;
+    margin-right: 18px !important;
     .label {
       font-size: 16px !important;
       font-weight: bold;
@@ -1300,7 +1300,7 @@ export default {
     justify-content: flex-start;
     margin-bottom: 20px;
     .label {
-      width: 120px;
+      width: 100px;
       height: 40px;
       margin-right: 20px;
       padding-right: 0;
