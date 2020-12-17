@@ -28,16 +28,16 @@
         >
           <el-table-column align="center" label="资产ID" prop="id" fixed="left" min-width="100px"></el-table-column>
           <el-table-column align="center" label="资产类别" prop="ias02" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="保管人编号" prop="ias03" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="保管人" prop="staff_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="采购地" prop="ias04" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="供应商编号" prop="ias05" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="供应商" prop="provider_name" min-width="100px"></el-table-column>
           <el-table-column align="center" label="中文名称" prop="ias06" min-width="100px"></el-table-column>
           <el-table-column align="center" label="英文名称" prop="ias07" min-width="100px"></el-table-column>
           <el-table-column align="center" label="采购日期" prop="ias08" min-width="100px"></el-table-column>
           <el-table-column align="center" label="授权开始日期" prop="ias09" min-width="120px"></el-table-column>
           <el-table-column align="center" label="授权结束日期" prop="ias10" min-width="120px"></el-table-column>
           <el-table-column align="center" label="采购成本" prop="ias11" min-width="100px"></el-table-column>
-          <el-table-column align="center" label="存放位置" prop="ias12" min-width="100px"></el-table-column>
+          <el-table-column align="center" label="存放位置" prop="location" min-width="100px"></el-table-column>
           <el-table-column align="center" label="操作" width="160px" fixed="right">
             <template slot-scope="scope">
               <el-button type="text" @click="goPage('check', scope.row.id)">查看</el-button>
