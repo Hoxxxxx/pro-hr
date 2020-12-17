@@ -474,11 +474,24 @@ export default {
       assetsInfo(id)
       .then( res => {
         if (res.status == 200) {
-          this.dataForm = res.data,
+          this.dataForm = {
+            id: res.data.id,
+            ias02: res.data.ias02,
+            ias03: res.data.ias03,
+            ias04: res.data.ias04,
+            ias05: res.data.ias05,
+            ias06: res.data.ias06,
+            ias07: res.data.ias07,
+            ias08: res.data.ias08,
+            ias09: res.data.ias09,
+            ias10: res.data.ias10,
+            ias11: res.data.ias11,
+            ias12: res.data.ias12,
+          }
           this.dataShow = {
-            ias03_name: res.data.ias03_name,
-            ias05_name: res.data.ias05_name,
-            ias12_name: res.data.ias12_name,
+            ias03_name: res.data.staff_name,
+            ias05_name: res.data.provider_name,
+            ias12_name: res.data.location,
           }
         } else {
           this.$message.error('获取详情失败：' + res.error.message)
