@@ -202,7 +202,8 @@ export default {
           path: 'payInfo',
           query: {
             id: id,
-            pageType: 'add'
+            pageType: 'add',
+            routeName:'新增回款单'
           }
         })
       }
@@ -211,7 +212,8 @@ export default {
           path: 'payInfo',
           query: {
             id: id,
-            pageType: 'check'
+            pageType: 'check',
+            routeName:'查看回款单'
           }
         })
       }
@@ -220,7 +222,8 @@ export default {
           path: 'payInfo',
           query: {
             id: id,
-            pageType: 'edit'
+            pageType: 'edit',
+            routeName:'编辑回款单'
           }
         })
       }

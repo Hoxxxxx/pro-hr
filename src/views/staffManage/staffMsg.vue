@@ -1110,13 +1110,12 @@ export default {
           flex: 1 1 auto;
           margin-bottom: 10px;
           .itemBox {
-            min-width: 400px;
             display: flex;
             flex-direction: row;
             justify-content: space-between;
             align-items: center;
             flex: 1 1 auto;
-            margin: 0 80px 20px 0;
+            margin: 0 20px 20px 0;
             &:last-child {
               margin-right: 0;
             }
@@ -1124,6 +1123,9 @@ export default {
             .genderBox {
               width: 200px;
               flex: 1 1 auto;
+            }
+            .genderBox{
+              display: flex;
             }
             .elInput {
               border-radius: 4px;
@@ -1143,7 +1145,7 @@ export default {
               flex: 1 1 auto;
             }
             .labelBox {
-              width: 120px;
+              width: 100px;
               margin-right: 20px;
               text-align: right;
               .label {
@@ -1182,14 +1184,14 @@ export default {
               width: 370px;
             }
             .labelBox {
-              width: 120px;
+              width: 110px;
               text-align: left;
               .label {
                 letter-spacing: 1px;
                 color: #f56c6c;
                 font-size: 16px;
                 font-weight: bold;
-                margin-right: 2px;
+                margin-right: 8px;
               }
               .label {
                 color: #333333;
@@ -1281,7 +1283,7 @@ export default {
   }
   .labelNon {
     text-align: left !important;
-    margin-right: 0 !important;
+    margin-right: 18px !important;
     .label {
       font-size: 16px !important;
       font-weight: bold;
@@ -1298,7 +1300,7 @@ export default {
     justify-content: flex-start;
     margin-bottom: 20px;
     .label {
-      width: 120px;
+      width: 100px;
       height: 40px;
       margin-right: 20px;
       padding-right: 0;
