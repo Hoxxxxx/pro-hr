@@ -16,7 +16,7 @@
         <span class="title">身份证有效期提醒</span>
         <el-switch v-model="IDcard"> </el-switch>
       </div>
-      <div class="tipsBox">
+      <div class="tipsBox" style="margin-bottom:0;">
         <div>
           <span class="title">劳动合同到期提醒</span>
           <el-switch v-model="contract"> </el-switch>
@@ -140,6 +140,9 @@ export default {
   .tipsBox {
     margin-bottom: 10px;
     .title {
+      display: inline-block;
+      text-align: right;
+      width: 120px;
       margin-right: 20px;
       line-height: 40px;
     }
@@ -188,7 +191,9 @@ export default {
   }
 
   .title_short {
-    width: 60px;
+    width: 100px!important;
+    margin-right: 0!important;
+    padding-right: 20px;
   }
 
   .ml20 {
