@@ -14,9 +14,9 @@
                 <!-- 上传imgbox -->
                 <el-upload
                   v-if="pageType!=='check'"
-                  :disabled="pageType == 'check'"
+                  :disabled="pageType == 'check'" 
                   :file-list="uploadParams.fileList"
-                  :action="$store.state.upload_pic_url"
+                  :action="$store.state.upload_scan"
                   :headers="uploadParams.headers"
                   list-type="picture-card"
                   :limit="1"
@@ -206,10 +206,11 @@ export default {
       // upload
       uploadParams: {
         headers: {
-          Org_Id: sessionStorage.getItem('OrgId')
+          'Org-Id': sessionStorage.getItem('OrgId'),
+          Authorization: 'Bearer ' + sessionStorage.getItem('token')
         },
         dialogVisible: false,
-        picSrc: '',
+        picSrc: '', //图片预览地址
         fileList: [],
       },
       // form
@@ -330,6 +331,7 @@ export default {
     },
     // ****************upload*****************
     beforeAvatarUpload(file) {
+      const loading = OpenLoading(this, 1)
       const isPNG = file.type === "image/png";
       const isJPG = file.type === "image/jpeg";
       const isJPEG = file.type === "image/jpeg";
@@ -344,10 +346,25 @@ export default {
         this.$message.warning("上传文件大小不能超过 200MB!");
         return false;
       }
+      clearTimeout(this.overloading)
     },
     handleSuccess(response, file, fileList) {
-      console.log(response)
+      const loading = OpenLoading(this, 1)
+      // 赋值扫描结果
       this.dataForm.pic = response.data.id
+      this.dataForm.ssn = response.data.ocr.ssn
+      this.dataForm.bank = response.data.ocr.bank
+      this.dataForm.bank_show = response.data.ocr.bank_show
+      this.dataForm.customer = response.data.ocr.customer
+      this.dataForm.customer_show = response.data.ocr.customer_show
+      this.dataForm.date = response.data.ocr.date
+      this.dataForm.currency = response.data.ocr.currency
+      this.dataForm.currency_show = response.data.ocr.currency_show
+      this.dataForm.amount = response.data.ocr.amount
+      this.dataForm.summary = response.data.ocr.summary
+      this.dataForm.purpose = response.data.ocr.purpose
+      loading.close()
+      clearTimeout(this.overloading)
       // 获取图片预览地址base64
       downloadPic(this.dataForm.pic)
       .then( res => {
@@ -477,7 +494,7 @@ export default {
                     this.$message.success('新增成功！')
                     setTimeout(() => {
                       this.$router.go(0)
-                    },1000)
+                    },500)
                   } else {
                     this.$message.error('抛转集团失败：' + res.error.message)
                   }
@@ -513,7 +530,7 @@ export default {
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
                   this.$router.go(0)
-                },1000)
+                },500)
               } else {
                 loading.close()
                 clearTimeout(this.overloading)
@@ -534,7 +551,7 @@ export default {
         })
         setTimeout(() => {
           this.$router.go(0)
-        },1000)
+        },500)
       }
       else if (type == 5) {
         this.$confirm('此操作将永久删除该回款单, 是否继续?', '提示', {
@@ -579,7 +596,7 @@ export default {
             this.$message.success('审核成功！')
             setTimeout(() => {
               this.$router.go(0)
-            },1000)
+            },500)
           } else {
             this.$message.error('审核失败：' + res.error.message)
           }
@@ -607,7 +624,7 @@ export default {
               this.$message.success('取消审核成功！')
               setTimeout(() => {
                 this.$router.go(0)
-              },1000)
+              },500)
             } else {
               this.$message.error('取消审核失败：' + res.error.message)
             }
