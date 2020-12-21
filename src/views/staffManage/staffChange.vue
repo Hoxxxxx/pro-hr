@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar :breadList="breadList"></nav-Bar>
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
@@ -22,16 +22,16 @@
             <el-select
               v-model="filterList.status"
               placeholder="请选择异动类型"
-              style="width: 200px; margin-right: 20px; border-radius: 4px"
+              style="width: 260px; margin-right: 20px; border-radius: 4px"
             >
               <el-option
                 v-for="item in adStatus"
-                :key="item.value"
-                :label="item.lable"
-                :value="item.value"
+                :key="item.id"
+                :label="item.name"
+                :value="item.id"
               ></el-option>
             </el-select>
-            <el-date-picker
+            <!-- <el-date-picker
               v-model="filterList.timeRange"
               type="datetimerange"
               range-separator="至"
@@ -39,7 +39,7 @@
               end-placeholder="结束日期"
               style="width: 400px; margin-right: 20px; border-radius: 4px"
             >
-            </el-date-picker>
+            </el-date-picker> -->
           </div>
           <div class="btnBox">
             <el-button type="primary" size="medium" @click="search()"
@@ -62,12 +62,13 @@
           <el-button type="primary" class="p40" @click="openDialog(0)"
             >新增</el-button
           >
-          <el-button class="btn p40" @click="deleteIds()">导出</el-button>
+          <el-button class="btn p40" @click="exportChange()">导出</el-button>
         </div>
       </div>
       <!-- 表格区域 -->
       <div class="tableBox">
         <el-table
+          ref="table"
           :data="viewsList"
           v-loading="searchData.viewsList_searchLoading"
           element-loading-background="rgba(0, 0, 0, 0.2)"
@@ -76,10 +77,16 @@
           style="width: 100%"
           :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
           :cell-style="{ background: '#FCFDFF', color: '#666666' }"
-          @selection-change="handleSelectionChange"
+          :height="tableHeight"
         >
           >
-          <el-table-column type="index" width="50" prop="index" label="#" align="center">
+          <el-table-column
+            type="index"
+            width="50"
+            prop="index"
+            label="序号"
+            align="center"
+          >
           </el-table-column>
           <el-table-column
             v-for="(item, index) in tHeadList"
@@ -87,7 +94,29 @@
             :label="item.label"
             :prop="item.prop"
             align="center"
-          ></el-table-column>
+          >
+            <template slot-scope="scope">
+              <div v-if="item.prop == 'department'">
+                <span
+                  v-for="(i, index) in scope.row.department"
+                  :key="index"
+                  style="margin: 0 10px"
+                  >{{ i.name }}</span
+                >
+              </div>
+              <div v-else-if="item.prop == 'position'">
+                <span
+                  v-for="(i, index) in scope.row.position"
+                  :key="index"
+                  style="margin: 0 10px"
+                  >{{ i.name }}</span
+                >
+              </div>
+              <div v-else>
+                <span>{{ scope.row[item.prop] }}</span>
+              </div>
+            </template>
+          </el-table-column>
         </el-table>
       </div>
 
@@ -108,31 +137,23 @@
         <div class="departure">
           <ul class="popExtraList">
             <li>
-              <span>部门名称：</span>
+              <span>员工姓名：</span>
               <el-input
                 style="width: 400px"
-                v-model="departName"
-                placeholder="请输入部门名称"
+                v-model="addParams.name"
+                placeholder="请输入姓名"
               ></el-input>
             </li>
             <li>
-              <span>部门负责人：</span>
-              <el-input
-                style="width: 400px"
-                v-model="chargerName"
-                placeholder="请输入部门负责人"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级部门：</span>
+              <span>异动类型：</span>
               <el-select
                 style="width: 400px"
-                v-model="depart"
-                placeholder="请选择上级部门"
+                v-model="addParams.type"
+                placeholder="请选择异动类型"
                 class="elInput"
               >
                 <el-option
-                  v-for="(item, index) in depart_options"
+                  v-for="(item, index) in adStatus"
                   :key="index"
                   :label="item.name"
                   :value="item.id"
@@ -140,13 +161,15 @@
               </el-select>
             </li>
             <li>
-              <span>部门描述：</span>
+              <span>备注：</span>
               <el-input
                 type="textarea"
                 style="width: 400px"
                 autosize
-                placeholder="请输入部门描述"
-                v-model="departMsg"
+                placeholder="请输入备注"
+                maxlength="50"
+                show-word-limit
+                v-model="addParams.remark"
               ></el-input>
             </li>
           </ul>
@@ -165,68 +188,6 @@
           </div>
         </div>
       </el-dialog>
-      <!-- 编辑管理员弹窗 -->
-      <el-dialog :visible.sync="showEditPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>部门名称：</span>
-              <el-input
-                style="width: 400px"
-                v-model="departName"
-                placeholder="请输入部门名称"
-              ></el-input>
-            </li>
-            <li>
-              <span>部门负责人：</span>
-              <el-input
-                style="width: 400px"
-                v-model="chargerName"
-                placeholder="请输入部门负责人"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级部门：</span>
-              <el-select
-                style="width: 400px"
-                v-model="depart"
-                placeholder="请选择上级部门"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in depart_options"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>部门描述：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入部门描述"
-                v-model="departMsg"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
-        <div class="extraBtns">
-          <div>
-            <el-button style="width: 95px" @click="extraBtnClick(2)"
-              >取 消</el-button
-            >
-            <el-button
-              style="width: 95px"
-              @click="extraBtnClick(3)"
-              type="primary"
-              >确 定</el-button
-            >
-          </div>
-        </div>
-      </el-dialog>
     </el-card>
   </div>
 </template>
@@ -234,7 +195,7 @@
 <script>
 import navBar from "@/components/navBar/navBar";
 // api
-import { DEPART_API } from "@/api/department";
+import { STAFFS_API } from "@/api/staffs";
 export default {
   data() {
     return {
@@ -251,7 +212,7 @@ export default {
           title: "人员异动表",
         },
       ],
-      title: "人员异动表",
+      tableHeight: 500,
       // 搜索框
       // 筛选列表的参数
       filterList: {
@@ -261,50 +222,51 @@ export default {
       },
       adStatus: [
         {
-          lable: "新进",
-          value: 0,
+          name: "新进",
+          id: 0,
         },
         {
-          lable: "转正",
-          value: 1,
+          name: "转正",
+          id: 1,
         },
         {
-          lable: "离职",
-          value: 2,
+          name: "离职",
+          id: 2,
         },
         {
-          lable: "调岗",
-          value: 3,
+          name: "调岗",
+          id: 3,
         },
         {
-          lable: "劳动合同续签",
-          value: 4,
+          name: "调薪",
+          id: 4,
+        },
+        {
+          name: "劳动合同续签",
+          id: 5,
         },
       ],
       showSearch: false,
       tHeadList: [
         { label: "员工姓名", prop: "name" },
-        { label: "工号", prop: "manager_name" },
-        { label: "部门", prop: "name" },
-        { label: "职位", prop: "name" },
-        { label: "身份证号码", prop: "name" },
-        { label: "异动类型", prop: "name" },
-        { label: "异动时间", prop: "name" },
-        { label: "备注", prop: "name" },
+        { label: "工号", prop: "job_number" },
+        { label: "部门", prop: "department" },
+        { label: "职位", prop: "position" },
+        { label: "身份证号码", prop: "card" },
+        { label: "异动类型", prop: "type" },
+        { label: "异动时间", prop: "change_time" },
+        { label: "备注", prop: "remark" },
       ],
       viewsList: [],
-      ids: [], //批量删除
       // 新增角色的弹窗中的数据
-      departName: "",
-      chargerName: "",
+      addParams: {
+        name: "",
+        type: "",
+        remark: "",
+      },
       showAddPop: false, //是否显示弹窗
-      showEditPop: false,
-      depart_options: [{ id: 0, name: "无" }],
-      depart: "", //上级部门
-      departMsg: "", //部门描述
-      editId: "",
       searchData: {
-        viewsList_searchLoading: true
+        viewsList_searchLoading: true,
       },
       // 分页
       total: 4,
@@ -312,110 +274,86 @@ export default {
     };
   },
   mounted() {
-    // this.getUserInfo();
-    this.getDepartmentList();
+    this.$nextTick(() => {
+      this.tableHeight =
+        window.innerHeight - this.$refs.table.$el.offsetTop - 100;
+      // console.log( this.tableHeight)
+      // 监听窗口大小变化
+      let self = this;
+      window.onresize = function () {
+        self.tableHeight =
+          window.innerHeight - self.$refs.table.$el.offsetTop - 100;
+      };
+    });
+    this.getChangeList();
   },
   methods: {
-    // 获取部门列表
-    getDepartmentList(val) {
+    // 获取异动列表
+    getChangeList(val) {
       this.searchData.viewsList_searchLoading = true;
       let params = {
+        name: this.filterList.name,
+        type: this.filterList.status,
         page: this.listParams.page,
-        is_paging: 0,
+        page_size: this.listParams.pageSize,
       };
-      if (val) {
-        params = { ...params, ...val };
-      }
-      DEPART_API.getDeparts(params).then((res) => {
+      STAFFS_API.staffChanges(params).then((res) => {
         if (res.status == 200) {
           this.searchData.viewsList_searchLoading = false;
           this.viewsList = res.data;
           this.total = res.pagination.total;
-          this.depart_options = [...res.data, ...this.depart_options];
         }
       });
     },
     search() {
       this.listParams.page = 1;
-      let params = {
-        name: this.deName,
-      };
-      this.getDepartmentList(params);
+      this.getChangeList();
     },
     reset() {
       this.listParams.page = 1;
-      this.deName = "";
-      this.getDepartmentList();
-    },
-    // 删除部门
-    deleteById(val) {
-      this.$confirm("确认删除部门?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          DEPART_API.deleteDeparts({}, val).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("删除成功！");
-              this.getDepartmentList();
-            } else {
-              this.$message.error("删除成功！");
-            }
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
-    },
-    // 批量删除部门
-    deleteIds(val) {
-      let params = {
-        ids: this.ids,
+      this.filterList = {
+        name: "",
+        status: null,
+        timeRange: [new Date(), new Date()],
       };
-      console.log(params);
-      this.$confirm("确认删除选中的部门?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning",
-      })
-        .then(() => {
-          DEPART_API.deleteIds(params).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("删除成功！");
-              this.getDepartmentList();
-            } else {
-              this.$message.error("删除成功！");
-            }
-          });
-        })
-        .catch(() => {
-          this.$message({
-            type: "info",
-            message: "已取消删除",
-          });
-        });
+      this.getChangeList();
+    },
+    // 导出表格
+    async exportChange() {
+      let params = {
+        name: this.filterList.name,
+        type: this.filterList.status,
+      };
+      const { data: res } = await this.axios({
+        method: "get",
+        url: `hr/staff-changes/export`,
+        params: params,
+        responseType: "blob",
+      });
+      let fileName = "人员异动表";
+      let fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
+      let blob = new Blob([res], {
+        type: fileType,
+      });
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     },
     // 新增部门
     openDialog(type, val) {
       switch (type) {
         case 0:
           this.showAddPop = true;
-          this.departName = "";
-          this.chargerName = "";
-          this.depart = "";
-          this.departMsg = "";
-          break;
-        case 1:
-          this.showEditPop = true;
-          this.editId = val.id;
-          this.departName = val.name;
-          this.chargerName = val.manager_name;
-          this.depart = val.pid;
-          this.departMsg = val.description;
+          this.addParams.name = "";
+          this.addParams.type = "";
+          this.addParams.remark = "";
           break;
         default:
           break;
@@ -427,39 +365,13 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          let params = {
-            name: this.departName,
-            manager_name: this.chargerName,
-            pid: this.depart,
-            description: this.departMsg,
-          };
-          DEPART_API.addDeparts(params).then((res) => {
+          STAFFS_API.addChange(this.addParams).then((res) => {
             if (res.status == 200) {
               this.$message.success("添加成功！");
-              this.getDepartmentList();
+              this.getChangeList();
               this.showAddPop = false;
             } else {
               this.$message.error("添加失败！");
-            }
-          });
-          break;
-        case 2:
-          this.showEditPop = false;
-          break;
-        case 3:
-          let paramsEdit = {
-            name: this.departName,
-            manager_name: this.chargerName,
-            pid: this.depart,
-            description: this.departMsg,
-          };
-          DEPART_API.editDeparts(paramsEdit, this.editId).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("修改成功！");
-              this.getDepartmentList();
-              this.showEditPop = false;
-            } else {
-              this.$message.error("修改失败！");
             }
           });
           break;
@@ -467,19 +379,15 @@ export default {
           break;
       }
     },
-    handleSelectionChange(val) {
-      let temp = [];
-      val.forEach((item) => {
-        temp.push(item.id);
-      });
-      this.ids = temp;
-    },
     // watch pagesize change
-    handleSizeChange(newSize) {},
+    handleSizeChange(newSize) {
+      this.listParams.pageSize = newSize;
+      this.getChangeList();
+    },
     // watch page change
     handleCurrentChange(newPage) {
       this.listParams.page = newPage;
-      this.getDepartmentList();
+      this.getChangeList();
     },
   },
   components: {
