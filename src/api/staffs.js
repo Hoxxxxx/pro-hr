@@ -57,7 +57,24 @@ const staffsUrl = [
     url: 'hr/staffs/positive',
     caller: 'positive',
   },
-  
+  // 获取员工异动列表
+  {
+    requstType: 'get',
+    url: 'hr/staff-changes',
+    caller: 'staffChanges',
+  },
+  // 新增异动
+  {
+    requstType: 'post',
+    url: 'hr/staff-changes',
+    caller: 'addChange',
+  },
+  // 获取员工异动列表
+  {
+    requstType: 'get',
+    url: 'hr/staff-changes/export',
+    caller: 'export',
+  },
   
 ]
 
