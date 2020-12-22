@@ -373,7 +373,7 @@ export default {
       })
     },
     handleRemove(file, fileList) {
-      this.dataForm.pic = '',
+      this.dataForm.pic = ''
       this.$refs['dataForm'].resetFields();
     },
     handlePictureCardPreview(file) {
@@ -383,7 +383,7 @@ export default {
       this.$message.warning(`当前限制选择 1 个文件！`);
     },
     handleChange() {
-      this.$refs['dataForm'].resetFields();
+      // this.$refs['dataForm'].resetFields();
     },
     // *****************************************
     // ****************selectBox***************
