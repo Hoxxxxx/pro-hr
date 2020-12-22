@@ -14,12 +14,12 @@
       </div>
       <div class="tipsBox">
         <span class="title">身份证有效期提醒</span>
-        <el-switch v-model="IDcard"> </el-switch>
+        <el-switch v-model="IDcard" :active-value="1" :inactive-value="0"> </el-switch>
       </div>
       <div class="tipsBox" style="margin-bottom:0;">
         <div>
           <span class="title">劳动合同到期提醒</span>
-          <el-switch v-model="contract"> </el-switch>
+          <el-switch v-model="contract" :active-value="1" :inactive-value="0"> </el-switch>
         </div>
         <div class="flex_row ml20">
           <span class="title title_short">到期前</span>
@@ -51,7 +51,7 @@
       </div>
       <div class="tipsBox">
         <span class="title">试用期到期提醒</span>
-        <el-switch v-model="trial"> </el-switch>
+        <el-switch v-model="trial" :active-value="1" :inactive-value="0"> </el-switch>
       </div>
     </el-card>
   </div>
@@ -60,7 +60,7 @@
 <script>
 import navBar from "@/components/navBar/navBar";
 // api
-import { PERMISSION_API } from "@/api/permission";
+import { BASE_API } from "@/api/baseApi";
 export default {
   data() {
     return {
@@ -74,20 +74,37 @@ export default {
           title: "系统设置",
         },
       ],
-      IDcard: "",
-      contract: "",
-      days: "",
-      trial: "",
+      IDcard: 0,
+      contract: 0,
+      days: 0,
+      trial: 0,
       mails: [],
+      id:''
     };
   },
   mounted() {
-    this.mails.push({ mail: "" });
+    this.getSets()
+    this.mails.push('');
   },
   methods: {
+    getSets(){
+      BASE_API.systemSets().then(res=>{
+        if(res.status == 200){
+          if(res.data != null){
+            this.IDcard = res.data.card_is_enabled
+            this.contract = res.data.laborcontract_is_enabled
+            this.trial = res.data.trial_is_enabled
+            this.days = res.data.deadline
+            this.mails = res.data.notice_email
+            this.id = res.data.id
+          }
+        }else{
+          this.$message.error('设置信息获取失败！')
+        }
+      })
+    },
     addMail() {
       this.mails.push({ mail: "" });
-      console.log(this.mails);
     },
     deleteMail(index){
       if(this.mails.length == 1){
@@ -97,7 +114,22 @@ export default {
       }
     },
     save(){
-      
+      let params = {
+        card_is_enabled:this.IDcard,
+        laborcontract_is_enabled:this.contract,
+        trial_is_enabled:this.trial,
+        deadline:this.days,
+        notice_email:this.mails,
+        id:this.id
+      }
+      BASE_API.editSets(params).then(res=>{
+        if(res.status == 200){
+          this.$message.success('设置成功！')
+          this.getSets()
+        }else{
+          this.$message.error('设置失败！')
+        }
+      })
     }
   },
   components: {
