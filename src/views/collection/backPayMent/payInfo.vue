@@ -22,6 +22,7 @@
                   :limit="1"
                   :before-upload="beforeAvatarUpload"
                   :on-success="handleSuccess"
+                  :on-error="handleError"
                   :on-preview="handlePictureCardPreview"
                   :on-remove="handleRemove"
                   :on-exceed="handleExceed"
@@ -203,7 +204,7 @@ export default {
       // 页面类型
       overloading: '', //加载定时器
       staffId: this.$route.query.id,
-      pageType: this.$route.query.pageType,
+      pageType: this.$route.query.pageType?this.$route.query.pageType:'add',
       // upload
       uploadParams: {
         headers: {
@@ -371,6 +372,13 @@ export default {
       .then( res => {
         this.uploadParams.picSrc = 'data:image/jpg;base64,'+res
       })
+    },
+    handleError(err, file, fileList) {
+      const loading = OpenLoading(this, 1)
+      loading.close()
+      clearTimeout(this.overloading)
+      console.log(err)
+      this.$message.error('上传失败：'+ err)
     },
     handleRemove(file, fileList) {
       this.dataForm.pic = ''
