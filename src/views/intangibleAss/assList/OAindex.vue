@@ -239,7 +239,7 @@ export default {
   }
 }
 .listCard {
-  margin: 20px;
+  // margin: 20px;
   .clearfix {
     display: flex;
     align-items: center;

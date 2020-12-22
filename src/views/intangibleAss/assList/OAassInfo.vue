@@ -509,7 +509,7 @@ export default {
 <style lang="less" scoped>
 .staffManage {
   .formCard {
-    margin: 20px;
+    // margin: 20px;
     .title {
       font-size: 16px;
       color: #999999;
