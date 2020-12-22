@@ -16,7 +16,17 @@ const baseUrl = [
     url: 'hr/authorizations',
     caller: 'getToken'
   },
-
+  // 系统设置相关接口
+  {
+    requstType: 'get',
+    url: 'hr/system-sets',
+    caller: 'systemSets',
+  },
+  {
+    requstType: 'put',
+    url: 'hr/system-sets',
+    caller: 'editSets',
+  },
 ]
 
 const BASE_API = ApiFuns(baseUrl)
