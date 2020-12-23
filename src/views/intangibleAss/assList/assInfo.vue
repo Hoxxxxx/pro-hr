@@ -1,7 +1,7 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <el-card class="formCard">
+    <nav-Bar v-if="$route.path !== '/OAassInfo'" :breadList="breadList" :title="title"></nav-Bar>
+    <el-card class="formCard" :class="$route.path=='/OAassInfo'?'OA_listCard':''">
       <el-form :model="dataForm" 
                       :rules="rules"
                       ref="dataForm"
@@ -415,7 +415,11 @@ export default {
     // 0:取消 /1:新增/2:取消编辑/3:提交编辑
     btnClick(type) {
       if (type == 0) {
-        this.$router.push('assList')
+        if (this.$route.path=='/OAassInfo') {
+          this.$router.push('OAassList')
+        } else {
+          this.$router.push('assList')
+        }
       } 
       else if (type == 1) {
         this.$refs.dataForm.validate(valid => {
@@ -429,7 +433,11 @@ export default {
                 // this.dataForm = res.data
                 this.$message.success('新增成功！')
                 setTimeout(() => {
-                  this.$router.push('assList')
+                  if (this.$route.path=='/OAassInfo') {
+                    this.$router.push('OAassList')
+                  } else {
+                    this.$router.push('assList')
+                  }
                 },500)
               } else {
                 loading.close()
@@ -441,7 +449,11 @@ export default {
         })
       }
       else if (type == 2) {
-        this.$router.push('assList')
+        if (this.$route.path=='/OAassInfo') {
+          this.$router.push('OAassList')
+        } else {
+          this.$router.push('assList')
+        }
       } 
       else if (type == 3) {
         this.$refs.dataForm.validate(valid => {
@@ -455,7 +467,11 @@ export default {
                 // this.dataForm = res.data
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
-                  this.$router.push('assList')
+                  if (this.$route.path=='/OAassInfo') {
+                    this.$router.push('OAassList')
+                  } else {
+                    this.$router.push('assList')
+                  }
                 },500)
               } else {
                 loading.close()
@@ -588,5 +604,16 @@ export default {
       float: right;
     }
   }
+}
+
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

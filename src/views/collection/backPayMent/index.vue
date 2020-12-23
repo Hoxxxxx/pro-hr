@@ -1,10 +1,11 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAbackPayment'" :breadList="breadList" :title="title"></nav-Bar>
 
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
+      :class="$route.path=='/OAbackPayment'?'OA_showSearch':''"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
@@ -12,7 +13,7 @@
     >
     <el-collapse-transition>
       <div v-show="showSearch">
-        <el-card class="searchCard">
+        <el-card class="searchCard" :class="$route.path=='/OAbackPayment'?'OA_searchCard':''">
       <div class="serchBox">
         <el-input v-model="listParams['filter[customer]']" 
                           placeholder="请输入客户编号"
@@ -33,7 +34,7 @@
     
     
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAbackPayment'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">回款单列表</span>
@@ -198,34 +199,67 @@ export default {
     // ***************其他操作*************
     goPage(type, id) {
       if (type == 'add') {
-        this.$router.push({
-          path: 'payInfo',
-          query: {
-            id: id,
-            pageType: 'add',
-            routeName:'新增回款单'
-          }
-        })
+        if (this.$route.path=='/OAbackPayment') {
+            this.$router.push({
+            path: 'OApayInfo',
+            query: {
+              id: id,
+              pageType: 'add',
+              routeName:'新增回款单'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'payInfo',
+            query: {
+              id: id,
+              pageType: 'add',
+              routeName:'新增回款单'
+            }
+          })
+        }
       }
       else if (type == 'check') {
-        this.$router.push({
-          path: 'payInfo',
-          query: {
-            id: id,
-            pageType: 'check',
-            routeName:'查看回款单'
-          }
-        })
+        if (this.$route.path=='/OAbackPayment') {
+            this.$router.push({
+            path: 'OApayInfo',
+            query: {
+              id: id,
+              pageType: 'check',
+              routeName:'查看回款单'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'payInfo',
+            query: {
+              id: id,
+              pageType: 'check',
+              routeName:'查看回款单'
+            }
+          })
+        }
       }
       else if (type == 'edit') {
-        this.$router.push({
-          path: 'payInfo',
-          query: {
-            id: id,
-            pageType: 'edit',
-            routeName:'编辑回款单'
-          }
-        })
+        if (this.$route.path=='/OAbackPayment') {
+            this.$router.push({
+            path: 'OApayInfo',
+            query: {
+              id: id,
+              pageType: 'edit',
+              routeName:'编辑回款单'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'payInfo',
+            query: {
+              id: id,
+              pageType: 'edit',
+              routeName:'编辑回款单'
+            }
+          })
+        }
       }
     },
     delCollItem(id){
@@ -327,4 +361,13 @@ export default {
   }
 }
 
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
+}
 </style>

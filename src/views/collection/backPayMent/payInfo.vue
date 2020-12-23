@@ -1,7 +1,7 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
-    <el-card class="formCard">
+    <nav-Bar v-if="$route.path !== '/OApayInfo'" :breadList="breadList" :title="title"></nav-Bar>
+    <el-card class="formCard" :class="$route.path=='/OApayInfo'?'OA_listCard':''">
       <el-form :model="dataForm" 
                       :rules="rules"
                       ref="dataForm"
@@ -480,7 +480,11 @@ export default {
     // 0:取消 /1:新增/2:取消编辑/3:提交编辑/4:发起编辑/5:删除/6:审核/7:取消审核/8:抛转全媒体/9:抛转全票通
     btnClick(type) {
       if (type == 0) {
-        this.$router.push('index')
+        if (this.$route.path=='/OApayInfo') {
+          this.$router.push('/OAbackPayment')
+        } else {
+          this.$router.push('index')
+        }
       } 
       else if (type == 1) {
         this.$refs.dataForm.validate(valid => {
@@ -497,13 +501,23 @@ export default {
                   clearTimeout(this.overloading)
                   if (res.status == 200) {
                     this.dataForm = res.data[0]
-                    this.$router.push({
-                      path: 'payInfo',
-                      query:{
-                        id: this.dataForm.id,
-                        pageType: 'check'
-                      }
-                    })
+                    if (this.$route.path=='/OApayInfo') {
+                      this.$router.push({
+                        path: 'OApayInfo',
+                        query:{
+                          id: this.dataForm.id,
+                          pageType: 'check'
+                        }
+                      })
+                    } else {
+                      this.$router.push({
+                        path: 'payInfo',
+                        query:{
+                          id: this.dataForm.id,
+                          pageType: 'check'
+                        }
+                      })
+                    }
                     this.$message.success('新增成功！')
                     setTimeout(() => {
                       this.$router.go(0)
@@ -522,7 +536,11 @@ export default {
         })
       }
       else if (type == 2) {
-        this.$router.push('index')
+        if (this.$route.path=='/OApayInfo') {
+          this.$router.push('/OAbackPayment')
+        } else {
+          this.$router.push('index')
+        }
       } 
       else if (type == 3) {
         this.$refs.dataForm.validate(valid => {
@@ -533,13 +551,23 @@ export default {
               loading.close()
               clearTimeout(this.overloading)
               if (res.status == 200) {
-                this.$router.push({
-                  path: 'payInfo',
-                  query:{
-                    id: this.dataForm.id,
-                    pageType: 'check'
-                  }
-                })
+                if (this.$route.path=='/OApayInfo') {
+                  this.$router.push({
+                    path: 'OApayInfo',
+                    query:{
+                      id: this.dataForm.id,
+                      pageType: 'check'
+                    }
+                  })
+                } else {
+                  this.$router.push({
+                    path: 'payInfo',
+                    query:{
+                      id: this.dataForm.id,
+                      pageType: 'check'
+                    }
+                  })
+                }
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
                   this.$router.go(0)
@@ -554,14 +582,25 @@ export default {
         })
       }
       else if (type == 4) {
-        this.$router.push({
-          path: 'payInfo',
-          query:{
-            id: this.dataForm.id,
-            pageType: 'edit',
-            routeName:'编辑回款单'
-          }
-        })
+        if (this.$route.path=='/OApayInfo') {
+          this.$router.push({
+            path: 'OApayInfo',
+            query:{
+              id: this.dataForm.id,
+              pageType: 'edit',
+              routeName:'编辑回款单'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'payInfo',
+            query:{
+              id: this.dataForm.id,
+              pageType: 'edit',
+              routeName:'编辑回款单'
+            }
+          })
+        }
         setTimeout(() => {
           this.$router.go(0)
         },500)
@@ -577,7 +616,11 @@ export default {
           .then( res => {
             if (res.status == 200) {
               this.$message.success('删除成功！' )
-              this.$router.push('index')
+              if (this.$route.path=='/OApayInfo') {
+                this.$router.push('/OAbackPayment')
+              } else {
+                this.$router.push('index')
+              }
             } else {
               this.$message.error('删除失败：' + res.error.message)
             }
@@ -599,13 +642,23 @@ export default {
           clearTimeout(this.overloading)
           if (res.status == 200) {
             this.dataForm = res.data[0]
-            this.$router.push({
-              path: 'payInfo',
-              query:{
-                id: this.dataForm.id,
-                pageType: 'check'
-              }
-            })
+            if (this.$route.path=='/OApayInfo') {
+              this.$router.push({
+                path: 'OApayInfo',
+                query:{
+                  id: this.dataForm.id,
+                  pageType: 'check'
+                }
+              })
+            } else {
+              this.$router.push({
+                path: 'payInfo',
+                query:{
+                  id: this.dataForm.id,
+                  pageType: 'check'
+                }
+              })
+            }
             this.$message.success('审核成功！')
             setTimeout(() => {
               this.$router.go(0)
@@ -627,13 +680,23 @@ export default {
             loading.close()
             clearTimeout(this.overloading)
             if (res.status == 200) {
-              this.$router.push({
-                path: 'payInfo',
-                query:{
-                  id: this.dataForm.id,
-                  pageType: 'check'
-                }
-              })
+              if (this.$route.path=='/OApayInfo') {
+                this.$router.push({
+                  path: 'OApayInfo',
+                  query:{
+                    id: this.dataForm.id,
+                    pageType: 'check'
+                  }
+                })
+              } else {
+                this.$router.push({
+                  path: 'payInfo',
+                  query:{
+                    id: this.dataForm.id,
+                    pageType: 'check'
+                  }
+                })
+              }
               this.$message.success('取消审核成功！')
               setTimeout(() => {
                 this.$router.go(0)
@@ -765,5 +828,15 @@ export default {
 .confirmed {
   background: url(../../../assets/img/confirm.png) no-repeat;
   background-size: 148px 148px;
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

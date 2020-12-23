@@ -1,9 +1,9 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAassList'" :breadList="breadList" :title="title"></nav-Bar>
     
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAassList'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">{{title}}</span>
@@ -151,34 +151,67 @@ export default {
     // ***************其他操作*************
     goPage(type, id) {
       if (type == 'add') {
-        this.$router.push({
-          path: 'assInfo',
-          query: {
-            id: id,
-            pageType: 'add',
-            routeName: '新增无形资产'
-          }
-        })
+        if (this.$route.path=='/OAassList') {
+          this.$router.push({
+            path: 'OAassInfo',
+            query: {
+              id: id,
+              pageType: 'add',
+              routeName: '新增无形资产'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'assInfo',
+            query: {
+              id: id,
+              pageType: 'add',
+              routeName: '新增无形资产'
+            }
+          })
+        }
       }
       else if (type == 'check') {
-        this.$router.push({
-          path: 'assInfo',
-          query: {
-            id: id,
-            pageType: 'check',
-            routeName: '查看无形资产'
-          }
-        })
+        if (this.$route.path=='/OAassList') {
+          this.$router.push({
+            path: 'OAassInfo',
+            query: {
+              id: id,
+              pageType: 'check',
+              routeName: '查看无形资产'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'assInfo',
+            query: {
+              id: id,
+              pageType: 'check',
+              routeName: '查看无形资产'
+            }
+          })
+        }
       }
       else if (type == 'edit') {
-        this.$router.push({
-          path: 'assInfo',
-          query: {
-            id: id,
-            pageType: 'edit',
-            routeName: '编辑无形资产'
-          }
-        })
+        if (this.$route.path=='/OAassList') {
+          this.$router.push({
+            path: 'OAassInfo',
+            query: {
+              id: id,
+              pageType: 'edit',
+              routeName: '编辑无形资产'
+            }
+          })
+        } else {
+          this.$router.push({
+            path: 'assInfo',
+            query: {
+              id: id,
+              pageType: 'edit',
+              routeName: '编辑无形资产'
+            }
+          })
+        }
       }
     },
     delContractItem(id){
@@ -280,4 +313,14 @@ export default {
   }
 }
 
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
+}
 </style>

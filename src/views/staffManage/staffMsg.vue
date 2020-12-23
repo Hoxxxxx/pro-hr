@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" ></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAstaffMsg'" :breadList="breadList" ></nav-Bar>
     <div class="menuList">
       <ul>
         <li
@@ -15,7 +15,7 @@
       </ul>
     </div>
     <!-- 基础信息 -->
-    <el-card class="formCard" v-if="curIndex == 0">
+    <el-card class="formCard" :class="$route.path=='/OAstaffMsg'?'OA_listCard':''" v-if="curIndex == 0">
       <!-- 基本信息 -->
       <div class="baseInfo">
         <span class="title">基本信息</span>
@@ -503,7 +503,7 @@
       </div>
     </el-card>
     <!-- 转正信息 -->
-    <el-card class="formCard" v-if="curIndex == 1">
+    <el-card class="formCard" :class="$route.path=='/OAstaffMsg'?'OA_listCard':''" v-if="curIndex == 1">
       <div>
         <div class="positiveEdit" v-if="positiveData != null">
           <div class="baseInfo">
@@ -566,7 +566,7 @@
       </div>
     </el-card>
     <!-- 离职信息 -->
-    <el-card class="formCard" v-if="curIndex == 2">
+    <el-card class="formCard" :class="$route.path=='/OAstaffMsg'?'OA_listCard':''" v-if="curIndex == 2">
       <div class="positiveEdit" v-if="turnoverData != null">
         <div class="baseInfo">
           <ul class="inputBox">
@@ -918,14 +918,25 @@ export default {
     },
     // 编辑用户信息
     editMsg() {
-      this.$router.push({
-        path: "/staffAdd",
-        query: {
-          id: this.staffId,
-          saveType: "edit",
-          routeName:'编辑员工信息'
-        },
-      });
+      if (this.$route.path=='/OAstaffMsg') {
+        this.$router.push({
+          path: "/OAstaffAdd",
+          query: {
+            id: this.staffId,
+            saveType: "edit",
+            routeName:'编辑员工信息'
+          },
+        });
+      } else {
+        this.$router.push({
+          path: "/staffAdd",
+          query: {
+            id: this.staffId,
+            saveType: "edit",
+            routeName:'编辑员工信息'
+          },
+        });
+      }
     },
     // 获取员工信息
     getStaffInfo() {
@@ -1318,5 +1329,16 @@ export default {
       line-height: 40px;
     }
   }
+}
+
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

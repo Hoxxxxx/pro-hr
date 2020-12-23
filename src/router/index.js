@@ -18,12 +18,11 @@ const roles = () => import('@/views/administrator/roles')
 const permissions = () => import('@/views/administrator/permissions')
 const menus = () => import('@/views/administrator/menus')
 const system = () => import('@/views/administrator/system')
-
 // 对账单
 const income = () => import('@/views/finance/income')
 const receivable = () => import('@/views/finance/receivable')
 const depReceivable = () => import('@/views/finance/depRec')
-// 回款单
+// 收款管理
 const backPayment = () => import('@/views/collection/backPayMent/index')
 const payInfo = () => import('@/views/collection/backPayMent/payInfo')
 const payDeliver = () => import('@/views/collection/deliver/list')
@@ -38,9 +37,7 @@ const assList = () => import('@/views/intangibleAss/assList/index')
 const assInfo = () => import('@/views/intangibleAss/assList/assInfo')
 
 
-// 全屏页面
-const OAassList = () => import('@/views/intangibleAss/assList/OAindex')
-const OAassInfo = () => import('@/views/intangibleAss/assList/OAassInfo')
+
 
 Vue.use(VueRouter)
 
@@ -231,19 +228,113 @@ const routes = [{
       },
     ]
   },
+  
 
   // 全屏
   // 无形资产管理
   {
     path: '/OAassList',
     name: 'OA无形资产管理',
-    component: OAassList,
+    component: assList,
   },
   {
     path: '/OAassInfo',
     name: 'OA无形资产详情',
-    component: OAassInfo,
+    component: assInfo,
   },
+  // 合同管理
+  {
+    path: '/OAcontractList',
+    name: '合同列表',
+    component: contractList,
+  },
+  {
+    path: '/OAcontractInfo',
+    name: '查看合同',
+    component: contractInfo
+  },
+  {
+    path: '/OAcontractType',
+    name: '合同类型',
+    component: contractType
+  },
+  // 员工管理
+  {
+    path: '/OAstaffManage',
+    name: '员工列表',
+    component: staffManage
+  },
+  {
+    path: '/OAstaffAdd',
+    name: '新增员工',
+    component: staffAdd
+  },
+  {
+    path: '/OAstaffMsg',
+    name: '查看员工信息',
+    component: staffMsg
+  },
+  {
+    path: '/OAstaffChange',
+    name: '人员异动表',
+    component: staffChange
+  },
+  // 收款管理
+  {
+    path: '/OApayStrike',
+    name: '收款冲账单',
+    component: payStrike
+  },
+  {
+    path: '/OApayInvoice',
+    name: '发票申请',
+    component: payInvoice
+  },
+  {
+    path: '/OApayDeliver',
+    name: '发票申请单',
+    component: payDeliver
+  },
+  {
+    path: '/OAbackPayment',
+    name: '回款单管理',
+    component: backPayment
+  },
+  {
+    path: '/OApayInfo',
+    name: '新增回款单',
+    component: payInfo
+  },
+  // 财务对账
+  {
+    path: '/OAdepReceivable',
+    name: '部门应收账款',
+    component: depReceivable
+  },
+  {
+    path: '/OAreceivable',
+    name: '应收账款核对',
+    component: receivable
+  },
+  {
+    path: '/OAincome',
+    name: '收入费用情况',
+    component: income
+  },
+  // 组织管理
+  {
+    path: '/OAposition',
+    name: '职位管理',
+    component: position
+  },
+  {
+    path: '/OAdepartment',
+    name: '部门管理',
+    component: department
+  },
+
+
+
 ]
 
 const router = new VueRouter({

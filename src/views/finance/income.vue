@@ -1,9 +1,9 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAincome'" :breadList="breadList" :title="title"></nav-Bar>
 
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAincome'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <div class="searchBox">
@@ -516,4 +516,7 @@ export default {
   }
 }
 
+.OA_listCard {
+  margin: 0
+}
 </style>

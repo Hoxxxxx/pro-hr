@@ -1,9 +1,10 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" :title="title"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAposition'" :breadList="breadList" :title="title"></nav-Bar>
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
+      :class="$route.path=='/OAposition'?'OA_showSearch':''"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
@@ -11,7 +12,7 @@
     >
     <el-collapse-transition>
       <div v-show="showSearch">
-        <el-card class="searchCard">
+        <el-card class="searchCard" :class="$route.path=='/OAposition'?'OA_searchCard':''">
           <div class="serchBox">
             <el-input
               v-model="jobName"
@@ -33,7 +34,7 @@
     </el-collapse-transition>
 
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAposition'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">职位列表</span>
@@ -560,5 +561,15 @@ export default {
       justify-content: space-between;
     }
   }
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

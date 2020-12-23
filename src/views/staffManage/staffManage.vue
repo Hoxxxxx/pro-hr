@@ -1,6 +1,6 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAstaffManage'" :breadList="breadList"></nav-Bar>
     <div class="menuList">
       <ul>
         <li
@@ -19,6 +19,7 @@
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
+      :class="$route.path=='/OAstaffManage'?'OA_showSearch':''"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
@@ -26,7 +27,7 @@
     >
     <el-collapse-transition>
       <div v-show="showSearch">
-        <el-card class="searchCard">
+        <el-card class="searchCard" :class="$route.path=='/OAstaffManage'?'OA_searchCard':''">
           <div class="serchBox">
             <div class="rangeBox">
               <el-input
@@ -72,7 +73,7 @@
     </el-collapse-transition>
 
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAstaffManage'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">员工列表</span>
@@ -791,12 +792,21 @@ export default {
     },
     // 新增员工
     addStaff() {
-      this.$router.push({
-        path: "/staffAdd",
-        query: {
-          routeName: "新增员工",
-        },
-      });
+      if (this.$route.path=='/OAstaffManage') {
+        this.$router.push({
+          path: "/OAstaffAdd",
+          query: {
+            routeName: "新增员工",
+          },
+        });
+      } else {
+        this.$router.push({
+          path: "/staffAdd",
+          query: {
+            routeName: "新增员工",
+          },
+        });
+      }
     },
     openDialog(type, val) {
       this.showDialog = true;
@@ -847,12 +857,21 @@ export default {
     },
     // 查看
     view(val) {
-      this.$router.push({
-        path: "/staffMsg",
-        query: {
-          id: val,
-        },
-      });
+      if (this.$route.path=='/OAstaffManage') {
+        this.$router.push({
+          path: "/OAstaffMsg",
+          query: {
+            id: val,
+          },
+        });
+      } else {
+        this.$router.push({
+          path: "/staffMsg",
+          query: {
+            id: val,
+          },
+        });
+      }
     },
     // 删除员工
     deleteStaff(val) {
@@ -1491,5 +1510,15 @@ export default {
     text-align: center;
     margin: 4px 0;
   }
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

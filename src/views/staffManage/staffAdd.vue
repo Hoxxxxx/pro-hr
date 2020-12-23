@@ -1,7 +1,7 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList"></nav-Bar>
-    <el-card class="formCard">
+    <nav-Bar v-if="$route.path !== '/OAstaffAdd'" :breadList="breadList"></nav-Bar>
+    <el-card class="formCard" :class="$route.path=='/OAstaffAdd'?'OA_listCard':''">
       <!-- 基本信息 -->
       <el-form
         :model="ruleForm"
@@ -1317,5 +1317,15 @@ export default {
       line-height: 32px;
     }
   }
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style> 

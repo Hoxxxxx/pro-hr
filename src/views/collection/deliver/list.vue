@@ -1,9 +1,9 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList" ></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OApayDeliver'" :breadList="breadList" ></nav-Bar>
 
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OApayDeliver'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">发票申请单列表</span>
@@ -505,5 +505,15 @@ export default {
       justify-content: space-between;
     }
   }
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>
