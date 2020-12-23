@@ -478,6 +478,8 @@ import navBar from "@/components/navBar/navBar";
 // api
 import { STAFFS_API } from "@/api/staffs";
 import { renderTime } from "@/utils/function.js";
+import { KT , TY } from "@/api/reconciliation.js";
+
 export default {
   filters: {
     color(val) {
@@ -726,8 +728,8 @@ export default {
         name: this.adminName,
         field: this.checked,
         page_size: this.listParams.pageSize,
-        start_age:this.ageMin,
-        end_age:this.ageMax
+        start_age: this.ageMin,
+        end_age: this.ageMax,
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
@@ -815,6 +817,8 @@ export default {
               this.company_openUse = this.viewsList[i].company;
             }
           }
+          this.name_openUse = "";
+          this.pwd_openUse = "";
           break;
         case "departure":
           break;
@@ -827,12 +831,11 @@ export default {
         switch (this.dialogType) {
           case "stopUse":
             this.closeAccount();
-            this.showDialog = false;
+
             break;
           case "openUse":
             if (this.name_openUse != "" && this.pwd_openUse != "") {
               this.openAccount();
-              this.showDialog = false;
             }
             break;
           case "departure":
@@ -942,50 +945,44 @@ export default {
     },
     // 开通账号
     openAccount() {
-      let that = this;
+      let id = this.tempId;
       let params = {
-        id: this.tempId,
         account_name: this.name_openUse,
         password: this.pwd_openUse,
       };
-      http.POST(`/api/users/${params.id}/openAccount`, params).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "开通成功！",
-              type: "success",
-            });
-          }, 500);
+      KT(params, id).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: "开通成功！",
+            type: "success",
+          });
+          this.showDialog = false;
           this.getStaffList();
         } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
+          this.showDialog = false;
+          this.$message({
+            message: res.msg,
+            type: "warning",
+          });
         }
       });
     },
     // 停用账号
     closeAccount() {
-      let that = this;
-      http.PUT(`/api/users/${this.tempId}/forbidAccount`).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "停用成功！",
-              type: "success",
-            });
-          }, 500);
+      TY(this.tempId).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: "停用成功！",
+            type: "success",
+          });
+          this.showDialog = false;
           this.getStaffList();
         } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
+          this.showDialog = false;
+          this.$message({
+            message: res.msg,
+            type: "warning",
+          });
         }
       });
     },
@@ -1108,14 +1105,14 @@ export default {
       }
       console.log("上传");
     },
-    // 
+    //
     async exportChange() {
       let params = {
         name: this.adminName,
         type: this.listType,
         field: this.checked,
         start_age: this.ageMin,
-        end_age: this.ageMax
+        end_age: this.ageMax,
       };
       const { data: res } = await this.axios({
         method: "get",
