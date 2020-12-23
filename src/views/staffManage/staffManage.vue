@@ -80,11 +80,10 @@
           <el-button type="primary" class="p40" @click="addStaff()"
             >新增员工</el-button
           >
-          <el-button class="btn p40">批量导入</el-button>
-          <el-button class="btn p40" @click="exportChange()">导出</el-button>
           <el-button class="btn p40" @click="deleteSelected()"
             >批量删除</el-button
           >
+          <el-button class="btn p40" @click="exportChange()">导出</el-button>
         </div>
       </div>
       <div class="tableFilter">
@@ -290,12 +289,12 @@
                 }}</span>
               </div>
             </li>
-            <li>
+            <!-- <li>
               <span>公司：</span>
               <div class="msgInput">
                 <span>{{ company_openUse }}</span>
               </div>
-            </li>
+            </li> -->
           </ul>
         </div>
         <div class="departure" v-if="dialogType == 'departure'">
@@ -808,7 +807,6 @@ export default {
         case "stopUse":
           break;
         case "openUse":
-          console.log(val);
           for (let i = 0, len = this.viewsList.length; i < len; i++) {
             if (this.viewsList[i].id == this.tempId) {
               console.log(this.viewsList[i]);
