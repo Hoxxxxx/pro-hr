@@ -81,11 +81,10 @@
           <el-button type="primary" class="p40" @click="addStaff()"
             >新增员工</el-button
           >
-          <el-button class="btn p40">批量导入</el-button>
-          <el-button class="btn p40">导出</el-button>
           <el-button class="btn p40" @click="deleteSelected()"
             >批量删除</el-button
           >
+          <el-button class="btn p40" @click="exportChange()">导出</el-button>
         </div>
       </div>
       <div class="tableFilter">
@@ -291,12 +290,12 @@
                 }}</span>
               </div>
             </li>
-            <li>
+            <!-- <li>
               <span>公司：</span>
               <div class="msgInput">
                 <span>{{ company_openUse }}</span>
               </div>
-            </li>
+            </li> -->
           </ul>
         </div>
         <div class="departure" v-if="dialogType == 'departure'">
@@ -480,6 +479,8 @@ import navBar from "@/components/navBar/navBar";
 // api
 import { STAFFS_API } from "@/api/staffs";
 import { renderTime } from "@/utils/function.js";
+import { KT , TY } from "@/api/reconciliation.js";
+
 export default {
   filters: {
     color(val) {
@@ -712,6 +713,8 @@ export default {
     search(type) {
       if (type == 1) {
         this.adminName = "";
+        this.ageMax = ''
+        this.ageMin = ''
         this.initHead();
       }
       this.getStaffList();
@@ -728,6 +731,8 @@ export default {
         name: this.adminName,
         field: this.checked,
         page_size: this.listParams.pageSize,
+        start_age: this.ageMin,
+        end_age: this.ageMax,
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
@@ -816,7 +821,6 @@ export default {
         case "stopUse":
           break;
         case "openUse":
-          console.log(val);
           for (let i = 0, len = this.viewsList.length; i < len; i++) {
             if (this.viewsList[i].id == this.tempId) {
               console.log(this.viewsList[i]);
@@ -825,6 +829,8 @@ export default {
               this.company_openUse = this.viewsList[i].company;
             }
           }
+          this.name_openUse = "";
+          this.pwd_openUse = "";
           break;
         case "departure":
           break;
@@ -837,12 +843,11 @@ export default {
         switch (this.dialogType) {
           case "stopUse":
             this.closeAccount();
-            this.showDialog = false;
+
             break;
           case "openUse":
             if (this.name_openUse != "" && this.pwd_openUse != "") {
               this.openAccount();
-              this.showDialog = false;
             }
             break;
           case "departure":
@@ -961,50 +966,44 @@ export default {
     },
     // 开通账号
     openAccount() {
-      let that = this;
+      let id = this.tempId;
       let params = {
-        id: this.tempId,
         account_name: this.name_openUse,
         password: this.pwd_openUse,
       };
-      http.POST(`/api/users/${params.id}/openAccount`, params).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "开通成功！",
-              type: "success",
-            });
-          }, 500);
+      KT(params, id).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: "开通成功！",
+            type: "success",
+          });
+          this.showDialog = false;
           this.getStaffList();
         } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
+          this.showDialog = false;
+          this.$message({
+            message: res.msg,
+            type: "warning",
+          });
         }
       });
     },
     // 停用账号
     closeAccount() {
-      let that = this;
-      http.PUT(`/api/users/${this.tempId}/forbidAccount`).then((res) => {
-        if (res.status == 0) {
-          setTimeout(function () {
-            that.$message({
-              message: "停用成功！",
-              type: "success",
-            });
-          }, 500);
+      TY(this.tempId).then((res) => {
+        if (res.status == 200) {
+          this.$message({
+            message: "停用成功！",
+            type: "success",
+          });
+          this.showDialog = false;
           this.getStaffList();
         } else {
-          setTimeout(function () {
-            that.$message({
-              message: res.msg,
-              type: "warning",
-            });
-          }, 500);
+          this.showDialog = false;
+          this.$message({
+            message: res.msg,
+            type: "warning",
+          });
         }
       });
     },
@@ -1126,6 +1125,37 @@ export default {
         return false;
       }
       console.log("上传");
+    },
+    //
+    async exportChange() {
+      let params = {
+        name: this.adminName,
+        type: this.listType,
+        field: this.checked,
+        start_age: this.ageMin,
+        end_age: this.ageMax,
+      };
+      const { data: res } = await this.axios({
+        method: "get",
+        url: `hr/staffs/export`,
+        params: params,
+        responseType: "blob",
+      });
+      let fileName = "员工列表";
+      let fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
+      let blob = new Blob([res], {
+        type: fileType,
+      });
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     },
   },
   components: {

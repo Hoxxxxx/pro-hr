@@ -137,3 +137,13 @@ export const strikeDetail = (params) => {
         params
     })
 }
+// 开通账号
+export const KT = (params,id) => {
+    return request.PUT(`hr/staffs/${id}/create-account`,
+        params
+    )
+}
+// 停用账号
+export const TY = (id) => {
+    return request.PUT(`hr/staffs/${id}/disable-account`)
+}
