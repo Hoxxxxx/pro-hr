@@ -81,7 +81,7 @@
             >新增员工</el-button
           >
           <el-button class="btn p40">批量导入</el-button>
-          <el-button class="btn p40">导出</el-button>
+          <el-button class="btn p40" @click="exportChange()">导出</el-button>
           <el-button class="btn p40" @click="deleteSelected()"
             >批量删除</el-button
           >
@@ -727,6 +727,8 @@ export default {
         name: this.adminName,
         field: this.checked,
         page_size: this.listParams.pageSize,
+        start_age:this.ageMin,
+        end_age:this.ageMax
       };
       STAFFS_API.getStaffs(params).then((res) => {
         if (res.status == 200) {
@@ -1107,6 +1109,37 @@ export default {
         return false;
       }
       console.log("上传");
+    },
+    // 
+    async exportChange() {
+      let params = {
+        name: this.adminName,
+        type: this.listType,
+        field: this.checked,
+        start_age: this.ageMin,
+        end_age: this.ageMax
+      };
+      const { data: res } = await this.axios({
+        method: "get",
+        url: `hr/staffs/export`,
+        params: params,
+        responseType: "blob",
+      });
+      let fileName = "员工列表";
+      let fileType =
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
+      let blob = new Blob([res], {
+        type: fileType,
+      });
+      let url = window.URL.createObjectURL(blob);
+      let link = document.createElement("a");
+      link.style.display = "none";
+      link.href = url;
+      link.setAttribute("download", fileName);
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(url);
     },
   },
   components: {
