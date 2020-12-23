@@ -38,6 +38,10 @@ const assList = () => import('@/views/intangibleAss/assList/index')
 const assInfo = () => import('@/views/intangibleAss/assList/assInfo')
 
 
+// 全屏页面
+const OAassList = () => import('@/views/intangibleAss/assList/OAindex')
+const OAassInfo = () => import('@/views/intangibleAss/assList/OAassInfo')
+
 Vue.use(VueRouter)
 
 const routes = [{
@@ -226,6 +230,19 @@ const routes = [{
         component: assInfo,
       },
     ]
+  },
+
+  // 全屏
+  // 无形资产管理
+  {
+    path: '/OAassList',
+    name: 'OA无形资产管理',
+    component: OAassList,
+  },
+  {
+    path: '/OAassInfo',
+    name: 'OA无形资产详情',
+    component: OAassInfo,
   },
 ]
 
