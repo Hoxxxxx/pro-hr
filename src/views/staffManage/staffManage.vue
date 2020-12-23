@@ -712,6 +712,8 @@ export default {
     search(type) {
       if (type == 1) {
         this.adminName = "";
+        this.ageMax = ''
+        this.ageMin = ''
         this.initHead();
       }
       this.getStaffList();
