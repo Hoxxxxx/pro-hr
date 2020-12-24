@@ -13,45 +13,112 @@
         </div>
       </div>
       <div class="tipsBox">
-        <span class="title">身份证有效期提醒</span>
-        <el-switch v-model="IDcard" :active-value="1" :inactive-value="0"> </el-switch>
+        <div>
+          <span class="title">身份证有效期提醒</span>
+          <el-switch v-model="IDcard" :active-value="1" :inactive-value="0" @change="change($event,0)">
+          </el-switch>
+        </div>
+        <div v-if="IDcard == 1">
+          <div class="flex_row ml20">
+            <span class="title title_short">到期前</span>
+            <el-input v-model="days_ID" class="w50" placeholder=""></el-input>
+            <span class="title_left">天</span>
+          </div>
+          <div class="flex_ul ml20">
+            <span class="title title_short">提醒邮箱</span>
+            <ul>
+              <li
+                v-for="(item, index) in mails_ID"
+                :key="index"
+                class="flex_row_center mb10"
+              >
+                <el-input
+                  v-model="item.mail"
+                  class="w250 mr10"
+                  placeholder="请输入邮箱地址"
+                ></el-input>
+                <i
+                  class="el-icon-circle-plus plus"
+                  v-if="index == 0"
+                  @click="addMail(0)"
+                ></i>
+                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
-      <div class="tipsBox" style="margin-bottom:0;">
+      <div class="tipsBox" style="margin-bottom: 0">
         <div>
           <span class="title">劳动合同到期提醒</span>
-          <el-switch v-model="contract" :active-value="1" :inactive-value="0"> </el-switch>
+          <el-switch v-model="contract" :active-value="1" :inactive-value="0" @change="change($event,1)">
+          </el-switch>
         </div>
-        <div class="flex_row ml20">
-          <span class="title title_short">到期前</span>
-          <el-input v-model="days" class="w50" placeholder=""></el-input>
-          <span class="title_left">天</span>
-        </div>
-        <div class="flex_ul ml20">
-          <span class="title title_short">提醒邮箱</span>
-          <ul>
-            <li
-              v-for="(item, index) in mails"
-              :key="index"
-              class="flex_row_center mb10"
-            >
-              <el-input
-                v-model="item.mail"
-                class="w250 mr10"
-                placeholder="请输入邮箱地址"
-              ></el-input>
-              <i
-                class="el-icon-circle-plus plus"
-                v-if="index == 0"
-                @click="addMail()"
-              ></i>
-              <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
-            </li>
-          </ul>
+        <div v-if="contract == 1">
+          <div class="flex_row ml20">
+            <span class="title title_short">到期前</span>
+            <el-input v-model="days_contract" class="w50" placeholder=""></el-input>
+            <span class="title_left">天</span>
+          </div>
+          <div class="flex_ul ml20">
+            <span class="title title_short">提醒邮箱</span>
+            <ul>
+              <li
+                v-for="(item, index) in mails_contract"
+                :key="index"
+                class="flex_row_center mb10"
+              >
+                <el-input
+                  v-model="item.mail"
+                  class="w250 mr10"
+                  placeholder="请输入邮箱地址"
+                ></el-input>
+                <i
+                  class="el-icon-circle-plus plus"
+                  v-if="index == 0"
+                  @click="addMail(1)"
+                ></i>
+                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+              </li>
+            </ul>
+          </div>
         </div>
       </div>
       <div class="tipsBox">
-        <span class="title">试用期到期提醒</span>
-        <el-switch v-model="trial" :active-value="1" :inactive-value="0"> </el-switch>
+        <div>
+          <span class="title">试用期到期提醒</span>
+          <el-switch v-model="trial" :active-value="1" :inactive-value="0" @change="change($event,2)">
+          </el-switch>
+        </div>
+        <div v-if="trial == 1">
+          <div class="flex_row ml20">
+            <span class="title title_short">到期前</span>
+            <el-input v-model="days_trial" class="w50" placeholder=""></el-input>
+            <span class="title_left">天</span>
+          </div>
+          <div class="flex_ul ml20">
+            <span class="title title_short">提醒邮箱</span>
+            <ul>
+              <li
+                v-for="(item, index) in mails_trial"
+                :key="index"
+                class="flex_row_center mb10"
+              >
+                <el-input
+                  v-model="item.mail"
+                  class="w250 mr10"
+                  placeholder="请输入邮箱地址"
+                ></el-input>
+                <i
+                  class="el-icon-circle-plus plus"
+                  v-if="index == 0"
+                  @click="addMail(2)"
+                ></i>
+                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+              </li>
+            </ul>
+          </div>
+        </div>
       </div>
     </el-card>
   </div>
@@ -76,61 +143,92 @@ export default {
       ],
       IDcard: 0,
       contract: 0,
-      days: 0,
       trial: 0,
-      mails: [],
-      id:''
+      days_ID: 0,
+      days_contract: 0,
+      days_trial: 0,
+      mails_ID: [{ mail: "" }],
+      mails_contract: [{ mail: "" }],
+      mails_trial: [{ mail: "" }],
+      id: "",
     };
   },
   mounted() {
-    this.getSets()
-    this.mails.push('');
+    this.getSets();
   },
   methods: {
-    getSets(){
-      BASE_API.systemSets().then(res=>{
-        if(res.status == 200){
-          if(res.data != null){
-            this.IDcard = res.data.card_is_enabled
-            this.contract = res.data.laborcontract_is_enabled
-            this.trial = res.data.trial_is_enabled
-            this.days = res.data.deadline
-            this.mails = res.data.notice_email
-            this.id = res.data.id
+    getSets() {
+      BASE_API.systemSets().then((res) => {
+        if (res.status == 200) {
+          if (res.data != null) {
+            this.IDcard = res.data.card_is_enabled;
+            this.contract = res.data.laborcontract_is_enabled;
+            this.trial = res.data.trial_is_enabled;
+            this.days = res.data.deadline;
+            this.mails_contract = res.data.notice_email;
+            this.id = res.data.id;
           }
-        }else{
-          this.$message.error('设置信息获取失败！')
+        } else {
+          this.$message.error("设置信息获取失败！");
         }
-      })
+      });
     },
-    addMail() {
-      this.mails.push({ mail: "" });
+    addMail(index) {
+      switch (index) {
+        case 0:
+          this.mails_ID.push({ mail: "" });
+          break;
+        case 1:
+          this.mails_contract.push({ mail: "" });
+          break;
+        case 2:
+          this.mails_trial.push({ mail: "" });
+          break;
+        default:
+          break;
+      }
+      
     },
-    deleteMail(index){
-      if(this.mails.length == 1){
-        this.mails[0].mail = ''
-      }else{
-        this.mails.splice(index,1)
+    deleteMail(index) {
+      if (this.mails.length == 1) {
+        this.mails[0].mail = "";
+      } else {
+        this.mails.splice(index, 1);
       }
     },
-    save(){
+    change($event,val){
+      console.log($event)
+      switch (val) {
+        case 0:
+          if($event == 0){
+            this.mails_ID = []
+          }else{
+            this.mails_ID.push({ mail: "" })
+          }
+          break;
+      
+        default:
+          break;
+      }
+    },
+    save() {
       let params = {
-        card_is_enabled:this.IDcard,
-        laborcontract_is_enabled:this.contract,
-        trial_is_enabled:this.trial,
-        deadline:this.days,
-        notice_email:this.mails,
-        id:this.id
-      }
-      BASE_API.editSets(params).then(res=>{
-        if(res.status == 200){
-          this.$message.success('设置成功！')
-          this.getSets()
-        }else{
-          this.$message.error('设置失败！')
+        card_is_enabled: this.IDcard,
+        laborcontract_is_enabled: this.contract,
+        trial_is_enabled: this.trial,
+        deadline: this.days,
+        notice_email: this.mails,
+        id: this.id,
+      };
+      BASE_API.editSets(params).then((res) => {
+        if (res.status == 200) {
+          this.$message.success("设置成功！");
+          this.getSets();
+        } else {
+          this.$message.error("设置失败！");
         }
-      })
-    }
+      });
+    },
   },
   components: {
     navBar,
@@ -157,16 +255,16 @@ export default {
       }
     }
     .btns {
-        position: absolute;
-        right: 0px;
-        .btn {
-          color: #409efd;
-          border-color: #409efd;
-        }
-        .p40 {
-          padding: 12px 40px;
-        }
+      position: absolute;
+      right: 0px;
+      .btn {
+        color: #409efd;
+        border-color: #409efd;
       }
+      .p40 {
+        padding: 12px 40px;
+      }
+    }
   }
 
   .tipsBox {
@@ -204,9 +302,9 @@ export default {
     margin-right: 10px;
     cursor: pointer;
   }
-  .delete{
+  .delete {
     font-size: 22px;
-    color: #F56C6C;
+    color: #f56c6c;
     line-height: 40px;
     cursor: pointer;
   }
@@ -223,8 +321,8 @@ export default {
   }
 
   .title_short {
-    width: 100px!important;
-    margin-right: 0!important;
+    width: 100px !important;
+    margin-right: 0 !important;
     padding-right: 20px;
   }
 

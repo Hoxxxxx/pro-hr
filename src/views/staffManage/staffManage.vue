@@ -231,8 +231,7 @@
                   type="text"
                   class="w56"
                   v-if="
-                    scope.row.status != '已停用' ||
-                    (scope.row.type == '离职' && scope.row.status == '已开通')
+                    (scope.row.type == '离职' || scope.row.type == '正式' || scope.row.type == '试用') && scope.row.status == '已开通' 
                   "
                   @click="openDialog('stopUse', scope.row.id)"
                   >停用账号</el-button
@@ -259,10 +258,11 @@
               <span>账号名称：</span>
               <el-input
                 style="width: 450px"
-                placeholder="请输入账号名称"
+                placeholder=""
                 v-model="name_openUse"
+                disabled
               ></el-input>
-              <span class="tips" v-if="name_openUse == ''">*请输入账号</span>
+              <!-- <span class="tips" v-if="name_openUse == ''">*请输入账号</span> -->
             </li>
             <li>
               <span>密码：</span>
@@ -561,7 +561,7 @@ export default {
       dialogType: "",
       // 开通账号相关数据
       name_openUse: "",
-      pwd_openUse: "",
+      pwd_openUse: "123456",
       job_openUse: "",
       depart_openUse: "",
       company_openUse: "",
@@ -821,16 +821,15 @@ export default {
         case "stopUse":
           break;
         case "openUse":
-          for (let i = 0, len = this.viewsList.length; i < len; i++) {
-            if (this.viewsList[i].id == this.tempId) {
-              console.log(this.viewsList[i]);
-              this.job_openUse = this.viewsList[i].position;
-              this.depart_openUse = this.viewsList[i].department;
-              this.company_openUse = this.viewsList[i].company;
-            }
-          }
-          this.name_openUse = "";
-          this.pwd_openUse = "";
+          this.job_openUse = ''
+          this.depart_openUse = ''
+          this.name_openUse = ''
+          STAFFS_API.staffInfo({}, this.tempId).then(res=>{
+            this.job_openUse = res.data.position
+            this.depart_openUse = res.data.department
+            this.name_openUse = res.data.company_email
+            this.pwd_openUse = "123456";
+          })
           break;
         case "departure":
           break;
@@ -843,7 +842,6 @@ export default {
         switch (this.dialogType) {
           case "stopUse":
             this.closeAccount();
-
             break;
           case "openUse":
             if (this.name_openUse != "" && this.pwd_openUse != "") {
@@ -949,7 +947,6 @@ export default {
         summary: this.positiveData.conclusion,
         attachment_url: this.positiveData.fileList,
       };
-      console.log(params);
       if (val == 0) {
         this.showPositive = false;
       } else {
