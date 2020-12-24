@@ -1154,6 +1154,9 @@ export default {
               min-height: 40px;
               line-height: 40px;
               padding: 0 15px;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
             }
             .elInputp {
               width: 200px;
@@ -1298,7 +1301,7 @@ export default {
     padding: 4px 8px;
     line-height: 22px;
     color: #909399;
-    margin-right: 4px;
+    margin: 4px 4px 4px 0;
   }
   .labelNon {
     text-align: left !important;
