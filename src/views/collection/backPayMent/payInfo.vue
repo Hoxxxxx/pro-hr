@@ -48,7 +48,7 @@
               <div v-show="!showOcr" style="width: 10px; height:148px"></div>
               <!-- ocr结果 -->
               <div class="show_ocr" v-show="showOcr">
-                <p class="title">扫描结果</p>
+                <p class="title">识别结果</p>
                 <p class="info" v-for="(value,key,index) in show_ocr" :key="index">
                   <span>{{key}}: {{value}}</span>
                 </p>
