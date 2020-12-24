@@ -156,7 +156,7 @@
           <el-table-column
             align="center"
             v-for="(head, index) in headList"
-            :key="index + Math.random()"
+            :key="index"
             :label="head.label"
             :prop="head.prop"
             min-width="120px"
@@ -688,6 +688,7 @@ export default {
     // 筛选功能
     handleCheckAllChange(val) {
       this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
+      this.checkedBox.isIndeterminate = val;
       if (this.checkedBox.isIndeterminate) {
         let temp = [];
         for (let key in this.checkData) {
@@ -701,7 +702,6 @@ export default {
       } else {
         this.initHead();
       }
-      this.checkedBox.isIndeterminate = false;
       this.getStaffList();
     },
     handleCheckedCitiesChange(value) {
