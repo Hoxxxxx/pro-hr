@@ -9,8 +9,8 @@
                       label-position="left"
                       class="payForm">
           <el-row>
-            <el-col :span="12" style="height: 148px">
-              <el-form-item label="图片" prop="upload_pic">
+            <el-col :span="10" style="height: 148px">
+              <el-form-item label="图片" prop="upload_pic" style="margin-right: 0;">
                 <!-- 上传imgbox -->
                 <el-upload
                   v-if="pageType!=='check'"
@@ -44,7 +44,17 @@
                 </el-dialog>
               </el-form-item>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="7">
+              <div v-show="!showOcr" style="width: 10px; height:148px"></div>
+              <!-- ocr结果 -->
+              <div class="show_ocr" v-show="showOcr">
+                <p class="title">识别结果</p>
+                <p class="info" v-for="(value,key,index) in show_ocr" :key="index">
+                  <span>{{key}}: {{value}}</span>
+                </p>
+              </div>
+            </el-col>
+            <el-col :span="5">
               <el-form-item label="审核否">
                 <div class="confirmBox" :class="dataForm.confirmed==1?'confirmed':''"></div>
               </el-form-item>
@@ -215,6 +225,8 @@ export default {
         picSrc: '', //图片预览地址
         fileList: [],
       },
+      showOcr: false,
+      show_ocr: {},
       // form
       dataForm: {
         id: '',
@@ -352,6 +364,9 @@ export default {
     },
     handleSuccess(response, file, fileList) {
       const loading = OpenLoading(this, 1)
+      // 赋值结果卡片
+      this.show_ocr = response.data.show_ocr
+      this.showOcr = true
       // 赋值扫描结果
       this.dataForm.pic = response.data.id
       this.dataForm.ssn = response.data.ocr.ssn
@@ -382,6 +397,8 @@ export default {
     },
     handleRemove(file, fileList) {
       this.dataForm.pic = ''
+      this.showOcr = false
+      this.show_ocr = {}
       this.$refs['dataForm'].resetFields();
     },
     handlePictureCardPreview(file) {
@@ -801,6 +818,23 @@ export default {
         .el-button {
           margin-right: 15px;
         }
+      }
+    }
+    .show_ocr {
+      max-width: 450px;
+      height: 148px;
+      background: #FBFDFF;
+      border-radius: 10px;
+      padding: 5px;
+      box-sizing: border-box;
+      overflow: hidden;
+      .title {
+        margin-bottom: 5px;
+        color: #898989;
+      }
+      .info {
+        font-size: 14px;
+        color: #999999;
       }
     }
   }
