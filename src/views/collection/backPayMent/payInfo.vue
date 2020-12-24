@@ -821,7 +821,7 @@ export default {
       }
     }
     .show_ocr {
-      width: 520px;
+      max-width: 450px;
       height: 148px;
       background: #FBFDFF;
       border-radius: 10px;
