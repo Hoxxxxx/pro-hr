@@ -496,6 +496,9 @@
       </div>
       <div class="btnBox">
         <div class="btns">
+          <el-button style="width: 95px" @click="back()"
+            >返回列表</el-button
+          >
           <el-button style="width: 95px" type="primary" @click="editMsg()"
             >编辑</el-button
           >
@@ -937,6 +940,11 @@ export default {
           },
         });
       }
+    },
+    back(){
+      this.$router.push({
+        path:'/staffManage'
+      })
     },
     // 获取员工信息
     getStaffInfo() {

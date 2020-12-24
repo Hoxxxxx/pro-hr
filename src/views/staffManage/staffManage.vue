@@ -751,26 +751,26 @@ export default {
           this.viewsList = res.data[0].data;
           if (this.viewsList.length > 0) {
             this.viewsList.forEach((item) => {
-              item.positive_time = renderTime(item.positive_time);
-              item.card_valid = renderTime(item.card_valid);
-              item.first_labor_contract_deadline = renderTime(
+              item.positive_time = item.positive_time ? renderTime(item.positive_time) : '无';
+              item.card_valid = item.card_valid ? renderTime(item.card_valid) : '无';
+              item.first_labor_contract_deadline = item.first_labor_contract_deadline ? renderTime(
                 item.first_labor_contract_deadline
-              );
-              item.full_graduation_time = renderTime(item.full_graduation_time);
-              item.hualu_join_time = renderTime(item.hualu_join_time);
-              item.labor_contract_deadline = renderTime(
+              ) : '无';
+              item.full_graduation_time = item.full_graduation_time ? renderTime(item.full_graduation_time) : '无';
+              item.hualu_join_time = item.hualu_join_time ? renderTime(item.hualu_join_time) : '无';
+              item.labor_contract_deadline = item.labor_contract_deadline ? renderTime(
                 item.labor_contract_deadline
-              );
-              item.newmedia_join_time = renderTime(item.newmedia_join_time);
-              item.part_graduation_time = renderTime(item.part_graduation_time);
-              item.second_labor_contract_deadline = renderTime(
+              ) : '无';
+              item.newmedia_join_time = item.newmedia_join_time ? renderTime(item.newmedia_join_time) : '无';
+              item.part_graduation_time = item.part_graduation_time ? renderTime(item.part_graduation_time) : '无';
+              item.second_labor_contract_deadline = item.second_labor_contract_deadline ? renderTime(
                 item.second_labor_contract_deadline
-              );
-              item.third_labor_contract_deadline = renderTime(
+              ) :'无';
+              item.third_labor_contract_deadline = item.third_labor_contract_deadline ? renderTime(
                 item.third_labor_contract_deadline
-              );
-              item.trial_deadline = renderTime(item.trial_deadline);
-              item.work_time = renderTime(item.work_time);
+              ) : '无';
+              item.trial_deadline = item.trial_deadline ? renderTime(item.trial_deadline) : '无';
+              item.work_time = item.work_time ? renderTime(item.work_time) : '无';
             });
           }
           let tempHead = [];
