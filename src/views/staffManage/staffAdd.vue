@@ -816,6 +816,7 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         job_number: [
           { required: true, message: "请输入员工号", trigger: "blur" },
+          { max: 7, message: '长度不超过7个字符', trigger: 'blur' }
         ],
         type: [
           { required: true, message: "请选择员工性质", trigger: "change" },
