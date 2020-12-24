@@ -15,7 +15,12 @@
       <div class="tipsBox">
         <div>
           <span class="title">身份证有效期提醒</span>
-          <el-switch v-model="IDcard" :active-value="1" :inactive-value="0" @change="change($event,0)">
+          <el-switch
+            v-model="IDcard"
+            :active-value="1"
+            :inactive-value="0"
+            @change="change($event, 0)"
+          >
           </el-switch>
         </div>
         <div v-if="IDcard == 1">
@@ -42,7 +47,10 @@
                   v-if="index == 0"
                   @click="addMail(0)"
                 ></i>
-                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+                <i
+                  class="el-icon-remove delete"
+                  @click="deleteMail(index, 'idCard')"
+                ></i>
               </li>
             </ul>
           </div>
@@ -51,13 +59,22 @@
       <div class="tipsBox" style="margin-bottom: 0">
         <div>
           <span class="title">劳动合同到期提醒</span>
-          <el-switch v-model="contract" :active-value="1" :inactive-value="0" @change="change($event,1)">
+          <el-switch
+            v-model="contract"
+            :active-value="1"
+            :inactive-value="0"
+            @change="change($event, 1)"
+          >
           </el-switch>
         </div>
         <div v-if="contract == 1">
           <div class="flex_row ml20">
             <span class="title title_short">到期前</span>
-            <el-input v-model="days_contract" class="w50" placeholder=""></el-input>
+            <el-input
+              v-model="days_contract"
+              class="w50"
+              placeholder=""
+            ></el-input>
             <span class="title_left">天</span>
           </div>
           <div class="flex_ul ml20">
@@ -78,7 +95,10 @@
                   v-if="index == 0"
                   @click="addMail(1)"
                 ></i>
-                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+                <i
+                  class="el-icon-remove delete"
+                  @click="deleteMail(index, 'contract')"
+                ></i>
               </li>
             </ul>
           </div>
@@ -87,13 +107,22 @@
       <div class="tipsBox">
         <div>
           <span class="title">试用期到期提醒</span>
-          <el-switch v-model="trial" :active-value="1" :inactive-value="0" @change="change($event,2)">
+          <el-switch
+            v-model="trial"
+            :active-value="1"
+            :inactive-value="0"
+            @change="change($event, 2)"
+          >
           </el-switch>
         </div>
         <div v-if="trial == 1">
           <div class="flex_row ml20">
             <span class="title title_short">到期前</span>
-            <el-input v-model="days_trial" class="w50" placeholder=""></el-input>
+            <el-input
+              v-model="days_trial"
+              class="w50"
+              placeholder=""
+            ></el-input>
             <span class="title_left">天</span>
           </div>
           <div class="flex_ul ml20">
@@ -114,7 +143,10 @@
                   v-if="index == 0"
                   @click="addMail(2)"
                 ></i>
-                <i class="el-icon-remove delete" @click="deleteMail(index)"></i>
+                <i
+                  class="el-icon-remove delete"
+                  @click="deleteMail(index, 'trial')"
+                ></i>
               </li>
             </ul>
           </div>
@@ -187,26 +219,63 @@ export default {
         default:
           break;
       }
-      
     },
-    deleteMail(index) {
-      if (this.mails.length == 1) {
-        this.mails[0].mail = "";
-      } else {
-        this.mails.splice(index, 1);
-      }
-    },
-    change($event,val){
-      console.log($event)
-      switch (val) {
-        case 0:
-          if($event == 0){
-            this.mails_ID = []
-          }else{
-            this.mails_ID.push({ mail: "" })
+    deleteMail(index, type) {
+      switch (type) {
+        case "idCard":
+          if (this.mails_ID.length == 1) {
+            this.mails_ID[0].mail = "";
+          } else {
+            this.mails_ID.splice(index, 1);
           }
           break;
-      
+        case "contract":
+          if (this.mails_contract.length == 1) {
+            this.mails_contract[0].mail = "";
+          } else {
+            this.mails_contract.splice(index, 1);
+          }
+          break;
+        case "trial":
+          if (this.mails_trial.length == 1) {
+            this.mails_trial[0].mail = "";
+          } else {
+            this.mails_trial.splice(index, 1);
+          }
+          break;
+        default:
+          break;
+      }
+    },
+    change($event, val) {
+      switch (val) {
+        case 0:
+          if ($event == 0) {
+            this.mails_ID = [];
+          } else {
+            if(this.mails_ID.length == 0){
+              this.mails_ID.push({ mail: "" });
+            }
+          }
+          break;
+        case 1:
+          if ($event == 0) {
+            this.mails_contract = [];
+          } else {
+            if(this.mails_contract.length == 0){
+              this.mails_contract.push({ mail: "" });
+            }
+          }
+          break;
+        case 2:
+          if ($event == 0) {
+            this.mails_trial = [];
+          } else {
+            if(this.mails_trial.length == 0){
+              this.mails_trial.push({ mail: "" });
+            }
+          }
+          break;
         default:
           break;
       }
