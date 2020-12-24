@@ -1,6 +1,9 @@
 <template>
   <div class="staffManage">
-    <nav-Bar v-if="$route.path !== '/OAstaffManage'" :breadList="breadList"></nav-Bar>
+    <nav-Bar
+      v-if="$route.path !== '/OAstaffManage'"
+      :breadList="breadList"
+    ></nav-Bar>
     <div class="menuList">
       <ul>
         <li
@@ -19,7 +22,7 @@
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
-      :class="$route.path=='/OAstaffManage'?'OA_showSearch':''"
+      :class="$route.path == '/OAstaffManage' ? 'OA_showSearch' : ''"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
@@ -27,7 +30,10 @@
     >
     <el-collapse-transition>
       <div v-show="showSearch">
-        <el-card class="searchCard" :class="$route.path=='/OAstaffManage'?'OA_searchCard':''">
+        <el-card
+          class="searchCard"
+          :class="$route.path == '/OAstaffManage' ? 'OA_searchCard' : ''"
+        >
           <div class="serchBox">
             <div class="rangeBox">
               <el-input
@@ -73,7 +79,10 @@
     </el-collapse-transition>
 
     <!-- 表格 -->
-    <el-card class="listCard" :class="$route.path=='/OAstaffManage'?'OA_listCard':''">
+    <el-card
+      class="listCard"
+      :class="$route.path == '/OAstaffManage' ? 'OA_listCard' : ''"
+    >
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">员工列表</span>
@@ -147,7 +156,7 @@
           <el-table-column
             align="center"
             v-for="(head, index) in headList"
-            :key="index + Math.random()"
+            :key="index"
             :label="head.label"
             :prop="head.prop"
             min-width="120px"
@@ -231,8 +240,10 @@
                   type="text"
                   class="w56"
                   v-if="
-                    scope.row.status != '已停用' ||
-                    (scope.row.type == '离职' && scope.row.status == '已开通')
+                    (scope.row.type == '离职' ||
+                      scope.row.type == '正式' ||
+                      scope.row.type == '试用') &&
+                    scope.row.status == '已开通'
                   "
                   @click="openDialog('stopUse', scope.row.id)"
                   >停用账号</el-button
@@ -259,10 +270,11 @@
               <span>账号名称：</span>
               <el-input
                 style="width: 450px"
-                placeholder="请输入账号名称"
+                placeholder=""
                 v-model="name_openUse"
+                disabled
               ></el-input>
-              <span class="tips" v-if="name_openUse == ''">*请输入账号</span>
+              <!-- <span class="tips" v-if="name_openUse == ''">*请输入账号</span> -->
             </li>
             <li>
               <span>密码：</span>
@@ -397,8 +409,7 @@
               <li>
                 <div class="itemBox">
                   <div class="labelBox">
-                    <span class="redPot">&#10052;</span>
-                    <span class="label">转正时间</span>
+                    <span class="label point">转正时间</span>
                   </div>
                   <el-date-picker
                     v-model="positiveData.positiveTime"
@@ -411,7 +422,7 @@
             </ul>
             <!-- 工作总结 -->
             <div class="conclusion">
-              <span class="label">工作总结</span>
+              <span class="label point">工作总结</span>
               <el-input
                 type="textarea"
                 :rows="15"
@@ -479,7 +490,7 @@ import navBar from "@/components/navBar/navBar";
 // api
 import { STAFFS_API } from "@/api/staffs";
 import { renderTime } from "@/utils/function.js";
-import { KT , TY } from "@/api/reconciliation.js";
+import { KT, TY } from "@/api/reconciliation.js";
 
 export default {
   filters: {
@@ -561,7 +572,7 @@ export default {
       dialogType: "",
       // 开通账号相关数据
       name_openUse: "",
-      pwd_openUse: "",
+      pwd_openUse: "123456",
       job_openUse: "",
       depart_openUse: "",
       company_openUse: "",
@@ -677,6 +688,7 @@ export default {
     // 筛选功能
     handleCheckAllChange(val) {
       this.checkedBox.checkedCities = val ? this.checkedBox.cities : [];
+      this.checkedBox.isIndeterminate = val;
       if (this.checkedBox.isIndeterminate) {
         let temp = [];
         for (let key in this.checkData) {
@@ -690,7 +702,6 @@ export default {
       } else {
         this.initHead();
       }
-      this.checkedBox.isIndeterminate = false;
       this.getStaffList();
     },
     handleCheckedCitiesChange(value) {
@@ -713,8 +724,8 @@ export default {
     search(type) {
       if (type == 1) {
         this.adminName = "";
-        this.ageMax = ''
-        this.ageMin = ''
+        this.ageMax = "";
+        this.ageMin = "";
         this.initHead();
       }
       this.getStaffList();
@@ -797,7 +808,7 @@ export default {
     },
     // 新增员工
     addStaff() {
-      if (this.$route.path=='/OAstaffManage') {
+      if (this.$route.path == "/OAstaffManage") {
         this.$router.push({
           path: "/OAstaffAdd",
           query: {
@@ -821,16 +832,15 @@ export default {
         case "stopUse":
           break;
         case "openUse":
-          for (let i = 0, len = this.viewsList.length; i < len; i++) {
-            if (this.viewsList[i].id == this.tempId) {
-              console.log(this.viewsList[i]);
-              this.job_openUse = this.viewsList[i].position;
-              this.depart_openUse = this.viewsList[i].department;
-              this.company_openUse = this.viewsList[i].company;
-            }
-          }
+          this.job_openUse = "";
+          this.depart_openUse = "";
           this.name_openUse = "";
-          this.pwd_openUse = "";
+          STAFFS_API.staffInfo({}, this.tempId).then((res) => {
+            this.job_openUse = res.data.position;
+            this.depart_openUse = res.data.department;
+            this.name_openUse = res.data.company_email;
+            this.pwd_openUse = "123456";
+          });
           break;
         case "departure":
           break;
@@ -843,7 +853,6 @@ export default {
         switch (this.dialogType) {
           case "stopUse":
             this.closeAccount();
-
             break;
           case "openUse":
             if (this.name_openUse != "" && this.pwd_openUse != "") {
@@ -862,7 +871,7 @@ export default {
     },
     // 查看
     view(val) {
-      if (this.$route.path=='/OAstaffManage') {
+      if (this.$route.path == "/OAstaffManage") {
         this.$router.push({
           path: "/OAstaffMsg",
           query: {
@@ -949,19 +958,24 @@ export default {
         summary: this.positiveData.conclusion,
         attachment_url: this.positiveData.fileList,
       };
-      console.log(params);
       if (val == 0) {
         this.showPositive = false;
       } else {
-        STAFFS_API.positive(params).then((res) => {
-          if (res.status == 200) {
-            this.$message.success("转正成功！");
-            this.showPositive = false;
-            this.getStaffList();
-          } else {
-            this.$message.error(res.error.message);
-          }
-        });
+        if (!params.positive_time) {
+          this.$message.error("请选择转正日期");
+        } else if (!params.summary) {
+          this.$message.error("请填写工作总结");
+        } else {
+          STAFFS_API.positive(params).then((res) => {
+            if (res.status == 200) {
+              this.$message.success("转正成功！");
+              this.showPositive = false;
+              this.getStaffList();
+            } else {
+              this.$message.error(res.error.message);
+            }
+          });
+        }
       }
     },
     // 开通账号
@@ -1539,6 +1553,13 @@ export default {
     margin-left: 0 !important;
     text-align: center;
     margin: 4px 0;
+  }
+}
+.point {
+  &::before {
+    content: "*";
+    font-size: 14px;
+    color: red;
   }
 }
 
