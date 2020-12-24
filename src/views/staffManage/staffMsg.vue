@@ -36,7 +36,7 @@
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">姓别</span>
+                <span class="label">性别</span>
               </div>
               <div class="genderBox">
                 <el-radio
