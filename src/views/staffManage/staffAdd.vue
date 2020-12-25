@@ -1234,9 +1234,9 @@ export default {
       this.getJobs(val);
     },
     timeChange(val) {
-      let date1 = new Date(this.ruleForm.first_labor_contract_deadline);
-      let date2 = new Date(this.ruleForm.second_labor_contract_deadline);
-      let date3 = new Date(this.ruleForm.third_labor_contract_deadline);
+      let date1 = new Date(this.ruleForm.first_labor_contract_deadline ? this.ruleForm.first_labor_contract_deadline : 0);
+      let date2 = new Date(this.ruleForm.second_labor_contract_deadline ? this.ruleForm.second_labor_contract_deadline : 0);
+      let date3 = new Date(this.ruleForm.third_labor_contract_deadline ? this.ruleForm.third_labor_contract_deadline : 0);
       let first = date1.getTime();
       let second = date2.getTime();
       let third = date3.getTime();
