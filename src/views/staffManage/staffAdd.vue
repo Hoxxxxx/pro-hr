@@ -1,7 +1,13 @@
 <template>
   <div class="staffManage">
-    <nav-Bar v-if="$route.path !== '/OAstaffAdd'" :breadList="breadList"></nav-Bar>
-    <el-card class="formCard" :class="$route.path=='/OAstaffAdd'?'OA_listCard':''">
+    <nav-Bar
+      v-if="$route.path !== '/OAstaffAdd'"
+      :breadList="breadList"
+    ></nav-Bar>
+    <el-card
+      class="formCard"
+      :class="$route.path == '/OAstaffAdd' ? 'OA_listCard' : ''"
+    >
       <!-- 基本信息 -->
       <el-form
         :model="ruleForm"
@@ -32,9 +38,12 @@
               </el-form-item>
             </el-col>
             <el-col :span="8">
-              <el-form-item label="姓别" prop="sex">
-                <el-radio-group v-model="ruleForm.sex" style="display:flex">
-                  <el-radio border="" style="width: 90px;margin-right:10px" :label="1"
+              <el-form-item label="性别" prop="sex">
+                <el-radio-group v-model="ruleForm.sex" style="display: flex">
+                  <el-radio
+                    border=""
+                    style="width: 90px; margin-right: 10px"
+                    :label="1"
                     >男</el-radio
                   >
                   <el-radio border="" style="width: 90px" :label="2"
@@ -412,6 +421,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -428,6 +438,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -444,6 +455,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -810,12 +822,11 @@ export default {
         attachment_url: [], //附件地址
       },
       rules: {
-        name: [
-          { required: true, message: "请输入姓名", trigger: "blur" }
-        ],
+        name: [{ required: true, message: "请输入姓名", trigger: "blur" }],
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         job_number: [
           { required: true, message: "请输入员工号", trigger: "blur" },
+          { max: 7, message: "长度不能超过7个字符", trigger: "blur" },
         ],
         type: [
           { required: true, message: "请选择员工性质", trigger: "change" },
@@ -1094,7 +1105,16 @@ export default {
                 }
               );
             } else {
-              console.log("error submit!!");
+              this.$nextTick(() => {
+                let isError = document.getElementsByClassName("is-error");
+                isError[0].scrollIntoView({
+                  // 滚动到指定节点
+                  // 值有start,center,end，nearest，当前显示在视图区域中间
+                  block: "center",
+                  // 值有auto、instant,smooth，缓动动画（当前是慢速的）
+                  behavior: "smooth",
+                });
+              });
               return false;
             }
           });
@@ -1112,7 +1132,16 @@ export default {
                 }
               });
             } else {
-              console.log("error submit!!");
+              this.$nextTick(() => {
+                let isError = document.getElementsByClassName("is-error");
+                isError[0].scrollIntoView({
+                  // 滚动到指定节点
+                  // 值有start,center,end，nearest，当前显示在视图区域中间
+                  block: "center",
+                  // 值有auto、instant,smooth，缓动动画（当前是慢速的）
+                  behavior: "smooth",
+                });
+              });
               return false;
             }
           });
@@ -1208,6 +1237,44 @@ export default {
     companyChange(val) {
       this.getDepart(val);
       this.getJobs(val);
+    },
+    timeChange(val) {
+      let date1 = new Date(this.ruleForm.first_labor_contract_deadline);
+      let date2 = new Date(this.ruleForm.second_labor_contract_deadline);
+      let date3 = new Date(this.ruleForm.third_labor_contract_deadline);
+      let first = date1.getTime();
+      let second = date2.getTime();
+      let third = date3.getTime();
+      let a = this.getMax(first,second,third)
+      switch (a) {
+        case 'first':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.first_labor_contract_deadline;
+          break;
+        case 'second':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.second_labor_contract_deadline;
+          break;
+        case 'third':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.third_labor_contract_deadline;
+          break;
+        default:
+          break;
+      }
+    },
+    getMax(num1, num2, num3) {
+      var max = num1; 
+      var maxStr = 'first'
+      if (num1 > num2) {
+        max = num1;
+        maxStr = 'first'
+      } else {
+        max = num2;
+        maxStr = 'second'
+      }
+      if (max > num3) {
+        return maxStr;
+      } else {
+        return 'third';
+      }
     },
     // 文件上传
     handleChange(file, fileList) {

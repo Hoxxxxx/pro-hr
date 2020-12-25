@@ -36,7 +36,7 @@
             </div>
             <div class="itemBox">
               <div class="labelBox">
-                <span class="label">姓别</span>
+                <span class="label">性别</span>
               </div>
               <div class="genderBox">
                 <el-radio
@@ -496,6 +496,9 @@
       </div>
       <div class="btnBox">
         <div class="btns">
+          <el-button style="width: 95px" @click="back()"
+            >返回列表</el-button
+          >
           <el-button style="width: 95px" type="primary" @click="editMsg()"
             >编辑</el-button
           >
@@ -938,6 +941,11 @@ export default {
         });
       }
     },
+    back(){
+      this.$router.push({
+        path:'/staffManage'
+      })
+    },
     // 获取员工信息
     getStaffInfo() {
       STAFFS_API.staffInfo({}, this.staffId).then((res) => {
@@ -1146,6 +1154,9 @@ export default {
               min-height: 40px;
               line-height: 40px;
               padding: 0 15px;
+              display: flex;
+              flex-direction: row;
+              flex-wrap: wrap;
             }
             .elInputp {
               width: 200px;
@@ -1286,11 +1297,11 @@ export default {
     background-color: #f4f4f5;
     border-color: #e9e9eb;
     border-radius: 4px;
-    height: 24px;
+    height: 20px;
     padding: 4px 8px;
-    line-height: 22px;
+    line-height: 20px;
     color: #909399;
-    margin-right: 4px;
+    margin: 6px 4px 6px 0;
   }
   .labelNon {
     text-align: left !important;

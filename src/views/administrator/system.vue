@@ -179,9 +179,9 @@ export default {
       days_ID: 0,
       days_contract: 0,
       days_trial: 0,
-      mails_ID: [{ mail: "" }],
-      mails_contract: [{ mail: "" }],
-      mails_trial: [{ mail: "" }],
+      mails_ID: [],
+      mails_contract: [],
+      mails_trial: [],
       id: "",
     };
   },
@@ -196,9 +196,44 @@ export default {
             this.IDcard = res.data.card_is_enabled;
             this.contract = res.data.laborcontract_is_enabled;
             this.trial = res.data.trial_is_enabled;
-            this.days = res.data.deadline;
-            this.mails_contract = res.data.notice_email;
+            this.days_ID = res.data.card_deadline;
+            this.days_contract = res.data.laborcontract_deadline;
+            this.days_trial = res.data.trial_deadline;
+            this.mails_trial = res.data.trial_notice_email;
             this.id = res.data.id;
+            let cardTemp = [];
+            let contTemp = [];
+            let trialTemp = [];
+            if (res.data.card_notice_email.length > 0) {
+              res.data.card_notice_email.forEach((item) => {
+                let temp = {};
+                temp.mail = item;
+                cardTemp.push(temp);
+              });
+              this.mails_ID = cardTemp;
+            } else {
+              this.mails_ID = [];
+            }
+            if (res.data.laborcontract_notice_email.length > 0) {
+              res.data.laborcontract_notice_email.forEach((item) => {
+                let temp = {};
+                temp.mail = item;
+                contTemp.push(temp);
+              });
+              this.mails_contract = contTemp;
+            } else {
+              this.mails_contract = [];
+            }
+            if (res.data.trial_notice_email.length > 0) {
+              res.data.trial_notice_email.forEach((item) => {
+                let temp = {};
+                temp.mail = item;
+                trialTemp.push(temp);
+              });
+              this.mails_trial = trialTemp;
+            }else{
+              this.mails_trial = [];
+            }
           }
         } else {
           this.$message.error("设置信息获取失败！");
@@ -251,27 +286,27 @@ export default {
       switch (val) {
         case 0:
           if ($event == 0) {
-            this.mails_ID = [];
+            // this.mails_ID = [];
           } else {
-            if(this.mails_ID.length == 0){
+            if (this.mails_ID.length == 0) {
               this.mails_ID.push({ mail: "" });
             }
           }
           break;
         case 1:
           if ($event == 0) {
-            this.mails_contract = [];
+            // this.mails_contract = [];
           } else {
-            if(this.mails_contract.length == 0){
+            if (this.mails_contract.length == 0) {
               this.mails_contract.push({ mail: "" });
             }
           }
           break;
         case 2:
           if ($event == 0) {
-            this.mails_trial = [];
+            // this.mails_trial = [];
           } else {
-            if(this.mails_trial.length == 0){
+            if (this.mails_trial.length == 0) {
               this.mails_trial.push({ mail: "" });
             }
           }
@@ -285,10 +320,41 @@ export default {
         card_is_enabled: this.IDcard,
         laborcontract_is_enabled: this.contract,
         trial_is_enabled: this.trial,
-        deadline: this.days,
-        notice_email: this.mails,
+        card_deadline: parseInt(this.days_ID),
+        card_notice_email: this.mails_ID,
+        laborcontract_deadline: parseInt(this.days_contract),
+        laborcontract_notice_email: this.mails_contract,
+        trial_deadline: parseInt(this.days_trial),
+        trial_notice_email: this.mails_trial,
         id: this.id,
       };
+      let temp_cardMail = [];
+      let temp_contractMail = [];
+      let temp_trialMail = [];
+      if (this.mails_ID.length > 0) {
+        this.mails_ID.forEach((item) => {
+          temp_cardMail.push(item.mail);
+        });
+        params.card_notice_email = temp_cardMail;
+      }else{
+        params.card_notice_email = [];
+      }
+      if (this.mails_contract.length > 0) {
+        this.mails_contract.forEach((item) => {
+          temp_contractMail.push(item.mail);
+        });
+        params.laborcontract_notice_email = temp_contractMail;
+      }else{
+        params.laborcontract_notice_email = [];
+      }
+      if (this.mails_trial.length > 0) {
+        this.mails_trial.forEach((item) => {
+          temp_trialMail.push(item.mail);
+        });
+        params.trial_notice_email = temp_trialMail;
+      }else{
+        params.trial_notice_email = [];
+      }
       BASE_API.editSets(params).then((res) => {
         if (res.status == 200) {
           this.$message.success("设置成功！");
