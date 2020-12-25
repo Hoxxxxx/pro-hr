@@ -421,6 +421,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -437,6 +438,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -453,6 +455,7 @@
                   format="yyyy-MM-dd"
                   value-format="yyyy-MM-dd hh:mm:ss"
                   class="elInput"
+                  @change="timeChange"
                 ></el-date-picker>
               </el-form-item>
             </el-col>
@@ -1234,6 +1237,44 @@ export default {
     companyChange(val) {
       this.getDepart(val);
       this.getJobs(val);
+    },
+    timeChange(val) {
+      let date1 = new Date(this.ruleForm.first_labor_contract_deadline);
+      let date2 = new Date(this.ruleForm.second_labor_contract_deadline);
+      let date3 = new Date(this.ruleForm.third_labor_contract_deadline);
+      let first = date1.getTime();
+      let second = date2.getTime();
+      let third = date3.getTime();
+      let a = this.getMax(first,second,third)
+      switch (a) {
+        case 'first':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.first_labor_contract_deadline;
+          break;
+        case 'second':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.second_labor_contract_deadline;
+          break;
+        case 'third':
+          this.ruleForm.labor_contract_deadline = this.ruleForm.third_labor_contract_deadline;
+          break;
+        default:
+          break;
+      }
+    },
+    getMax(num1, num2, num3) {
+      var max = num1; 
+      var maxStr = 'first'
+      if (num1 > num2) {
+        max = num1;
+        maxStr = 'first'
+      } else {
+        max = num2;
+        maxStr = 'second'
+      }
+      if (max > num3) {
+        return maxStr;
+      } else {
+        return 'third';
+      }
     },
     // 文件上传
     handleChange(file, fileList) {

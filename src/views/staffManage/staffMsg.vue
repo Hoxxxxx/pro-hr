@@ -1297,11 +1297,11 @@ export default {
     background-color: #f4f4f5;
     border-color: #e9e9eb;
     border-radius: 4px;
-    height: 24px;
+    height: 20px;
     padding: 4px 8px;
-    line-height: 22px;
+    line-height: 20px;
     color: #909399;
-    margin: 4px 4px 4px 0;
+    margin: 6px 4px 6px 0;
   }
   .labelNon {
     text-align: left !important;
