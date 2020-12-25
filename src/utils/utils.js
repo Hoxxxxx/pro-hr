@@ -1,8 +1,8 @@
 // loading
-export function OpenLoading(val,type) {     // type=1：普通请求； type=2：抛转请求
+export function OpenLoading(val,type,text = '加载中') {     // type=1：普通请求； type=2：抛转请求
   const loading = val.$loading({
     lock: true,
-    text: "加载中",
+    text: text,
     spinner: "el-icon-loading",
     background: "rgba(0, 0, 0, 0.2)",
   });
