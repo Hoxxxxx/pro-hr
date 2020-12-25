@@ -493,30 +493,34 @@ export default {
                   clearTimeout(this.overloading)
                   if (res.status == 200) {
                     this.dataForm = res.data[0]
-                    if (this.$route.path=='/OApayInfo') {
-                      this.$router.push({
-                        path: 'OApayInfo',
-                        query:{
-                          id: this.dataForm.id,
-                          pageType: 'check'
-                        }
-                      })
-                    } else {
-                      this.$router.push({
-                        path: 'payInfo',
-                        query:{
-                          id: this.dataForm.id,
-                          pageType: 'check'
-                        }
-                      })
-                    }
-                    this.$message.success('新增成功！')
+                    this.$message.success('审核成功！')
                     setTimeout(() => {
                       this.$router.go(0)
                     },500)
                   } else {
                     this.$message.error('抛转集团失败：' + res.error.message)
                   }
+                  // 跳转
+                  if (this.$route.path=='/OApayInfo') {
+                    this.$router.push({
+                      path: 'OApayInfo',
+                      query:{
+                        id: this.dataForm.id,
+                        pageType: 'check'
+                      }
+                    })
+                  } else {
+                    this.$router.push({
+                      path: 'payInfo',
+                      query:{
+                        id: this.dataForm.id,
+                        pageType: 'check'
+                      }
+                    })
+                  }
+                  setTimeout(() => {
+                    this.$router.go(0)
+                  },200)
                 })
               } else {
                 loading.close()
