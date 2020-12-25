@@ -63,3 +63,31 @@ export const downloadPic = (params) => {
   {},
   {})
 }
+
+
+// 获取银行列表
+export const YHList = (params) => {
+  return request.GET(`meta/nmas`,
+  {},
+  {
+      params
+  })
+}
+
+// 获取币种列表
+export const BZList = (params) => {
+  return request.GET(`meta/azis`,
+  {},
+  {
+      params
+  })
+}
+
+// 获取部门列表
+export const BMList = (params) => {
+  return request.GET(`meta/gems`,
+  {},
+  {
+      params
+  })
+}

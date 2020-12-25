@@ -50,7 +50,7 @@
               <div class="show_ocr" v-show="showOcr">
                 <p class="title">识别结果</p>
                 <p class="info" v-for="(value,key,index) in show_ocr" :key="index">
-                  <span>{{key}}: {{value}}</span>
+                  <span>{{key}} &nbsp; : &nbsp; {{value}}</span>
                 </p>
               </div>
             </el-col>
@@ -66,14 +66,14 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="银行" prop="bank">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.bank_show}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('YH')">
-                    {{dataForm.bank_show}}
-                  </div>
-                </div>
+                <el-select v-model="dataForm.bank" filterable placeholder="请选择银行" :disabled="pageType == 'check'">
+                  <el-option
+                    v-for="item in YH_List"
+                    :key="item.nma01"
+                    :label="item.nma01 + ' ' + item.nma02"
+                    :value="item.nma01">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
@@ -104,14 +104,14 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="币种" prop="currency">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.currency_show}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('BZ')">
-                    {{dataForm.currency_show}}
-                  </div>
-                </div>
+                <el-select v-model="dataForm.currency" filterable placeholder="请选择币种" :disabled="pageType == 'check'">
+                  <el-option
+                    v-for="item in BZ_List"
+                    :key="item.azi01"
+                    :label="item.azi01 + ' ' + item.azi02"
+                    :value="item.azi01">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -131,14 +131,14 @@
             </el-col>
             <el-col :span="12" style="height: 62px">
               <el-form-item label="所属部门" prop="department">
-                <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
-                  {{dataForm.department_show}}
-                </div>
-                <div v-if="pageType!=='check'" class="selectbox">
-                  <div class="selector" @click="selectDialog('BM')">
-                    {{dataForm.department_show}}
-                  </div>
-                </div>
+                <el-select v-model="dataForm.department" filterable placeholder="请选择部门" :disabled="pageType == 'check'">
+                  <el-option
+                    v-for="item in BM_List"
+                    :key="item.gem01"
+                    :label="item.gem01 + ' ' + item.gem02"
+                    :value="item.gem01">
+                  </el-option>
+                </el-select>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -193,7 +193,7 @@
 import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 // api
-import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl, downloadPic } from "@/api/collection";
+import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl, downloadPic, YHList, BZList, BMList } from "@/api/collection";
 // utils
 import { OpenLoading } from "@/utils/utils.js";
 
@@ -234,19 +234,19 @@ export default {
         confirmed: '',
         pic: '',
         bank: '',
-        bank_show: '',
         ssn: '',
         purpose: '',
         summary: '',
         amount: '',
         currency: '',
-        currency_show: '',
         date: '',
         customer: '',
         customer_show: '',
         department: '',
-        department_show: ''
       },
+      YH_List: [],
+      BZ_List: [],
+      BM_List: [],
       rules: {
         bank: [
           { required: true, message: '请选择银行', trigger: 'change' },
@@ -294,25 +294,9 @@ export default {
         keyMsg: [], //需要显示在顶部的数据
       },
       tableHead: {
-        head_YH: [
-          { name: "nma01", title: "银行编号" },
-          { name: "nma02", title: "银行名称" },
-          { name: "nma28", title: "1支存/2活存/3其它" },
-          { name: "nma04", title: "银行账号" },
-          { name: "nma09", title: "存款类别" },
-          { name: "nma10", title: "存款币别" },
-        ],
         head_KH: [
           { name: "occ01", title: "客户编号" },
           { name: "occ02", title: "客户名称" },
-        ],
-        head_BZ: [
-          { name: "azi01", title: "币别编号" },
-          { name: "azi02", title: "币别名称" },
-        ],
-        head_BM: [
-          { name: "gem01", title: "部门编号" },
-          { name: "gem02", title: "部门名称" },
         ],
       },
 
@@ -324,6 +308,9 @@ export default {
   },
   created() {
     this.initPage()
+    this.getYH()
+    this.getBZ()
+    this.getBM()
   },
   methods: {
     // **************** init ********************
@@ -332,7 +319,6 @@ export default {
         this.breadList[1].title = '新增回款单'
         this.title = '新增回款单'
         this.dataForm.currency = 'RMB'
-        this.dataForm.currency_show = '人民幣'
       } else if (this.pageType == 'edit') {
         this.breadList[1].title = '编辑回款单'
         this.title = '编辑回款单'
@@ -342,6 +328,36 @@ export default {
         this.title = '查看回款单'
         this.getCollInfo(this.staffId)
       }
+    },
+    getYH() {
+      YHList()
+      .then( res => {
+        if (res.status == 200) {
+          this.YH_List = res.data
+        } else {
+          this.$message.error('获取银行列表失败：' + res.error.message)
+        }
+      })
+    },
+    getBZ() {
+      BZList()
+      .then( res => {
+        if (res.status == 200) {
+          this.BZ_List = res.data
+        } else {
+          this.$message.error('获取币种列表失败：' + res.error.message)
+        }
+      })
+    },
+    getBM() {
+      BMList()
+      .then( res => {
+        if (res.status == 200) {
+          this.BM_List = res.data
+        } else {
+          this.$message.error('获取部门列表失败：' + res.error.message)
+        }
+      })
     },
     // ****************upload*****************
     beforeAvatarUpload(file) {
@@ -371,12 +387,10 @@ export default {
       this.dataForm.pic = response.data.id
       this.dataForm.ssn = response.data.ocr.ssn
       this.dataForm.bank = response.data.ocr.bank
-      this.dataForm.bank_show = response.data.ocr.bank_show
       this.dataForm.customer = response.data.ocr.customer
       this.dataForm.customer_show = response.data.ocr.customer_show
       this.dataForm.date = response.data.ocr.date
       this.dataForm.currency = response.data.ocr.currency
-      this.dataForm.currency_show = response.data.ocr.currency_show
       this.dataForm.amount = response.data.ocr.amount
       this.dataForm.summary = response.data.ocr.summary
       this.dataForm.purpose = response.data.ocr.purpose
@@ -419,15 +433,6 @@ export default {
       this.dataSelect.cur_input = type;
       this.dataSelect.choosedData = [];
       switch (type) {
-        case "YH":
-          let filter_YH = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_YH;
-          this.dataSelect.searchType = "single"
-          this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "meta/nmas";
-          this.dataSelect.headList = this.tableHead.head_YH;
-          this.dataSelect.dialogTitle = "银行列表";
-        break;
         case "KH":
           let filter_KH = [{ label: "", model_key_search: "keyword" }];
           this.dataSelect.filter = filter_KH;
@@ -436,24 +441,6 @@ export default {
           this.dataSelect.searchApi = "meta/occs";
           this.dataSelect.headList = this.tableHead.head_KH;
           this.dataSelect.dialogTitle = "客户列表";
-        break;
-        case "BZ":
-          let filter_BZ = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_BZ;
-          this.dataSelect.searchType = "single"
-          this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "meta/azis";
-          this.dataSelect.headList = this.tableHead.head_BZ;
-          this.dataSelect.dialogTitle = "币种列表";
-        break;
-        case "BM":
-          let filter_BM = [{ label: "", model_key_search: "keyword" }];
-          this.dataSelect.filter = filter_BM;
-          this.dataSelect.searchType = "single"
-          this.dataSelect.editType = "entry"
-          this.dataSelect.searchApi = "meta/gems";
-          this.dataSelect.headList = this.tableHead.head_BM;
-          this.dataSelect.dialogTitle = "部门列表";
         break;
         default:
         return;
@@ -471,21 +458,9 @@ export default {
       this.dataSelect.choosedData = val;
       if (val.length > 0) {
         switch (this.dataSelect.cur_input) {
-          case "YH":
-            this.dataForm.bank = val[0].nma01;
-            this.dataForm.bank_show = val[0].nma02;
-          break;
           case "KH":
             this.dataForm.customer = val[0].occ01;
             this.dataForm.customer_show = val[0].occ02;
-          break;
-          case "BZ":
-            this.dataForm.currency = val[0].azi01;
-            this.dataForm.currency_show = val[0].azi02;
-          break;
-          case "BM":
-            this.dataForm.department = val[0].gem01;
-            this.dataForm.department_show = val[0].gem02;
           break;
           default:
           return;
