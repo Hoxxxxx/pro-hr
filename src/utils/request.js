@@ -23,7 +23,7 @@ axios.interceptors.request.use(
             if (now > exp) {
                 sessionStorage.clear()
                 // window.location = '/error'
-                window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
+                window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
             }else{
                 config.headers.Authorization = 'Bearer ' + token,
                 config.headers['Org-Id'] = orgid
@@ -67,7 +67,7 @@ axios.interceptors.response.use(
                     sessionStorage.clear();
                     // window.location = '/error'
                     let curUrl = window.location.href
-                    window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
+                    window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
                     break;
                     case 403:
                         Message.warning({
