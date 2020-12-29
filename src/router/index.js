@@ -362,6 +362,8 @@ import {
 router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   let curUrl = window.location.href
+  console.log('VUE_APP_URL:',process.env.VUE_APP_URL)
+  console.log('VUE_APP_BASE_API:',process.env.VUE_APP_BASE_API)
   if (token) {
     const code = jwtDecode(token)
     let now = Math.round(new Date() / 1000)
@@ -417,7 +419,6 @@ router.beforeEach((to, from, next) => {
           }
           let urlStr = window.location.href.split('?')[0]
           let curUrl = `${urlStr}?${paraStr.substring(1)}`
-          console.log(window.location.href)
           window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
         }
       })
