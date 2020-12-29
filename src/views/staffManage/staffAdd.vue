@@ -46,7 +46,7 @@
                     :label="1"
                     >男</el-radio
                   >
-                  <el-radio border="" style="width: 90px" :label="2"
+                  <el-radio border="" style="width: 90px" :label="0"
                     >女</el-radio
                   >
                 </el-radio-group>
