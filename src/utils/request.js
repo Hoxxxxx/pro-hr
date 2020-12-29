@@ -12,8 +12,9 @@ console.log(process.env)
 axios.interceptors.request.use(
     config => {
         // 添加token
+        console.log('test')
         console.log('VUE_APP_URL:',process.env.VUE_APP_URL)
-  console.log('VUE_APP_BASE_API:',process.env.VUE_APP_BASE_API)
+        console.log('VUE_APP_BASE_API:',process.env.VUE_APP_BASE_API)
         let curUrl = window.location.href
         let token = sessionStorage.getItem('token')
         let orgid = sessionStorage.getItem('OrgId')
