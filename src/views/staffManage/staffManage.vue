@@ -492,7 +492,6 @@ import { STAFFS_API } from "@/api/staffs";
 import { renderTime } from "@/utils/function.js";
 import { KT, TY } from "@/api/reconciliation.js";
 import { OpenLoading } from "@/utils/utils.js";
-
 export default {
   filters: {
     color(val) {
@@ -640,6 +639,7 @@ export default {
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
+    this.getTodos()
   },
   methods: {
     // 初始化表头
@@ -1166,7 +1166,7 @@ export default {
         start_age: this.ageMin,
         end_age: this.ageMax,
       };
-      const loading = OpenLoading(this, 1,'文件下载中')
+      const loading = OpenLoading(this, 1, "文件下载中");
       let res = null;
       await this.axios({
         method: "get",
@@ -1179,7 +1179,7 @@ export default {
         } else {
           this.$message.error("文件获取失败！");
         }
-        loading.close()
+        loading.close();
       });
       if (res) {
         let fileName = "员工列表";
@@ -1197,10 +1197,23 @@ export default {
         link.click();
         document.body.removeChild(link);
         window.URL.revokeObjectURL(url);
-      }else{
-        console.log('未获取到下载文件！')
+      } else {
+        console.log("未获取到下载文件！");
       }
     },
+
+    async getTodos() {
+      const urls = [1,2,3,4,5];
+      for (const [idx, url] of urls.entries()) {
+        await this.test(url);
+      }
+      console.log("Finished!");
+    },
+    test(val){
+      setTimeout(function () {
+        console.log(`Received Todo ${val}`);
+      },1000)
+    }
   },
   components: {
     navBar,
