@@ -370,7 +370,7 @@ router.beforeEach((to, from, next) => {
       next()
     } else {
       window.sessionStorage.clear()
-      window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
+      window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
     }
   } else {
     if (window.location.href.includes('code')) {
@@ -418,12 +418,12 @@ router.beforeEach((to, from, next) => {
           let urlStr = window.location.href.split('?')[0]
           let curUrl = `${urlStr}?${paraStr.substring(1)}`
           console.log(window.location.href)
-          window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
+          window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
         }
       })
     } else {
       window.sessionStorage.clear()
-      window.location.href = `http://test.oa.hualumedia.com/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
+      window.location.href = `${process.env.VUE_APP_URL}/admin.php?ac=apply&fileurl=applylist&type=sso&redirect=${curUrl}`
       // 通过判断path防止出现死循环
       // if (to.path === '/error') {
       //   next()
