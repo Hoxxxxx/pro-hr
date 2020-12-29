@@ -363,7 +363,7 @@ router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   let curUrl = window.location.href
   console.log('test')
-  console.log('VUE_APP_URL:',process.env.VUE_APP_URL)
+  console.log('VUE_APP_URL:',process.env.VUE_APP_URL) 
   console.log('VUE_APP_BASE_API:',process.env.VUE_APP_BASE_API)
   if (token) {
     const code = jwtDecode(token)
