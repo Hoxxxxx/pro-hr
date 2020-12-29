@@ -597,6 +597,9 @@ export default {
 @import url("../../assets/style/public.less");
 .staffManage {
   height: 100%;
+  .elInput{
+    width: 80%;
+  }
   .navBox {
     margin-bottom: 0 !important;
   }
