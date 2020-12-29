@@ -639,7 +639,6 @@ export default {
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
-    this.getTodos()
   },
   methods: {
     // 初始化表头
@@ -1201,19 +1200,6 @@ export default {
         console.log("未获取到下载文件！");
       }
     },
-
-    async getTodos() {
-      const urls = [1,2,3,4,5];
-      for (const [idx, url] of urls.entries()) {
-        await this.test(url);
-      }
-      console.log("Finished!");
-    },
-    test(val){
-      setTimeout(function () {
-        console.log(`Received Todo ${val}`);
-      },1000)
-    }
   },
   components: {
     navBar,
