@@ -295,7 +295,8 @@
       width="668px"
       center
       :close-on-click-modal="false"
-      :close-on-press-escape="false">
+      :close-on-press-escape="false"
+      @close="handleClose">
       <div class="breakContent">
         <p v-for="(item, index) in resList" :key="index">
           <span style="margin-right: 15px">客户：{{item.customer_show}}</span>
@@ -590,6 +591,10 @@ export default {
           params: { ssn: ssnData }
         })
       }
+    },
+    // 关闭弹窗
+    handleClose() {
+      this.$router.go(0)
     },
     
     // ****************upload*****************
