@@ -304,9 +304,11 @@
           <i class="el-icon-loading" v-if="eachRes[index].reqLoading"></i>
           <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].break">分拆完成</span>
           <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].break">分拆失败</span>
-          <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].trans">审核成功</span>
-          <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].trans">审核失败</span>
-          {{eachRes[index].trans}}
+          <span class="loading" v-if="!eachRes[index].reqLoading && eachRes[index].trans=='loading'">
+            审核中<i class="el-icon-loading"></i>
+          </span>
+          <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].trans=='suc'">审核成功</span>
+          <span class="err" v-if="!eachRes[index].reqLoading && eachRes[index].trans=='err'">审核失败</span>
         </p>
       </div>
       <span slot="footer" class="dialog-footer" v-if="breakFinish">
@@ -774,7 +776,7 @@ export default {
           this.eachRes.push({
             reqLoading: true,
             break: false,
-            trans: false
+            trans: 'loading'
           })
           this.dataForm.customer = item.customer
           this.dataForm.customer_show = item.customer_show
@@ -782,31 +784,25 @@ export default {
           addCollList(this.dataForm)
           .then( res => {
             if (res.status == 200) {
-              this.eachRes[index] = {
-                reqLoading: false,
-                break: true,
-                trans: false
-              }
+              this.eachRes[index].reqLoading = false
+              this.eachRes[index].break = true
               this.dataForm.id = res.data.id
               // 审核
               transAdd(this.dataForm.id)
               .then( res => {
                 if (res.status == 200) {
-                  this.eachRes[index].trans = true
+                  this.eachRes[index].trans = 'suc'
                 } else {
-                  this.eachRes[index].trans = false
+                  this.eachRes[index].trans = 'err'
                   this.$message.error(`分拆${index}审核失败：` + res.error.message)
                 }
-                console.log(index, this.eachRes[index].trans)
+                // console.log(index, this.eachRes[index].trans)
                 // 分拆结束
                 this.breakFinish = true
               })
             } else {
-              this.eachRes[index] = {
-                reqLoading: false,
-                break: false,
-                trans: false
-              }
+              this.eachRes[index].reqLoading = false
+              this.eachRes[index].break = false
               this.$message.error(`分拆${index}新增失败：` + res.error.message)
               // 分拆结束
               this.breakFinish = true

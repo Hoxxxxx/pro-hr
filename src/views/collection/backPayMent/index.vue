@@ -323,7 +323,7 @@ export default {
     display: flex;
   }
   .btnBox {
-    width: 180px;
+    width: 150px;
     float: right;
     margin-top: -38px;
     .el-button {
