@@ -306,6 +306,7 @@
           <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].break">分拆失败</span>
           <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].trans">审核成功</span>
           <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].trans">审核失败</span>
+          {{eachRes[index].trans}}
         </p>
       </div>
       <span slot="footer" class="dialog-footer" v-if="breakFinish">
@@ -776,6 +777,7 @@ export default {
             trans: false
           })
           this.dataForm.customer = item.customer
+          this.dataForm.customer_show = item.customer_show
           this.dataForm.amount = item.amount
           addCollList(this.dataForm)
           .then( res => {
@@ -795,7 +797,7 @@ export default {
                   this.eachRes[index].trans = false
                   this.$message.error(`分拆${index}审核失败：` + res.error.message)
                 }
-                // console.log(index, this.eachRes[index].trans)
+                console.log(index, this.eachRes[index].trans)
                 // 分拆结束
                 this.breakFinish = true
               })
