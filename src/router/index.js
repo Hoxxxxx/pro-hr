@@ -234,102 +234,102 @@ const routes = [{
   // 无形资产管理
   {
     path: '/OAassList',
-    name: 'oa无形资产管理',
+    name: 'OA无形资产管理',
     component: assList,
   },
   {
     path: '/OAassInfo',
-    name: 'oa无形资产详情',
+    name: 'OA无形资产详情',
     component: assInfo,
   },
   // 合同管理
   {
     path: '/OAcontractList',
-    name: 'oa合同列表',
+    name: '合同列表',
     component: contractList,
   },
   {
     path: '/OAcontractInfo',
-    name: 'oa查看合同',
+    name: '查看合同',
     component: contractInfo
   },
   {
     path: '/OAcontractType',
-    name: 'oa合同类型',
+    name: '合同类型',
     component: contractType
   },
   // 员工管理
   {
     path: '/OAstaffManage',
-    name: 'oa员工列表',
+    name: '员工列表',
     component: staffManage
   },
   {
     path: '/OAstaffAdd',
-    name: 'oa新增员工',
+    name: '新增员工',
     component: staffAdd
   },
   {
     path: '/OAstaffMsg',
-    name: 'oa查看员工信息',
+    name: '查看员工信息',
     component: staffMsg
   },
   {
     path: '/OAstaffChange',
-    name: 'oa人员异动表',
+    name: '人员异动表',
     component: staffChange
   },
   // 收款管理
   {
     path: '/OApayStrike',
-    name: 'oa收款冲账单',
+    name: '收款冲账单',
     component: payStrike
   },
   {
     path: '/OApayInvoice',
-    name: 'oa发票申请',
+    name: '发票申请',
     component: payInvoice
   },
   {
     path: '/OApayDeliver',
-    name: 'oa发票申请单',
+    name: '发票申请单',
     component: payDeliver
   },
   {
     path: '/OAbackPayment',
-    name: 'oa回款单管理',
+    name: '回款单管理',
     component: backPayment
   },
   {
     path: '/OApayInfo',
-    name: 'oa新增回款单',
+    name: '新增回款单',
     component: payInfo
   },
   // 财务对账
   {
     path: '/OAdepReceivable',
-    name: 'oa部门应收账款',
+    name: '部门应收账款',
     component: depReceivable
   },
   {
     path: '/OAreceivable',
-    name: 'oa应收账款核对',
+    name: '应收账款核对',
     component: receivable
   },
   {
     path: '/OAincome',
-    name: 'oa收入费用情况',
+    name: '收入费用情况',
     component: income
   },
   // 组织管理
   {
     path: '/OAposition',
-    name: 'oa职位管理',
+    name: '职位管理',
     component: position
   },
   {
     path: '/OAdepartment',
-    name: 'oa部门管理',
+    name: '部门管理',
     component: department
   },
 
@@ -362,6 +362,9 @@ import {
 router.beforeEach((to, from, next) => {
   const token = window.sessionStorage.getItem("token")
   let curUrl = window.location.href
+  console.log('test')
+  console.log('VUE_APP_URL:',process.env.VUE_APP_URL) 
+  console.log('VUE_APP_BASE_API:',process.env.VUE_APP_BASE_API)
   if (token) {
     const code = jwtDecode(token)
     let now = Math.round(new Date() / 1000)
