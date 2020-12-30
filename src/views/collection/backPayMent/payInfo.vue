@@ -294,7 +294,6 @@
       :visible.sync="showDialog"
       width="668px"
       center
-      :show-close="false"
       :close-on-click-modal="false"
       :close-on-press-escape="false">
       <div class="breakContent">
