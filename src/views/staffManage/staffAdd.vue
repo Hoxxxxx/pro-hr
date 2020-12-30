@@ -46,7 +46,7 @@
                     :label="1"
                     >男</el-radio
                   >
-                  <el-radio border="" style="width: 90px" :label="2"
+                  <el-radio border="" style="width: 90px" :label="0"
                     >女</el-radio
                   >
                 </el-radio-group>
@@ -82,11 +82,6 @@
                     :label="item.name"
                     :value="item.id"
                   >
-                    <span style="float: left">{{ item.name }}</span>
-                    <span
-                      style="float: right; color: #8492a6; font-size: 13px"
-                      >{{ item.p_name }}</span
-                    >
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -826,7 +821,7 @@ export default {
         sex: [{ required: true, message: "请选择性别", trigger: "change" }],
         job_number: [
           { required: true, message: "请输入员工号", trigger: "blur" },
-          { max: 7, message: "长度不能超过7个字符", trigger: "blur" },
+          { max: 25, message: "长度不能超过25个字符", trigger: "blur" },
         ],
         type: [
           { required: true, message: "请选择员工性质", trigger: "change" },
@@ -1239,9 +1234,9 @@ export default {
       this.getJobs(val);
     },
     timeChange(val) {
-      let date1 = new Date(this.ruleForm.first_labor_contract_deadline);
-      let date2 = new Date(this.ruleForm.second_labor_contract_deadline);
-      let date3 = new Date(this.ruleForm.third_labor_contract_deadline);
+      let date1 = new Date(this.ruleForm.first_labor_contract_deadline ? this.ruleForm.first_labor_contract_deadline : 0);
+      let date2 = new Date(this.ruleForm.second_labor_contract_deadline ? this.ruleForm.second_labor_contract_deadline : 0);
+      let date3 = new Date(this.ruleForm.third_labor_contract_deadline ? this.ruleForm.third_labor_contract_deadline : 0);
       let first = date1.getTime();
       let second = date2.getTime();
       let third = date3.getTime();

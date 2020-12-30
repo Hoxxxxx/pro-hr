@@ -1,10 +1,13 @@
 <template>
   <div class="staffManage">
-    <nav-Bar v-if="$route.path !== '/OAstaffChange'" :breadList="breadList"></nav-Bar>
+    <nav-Bar
+      v-if="$route.path !== '/OAstaffChange'"
+      :breadList="breadList"
+    ></nav-Bar>
     <!-- 搜索框 -->
     <el-button
       class="showSearch"
-      :class="$route.path=='/OAstaffChange'?'OA_showSearch':''"
+      :class="$route.path == '/OAstaffChange' ? 'OA_showSearch' : ''"
       @click="showSearch = !showSearch"
       type="text"
       :icon="showSearch ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
@@ -12,7 +15,10 @@
     >
     <el-collapse-transition>
       <div v-show="showSearch">
-        <el-card class="searchCard" :class="$route.path=='/OAstaffChange'?'OA_searchCard':''">
+        <el-card
+          class="searchCard"
+          :class="$route.path == '/OAstaffChange' ? 'OA_searchCard' : ''"
+        >
           <div class="serchBox">
             <el-input
               v-model="filterList.name"
@@ -55,7 +61,10 @@
     </el-collapse-transition>
 
     <!-- 表格 -->
-    <el-card class="listCard" :class="$route.path=='/OAstaffChange'?'OA_listCard':''">
+    <el-card
+      class="listCard"
+      :class="$route.path == '/OAstaffChange' ? 'OA_listCard' : ''"
+    >
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">人员异动表</span>
@@ -197,6 +206,7 @@
 import navBar from "@/components/navBar/navBar";
 // api
 import { STAFFS_API } from "@/api/staffs";
+import { OpenLoading } from "@/utils/utils.js";
 export default {
   data() {
     return {
@@ -325,27 +335,40 @@ export default {
         name: this.filterList.name,
         type: this.filterList.status,
       };
-      const { data: res } = await this.axios({
+      const loading = OpenLoading(this, 1, "文件下载中");
+      let res = null;
+      await this.axios({
         method: "get",
         url: `hr/staff-changes/export`,
         params: params,
         responseType: "blob",
+      }).then((result) => {
+        if (result.status == 200) {
+          res = result.data;
+        } else {
+          this.$message.error("文件获取失败！");
+        }
+        loading.close();
       });
-      let fileName = "人员异动表";
-      let fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
-      let blob = new Blob([res], {
-        type: fileType,
-      });
-      let url = window.URL.createObjectURL(blob);
-      let link = document.createElement("a");
-      link.style.display = "none";
-      link.href = url;
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      if (res) {
+        let fileName = "人员异动表";
+        let fileType =
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
+        let blob = new Blob([res], {
+          type: fileType,
+        });
+        let url = window.URL.createObjectURL(blob);
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.log("未获取到下载文件！");
+      }
     },
     // 新增部门
     openDialog(type, val) {

@@ -10,8 +10,8 @@
                       class="payForm">
           <el-row>
             <el-col :span="12">
-              <el-form-item label="资产ID" prop="id">
-                <el-input v-model="dataForm.ias04" disabled></el-input>
+              <el-form-item label="资产编号" prop="ias01">
+                <el-input v-model="dataForm.ias01" disabled></el-input>
               </el-form-item>
             </el-col>
             <el-col :span="12">
@@ -492,6 +492,7 @@ export default {
         if (res.status == 200) {
           this.dataForm = {
             id: res.data.id,
+            ias01: res.data.ias01,
             ias02: res.data.ias02,
             ias03: res.data.ias03,
             ias04: res.data.ias04,

@@ -491,7 +491,7 @@ import navBar from "@/components/navBar/navBar";
 import { STAFFS_API } from "@/api/staffs";
 import { renderTime } from "@/utils/function.js";
 import { KT, TY } from "@/api/reconciliation.js";
-
+import { OpenLoading } from "@/utils/utils.js";
 export default {
   filters: {
     color(val) {
@@ -751,26 +751,42 @@ export default {
           this.viewsList = res.data[0].data;
           if (this.viewsList.length > 0) {
             this.viewsList.forEach((item) => {
-              item.positive_time = item.positive_time ? renderTime(item.positive_time) : '无';
-              item.card_valid = item.card_valid ? renderTime(item.card_valid) : '无';
-              item.first_labor_contract_deadline = item.first_labor_contract_deadline ? renderTime(
-                item.first_labor_contract_deadline
-              ) : '无';
-              item.full_graduation_time = item.full_graduation_time ? renderTime(item.full_graduation_time) : '无';
-              item.hualu_join_time = item.hualu_join_time ? renderTime(item.hualu_join_time) : '无';
-              item.labor_contract_deadline = item.labor_contract_deadline ? renderTime(
-                item.labor_contract_deadline
-              ) : '无';
-              item.newmedia_join_time = item.newmedia_join_time ? renderTime(item.newmedia_join_time) : '无';
-              item.part_graduation_time = item.part_graduation_time ? renderTime(item.part_graduation_time) : '无';
-              item.second_labor_contract_deadline = item.second_labor_contract_deadline ? renderTime(
-                item.second_labor_contract_deadline
-              ) :'无';
-              item.third_labor_contract_deadline = item.third_labor_contract_deadline ? renderTime(
-                item.third_labor_contract_deadline
-              ) : '无';
-              item.trial_deadline = item.trial_deadline ? renderTime(item.trial_deadline) : '无';
-              item.work_time = item.work_time ? renderTime(item.work_time) : '无';
+              item.positive_time = item.positive_time
+                ? renderTime(item.positive_time)
+                : "无";
+              item.card_valid = item.card_valid
+                ? renderTime(item.card_valid)
+                : "无";
+              item.first_labor_contract_deadline = item.first_labor_contract_deadline
+                ? renderTime(item.first_labor_contract_deadline)
+                : "无";
+              item.full_graduation_time = item.full_graduation_time
+                ? renderTime(item.full_graduation_time)
+                : "无";
+              item.hualu_join_time = item.hualu_join_time
+                ? renderTime(item.hualu_join_time)
+                : "无";
+              item.labor_contract_deadline = item.labor_contract_deadline
+                ? renderTime(item.labor_contract_deadline)
+                : "无";
+              item.newmedia_join_time = item.newmedia_join_time
+                ? renderTime(item.newmedia_join_time)
+                : "无";
+              item.part_graduation_time = item.part_graduation_time
+                ? renderTime(item.part_graduation_time)
+                : "无";
+              item.second_labor_contract_deadline = item.second_labor_contract_deadline
+                ? renderTime(item.second_labor_contract_deadline)
+                : "无";
+              item.third_labor_contract_deadline = item.third_labor_contract_deadline
+                ? renderTime(item.third_labor_contract_deadline)
+                : "无";
+              item.trial_deadline = item.trial_deadline
+                ? renderTime(item.trial_deadline)
+                : "无";
+              item.work_time = item.work_time
+                ? renderTime(item.work_time)
+                : "无";
             });
           }
           let tempHead = [];
@@ -1149,27 +1165,40 @@ export default {
         start_age: this.ageMin,
         end_age: this.ageMax,
       };
-      const { data: res } = await this.axios({
+      const loading = OpenLoading(this, 1, "文件下载中");
+      let res = null;
+      await this.axios({
         method: "get",
         url: `hr/staffs/export`,
         params: params,
         responseType: "blob",
+      }).then((result) => {
+        if (result.status == 200) {
+          res = result.data;
+        } else {
+          this.$message.error("文件获取失败！");
+        }
+        loading.close();
       });
-      let fileName = "员工列表";
-      let fileType =
-        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
-      let blob = new Blob([res], {
-        type: fileType,
-      });
-      let url = window.URL.createObjectURL(blob);
-      let link = document.createElement("a");
-      link.style.display = "none";
-      link.href = url;
-      link.setAttribute("download", fileName);
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(url);
+      if (res) {
+        let fileName = "员工列表";
+        let fileType =
+          "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"; // xlsx文件
+        let blob = new Blob([res], {
+          type: fileType,
+        });
+        let url = window.URL.createObjectURL(blob);
+        let link = document.createElement("a");
+        link.style.display = "none";
+        link.href = url;
+        link.setAttribute("download", fileName);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(url);
+      } else {
+        console.log("未获取到下载文件！");
+      }
     },
   },
   components: {
