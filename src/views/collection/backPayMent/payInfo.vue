@@ -9,8 +9,9 @@
                       label-position="left"
                       class="payForm">
           <el-row>
-            <el-col :span="10" style="height: 148px">
+            <el-col :span="10" style="height: 148px;  margin-bottom: 22px;">
               <el-form-item label="图片" prop="upload_pic" style="margin-right: 0;">
+                <!-- <el-button type="primary" @click="checkSSN">跳转测试</el-button> -->
                 <!-- 上传imgbox -->
                 <el-upload
                   v-if="pageType!=='check'"
@@ -55,10 +56,12 @@
               </div>
             </el-col>
             <el-col :span="5">
-              <el-form-item label="审核否">
+              <el-form-item label="审核否" v-if="breakUp==false">
                 <div class="confirmBox" :class="dataForm.confirmed==1?'confirmed':''"></div>
               </el-form-item>
             </el-col>
+          </el-row>
+          <el-row>
             <el-col :span="12">
               <el-form-item label="流水号" prop="ssn">
                 <el-input v-model="dataForm.ssn" :disabled="pageType == 'check'"></el-input>
@@ -77,7 +80,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12" style="height: 62px">
-              <el-form-item label="客户" prop="customer">
+              <el-form-item :label="breakUp==true?'付款方':'客户'" prop="customer">
                 <div v-if="pageType=='check'" class="selectbox editNot" style="height:40px">
                   {{dataForm.customer_show}}
                 </div>
@@ -115,7 +118,7 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="金额" prop="amount">
+              <el-form-item :label="breakUp==true?'总金额':'金额'" prop="amount">
                 <el-input v-model="dataForm.amount" :disabled="pageType == 'check'"></el-input>
               </el-form-item>
             </el-col>
@@ -142,9 +145,107 @@
               </el-form-item>
             </el-col>
             <el-col :span="12">
-              <el-form-item label="集团作业号" prop="jt_number">
+              <el-form-item label="集团作业号" prop="jt_number" v-if="breakUp==false">
                 <el-input v-model="dataForm.jt_number" disabled></el-input>
               </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="12" v-if="pageType=='add'">
+              <el-form-item label="是否分拆" prop="breakUp">
+                <el-switch v-model="breakUp" @change="breakChange"></el-switch>
+              </el-form-item>
+            </el-col>
+          </el-row>
+          <el-row>
+            <el-col :span="24">
+              <el-table
+                v-loading="breakLoading"
+                element-loading-text="加载中"
+                element-loading-spinner="el-icon-loading"
+                element-loading-background="rgba(0, 0, 0, 0.2)"
+                v-if="breakUp==true"
+                :data="breakTable"
+                style="width: 100%"
+                :cell-style="{ background: '#fff', color: '#666666', padding: 0 }"
+                :row-style="{height: '40px'}"
+                :header-cell-class-name="must_oaf"
+                border
+              >
+                <el-table-column
+                  prop="id"
+                  label="增 / 删"
+                  fixed="left"
+                  width="100px"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <div>
+                      <div style="font-size: 24px; width: 100%; height: 100%">
+                        <i
+                          v-if="scope.$index == breakTable.length - 1"
+                          @click="addRow()"
+                          class="el-icon-circle-plus"
+                          style="color: #409efd; width: 30px; cursor: pointer"
+                        ></i>
+                        <i
+                          @click="deleteRow(scope.$index)"
+                          class="el-icon-remove"
+                          style="color: #f56c6c; width: 30px; cursor: pointer"
+                        ></i>
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  type="index"
+                  label="序号"
+                  width="55px"
+                  align="center"
+                >
+                </el-table-column>
+                <el-table-column
+                  prop="customer"
+                  label="客户"
+                  min-width="160px"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <!-- <el-select 
+                      class="break_input" 
+                      v-model="scope.row.customer" 
+                      filterable
+                      placeholder="请选择客户" 
+                      @focus="handleFocus"
+                      :disabled="pageType == 'check'">
+                      <el-option
+                        v-for="item in KH_options"
+                        :key="item.occ01"
+                        :label="item.occ01 + ' ' + item.occ02"
+                        :value="item.occ01">
+                      </el-option>
+                    </el-select> -->
+                    <div v-if="pageType=='check'" class="editNot" style="height:40px">
+                      {{scope.row.customer_show}}
+                    </div>
+                    <div v-if="pageType!=='check'">
+                      <div class="selector" @click="selectDialog('break_KH', scope.$index)">
+                        {{scope.row.customer_show}}
+                      </div>
+                    </div>
+                  </template>
+                </el-table-column>
+                <el-table-column
+                  prop="amount"
+                  label="金额"
+                  min-width="130px"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <el-input class="break_input" v-model="scope.row.amount" :disabled="pageType == 'check'"></el-input>
+                  </template>
+                </el-table-column>
+              </el-table>
             </el-col>
           </el-row>
       </el-form>
@@ -186,6 +287,31 @@
       @selectSure="selectSure"
       @selectCancel="selectCancel"
     ></SelectData>
+
+    <!-- 分拆弹窗 -->
+    <el-dialog 
+      :title="breakFinish?'分拆结束':'分拆中'"
+      :visible.sync="showDialog"
+      width="668px"
+      center
+      :show-close="false"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false">
+      <div class="breakContent">
+        <p v-for="(item, index) in resList" :key="index">
+          <span style="margin-right: 15px">客户：{{item.customer_show}}</span>
+          <span style="margin-right: 15px">金额：{{item.amount}}</span>
+          <i class="el-icon-loading" v-if="eachRes[index].reqLoading"></i>
+          <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].break">分拆完成</span>
+          <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].break">分拆失败</span>
+          <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].trans">审核成功</span>
+          <span class="err" v-if="!eachRes[index].reqLoading && !eachRes[index].trans">审核失败</span>
+        </p>
+      </div>
+      <span slot="footer" class="dialog-footer" v-if="breakFinish">
+        <el-button type="primary" @click="checkSSN(dataForm.ssn)">查看分拆结果</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -193,7 +319,7 @@
 import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 // api
-import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl, downloadPic, YHList, BZList, BMList } from "@/api/collection";
+import { addCollList, transAdd, collInfo, transPar, can_Trans, editColl, delColl, downloadPic, YHList, BZList, BMList, KHList } from "@/api/collection";
 // utils
 import { OpenLoading } from "@/utils/utils.js";
 
@@ -244,6 +370,7 @@ export default {
         customer_show: '',
         department: '',
       },
+      KH_List: [],
       YH_List: [],
       BZ_List: [],
       BM_List: [],
@@ -299,6 +426,17 @@ export default {
           { name: "occ02", title: "客户名称" },
         ],
       },
+      // 分拆参数
+      rowIndex: '',
+      breakUp: false,
+      breakTable: [],
+      breakLoading: false,
+      KH_options: [],
+      // 分拆弹窗
+      showDialog: false,
+      breakFinish: false, //分拆完毕
+      eachRes: [], //每条请求结果：{reqLoading: Boolean; break: Boolean; trans: Boolean}
+      resList: [], 
 
     };
   },
@@ -308,6 +446,7 @@ export default {
   },
   created() {
     this.initPage()
+    this.getKH()
     this.getYH()
     this.getBZ()
     this.getBM()
@@ -328,6 +467,16 @@ export default {
         this.title = '查看回款单'
         this.getCollInfo(this.staffId)
       }
+    },
+    getKH() {
+      KHList()
+      .then( res => {
+        if (res.status == 200) {
+          this.KH_List = res.data
+        } else {
+          this.$message.error('获取客户列表失败：' + res.error.message)
+        }
+      })
     },
     getYH() {
       YHList()
@@ -359,6 +508,88 @@ export default {
         }
       })
     },
+    // ****************breakUp***************
+    breakChange(event) {
+      let flag = this.breakUp
+      this.breakUp = !this.breakUp
+      if (event == true) {
+        this.breakTable = [{
+          customer: '',
+          amount: ''
+        },
+        {
+          customer: '',
+          amount: ''
+        },
+        {
+          customer: '',
+          amount: ''
+        },
+        {
+          customer: '',
+          amount: ''
+        },
+        {
+          customer: '',
+          amount: ''
+        }]
+        flag ? this.breakUp = true : this.breakUp = false
+      }
+      if (event == false) {
+        this.$confirm("取消分拆将清空分拆数据, 是否继续?", "提示", {
+          confirmButtonText: "确定",
+          cancelButtonText: "取消",
+          type: "warning",
+        }).then(() => {
+          this.KH_options = []
+          flag ? this.breakUp = true : this.breakUp = false
+        }).catch(() => {});
+      }
+    },
+    getKHList() {
+      this.KH_options = this.KH_List
+    },
+    handleFocus(event) {
+      if (this.KH_options.length == 0) {
+        this.getKHList()
+      }
+    },
+    must_oaf(obj) {
+      // if (this.oaf_must.includes(obj.column.property)) {
+      //   return "must";
+      // }
+    },
+    // 添加一行
+    addRow() {
+      let data = {
+        customer: '', // 客户
+        amount: '', // 金额
+      };
+      this.breakTable.push(data);
+    },
+    // 删除当前行
+    deleteRow(val) {
+      if (this.breakTable.length !== 1) {
+        this.breakTable.splice(val, 1);
+      } else {
+        this.breakUp = false
+      }
+    },
+    // 查看分拆结果
+    checkSSN(ssnData) {
+      if (this.$route.path=='/OApayInfo') {
+        this.$router.push({ 
+          name: 'oa回款单管理', 
+          params: { ssn: ssnData }
+        })
+      } else {
+        this.$router.push({ 
+          name: '回款单管理', 
+          params: { ssn: ssnData }
+        })
+      }
+    },
+    
     // ****************upload*****************
     beforeAvatarUpload(file) {
       const loading = OpenLoading(this, 1)
@@ -442,6 +673,15 @@ export default {
           this.dataSelect.headList = this.tableHead.head_KH;
           this.dataSelect.dialogTitle = "客户列表";
         break;
+        case "break_KH":
+          let filter_break_KH = [{ label: "", model_key_search: "keyword" }];
+          this.dataSelect.filter = filter_break_KH;
+          this.dataSelect.searchType = "single"
+          this.dataSelect.editType = "entry"
+          this.dataSelect.searchApi = "meta/occs";
+          this.dataSelect.headList = this.tableHead.head_KH;
+          this.dataSelect.dialogTitle = "客户列表";
+        break;
         default:
         return;
         break;
@@ -462,6 +702,10 @@ export default {
             this.dataForm.customer = val[0].occ01;
             this.dataForm.customer_show = val[0].occ02;
           break;
+          case "break_KH":
+            this.breakTable[this.rowIndex].customer = val[0].occ01;
+            this.breakTable[this.rowIndex].customer_show = val[0].occ02;
+          break;
           default:
           return;
           break;
@@ -469,6 +713,188 @@ export default {
       }
     },
     // ***************************************
+    // 新增回款单
+    addForm(type) {
+      // 非分拆
+      if (type == 'normal') {
+        const loading = OpenLoading(this, 1)
+        addCollList(this.dataForm)
+        .then( res => {
+          if (res.status == 200) {
+            this.dataForm.id = res.data.id
+            // 抛转集团
+            transAdd(this.dataForm.id)
+            .then( res => {
+              loading.close()
+              clearTimeout(this.overloading)
+              if (res.status == 200) {
+                this.dataForm = res.data[0]
+                this.$message.success('审核成功！')
+                setTimeout(() => {
+                  this.$router.go(0)
+                },500)
+              } else {
+                this.$message.error('抛转集团失败：' + res.error.message)
+              }
+              // 跳转
+              if (this.$route.path=='/OApayInfo') {
+                this.$router.push({
+                  path: 'OApayInfo',
+                  query:{
+                    id: this.dataForm.id,
+                    pageType: 'check'
+                  }
+                })
+              } else {
+                this.$router.push({
+                  path: 'payInfo',
+                  query:{
+                    id: this.dataForm.id,
+                    pageType: 'check'
+                  }
+                })
+              }
+              setTimeout(() => {
+                this.$router.go(0)
+              },200)
+            })
+          } else {
+            loading.close()
+            clearTimeout(this.overloading)
+            this.$message.error('新增失败：' + res.error.message)
+          }
+        })
+      }
+      // 分拆 
+      else {
+        this.breakFinish = false
+        this.breakTable.forEach((item, index) => {
+          this.resList.push( item )
+          this.eachRes.push({
+            reqLoading: true,
+            break: false,
+            trans: false
+          })
+          this.dataForm.customer = item.customer
+          this.dataForm.amount = item.amount
+          addCollList(this.dataForm)
+          .then( res => {
+            if (res.status == 200) {
+              this.eachRes[index] = {
+                reqLoading: false,
+                break: true,
+                trans: false
+              }
+              this.dataForm.id = res.data.id
+              // 审核
+              transAdd(this.dataForm.id)
+              .then( res => {
+                if (res.status == 200) {
+                  this.eachRes[index].trans = true
+                } else {
+                  this.eachRes[index].trans = false
+                  this.$message.error(`分拆${index}审核失败：` + res.error.message)
+                }
+                // console.log(index, this.eachRes[index].trans)
+                // 分拆结束
+                this.breakFinish = true
+              })
+            } else {
+              this.eachRes[index] = {
+                reqLoading: false,
+                break: false,
+                trans: false
+              }
+              this.$message.error(`分拆${index}新增失败：` + res.error.message)
+              // 分拆结束
+              this.breakFinish = true
+            }
+          })
+          // console.log('aaa'+index, this.eachRes[index].trans)
+        })
+      }
+    },
+    // 编辑回款单
+    editForm() {
+      const loading = OpenLoading(this, 1)
+      editColl(this.dataForm)
+      .then( res => {
+        loading.close()
+        clearTimeout(this.overloading)
+        if (res.status == 200) {
+          if (this.$route.path=='/OApayInfo') {
+            this.$router.push({
+              path: 'OApayInfo',
+              query:{
+                id: this.dataForm.id,
+                pageType: 'check'
+              }
+            })
+          } else {
+            this.$router.push({
+              path: 'payInfo',
+              query:{
+                id: this.dataForm.id,
+                pageType: 'check'
+              }
+            })
+          }
+          this.$message.success('编辑成功！')
+          setTimeout(() => {
+            this.$router.go(0)
+          },500)
+        } else {
+          loading.close()
+          clearTimeout(this.overloading)
+          this.$message.error('编辑失败：' + res.error.message)
+        }
+      })
+    },
+    // 分拆提交前验证
+    beforeBreak(type) {
+      let corrFlag = true
+      this.$refs.dataForm.validate(valid => {
+        if(valid){
+          // 验证是否有空提交
+          try {
+            this.breakTable.forEach((item, index) => {
+              if (item.customer == '') {
+                throw new Error('customer');
+              } else if (item.amount == '')  {
+                throw new Error('amount');
+              }
+            })
+          } catch (error) {
+            // console.log(error.message)
+            if (error.message == 'customer') {
+              this.$message.warning(`分拆列表客户不可为空`)
+              corrFlag = false
+            } else if (error.message == 'amount') {
+              this.$message.warning(`分拆列表金额不可为空`)
+              corrFlag = false
+            }
+          }
+          if (corrFlag) {
+            // 计算金额总数
+            let sum = 0
+            this.breakTable.forEach( item => {
+              sum = sum + Number(item.amount)
+            })
+            if (sum == Number(this.dataForm.amount)) {
+              this.showDialog = true
+              if (type == 'add') {
+                this.addForm('break')
+              } else if (type == 'edit'){
+                this.editForm('break')
+              }
+            } else {
+              this.$message.warning(`分拆金额与总金额不相等，请重新填写！`)
+            }
+          }
+        }
+      })
+    },
+    
     // 0:取消 /1:新增/2:取消编辑/3:提交编辑/4:发起编辑/5:删除/6:审核/7:取消审核/8:抛转全媒体/9:抛转全票通
     btnClick(type) {
       if (type == 0) {
@@ -479,57 +905,15 @@ export default {
         }
       } 
       else if (type == 1) {
-        this.$refs.dataForm.validate(valid => {
-          if(valid){
-            const loading = OpenLoading(this, 1)
-            addCollList(this.dataForm)
-            .then( res => {
-              if (res.status == 200) {
-                this.dataForm.id = res.data.id
-                // 抛转集团
-                transAdd(this.dataForm.id)
-                .then( res => {
-                  loading.close()
-                  clearTimeout(this.overloading)
-                  if (res.status == 200) {
-                    this.dataForm = res.data[0]
-                    this.$message.success('审核成功！')
-                    setTimeout(() => {
-                      this.$router.go(0)
-                    },500)
-                  } else {
-                    this.$message.error('抛转集团失败：' + res.error.message)
-                  }
-                  // 跳转
-                  if (this.$route.path=='/OApayInfo') {
-                    this.$router.push({
-                      path: 'OApayInfo',
-                      query:{
-                        id: this.dataForm.id,
-                        pageType: 'check'
-                      }
-                    })
-                  } else {
-                    this.$router.push({
-                      path: 'payInfo',
-                      query:{
-                        id: this.dataForm.id,
-                        pageType: 'check'
-                      }
-                    })
-                  }
-                  setTimeout(() => {
-                    this.$router.go(0)
-                  },200)
-                })
-              } else {
-                loading.close()
-                clearTimeout(this.overloading)
-                this.$message.error('新增失败：' + res.error.message)
-              }
-            })
-          }
-        })
+        if (this.breakUp == false) {
+          this.$refs.dataForm.validate(valid => {
+            if(valid){
+              this.addForm('normal')
+            }
+          })
+        } else {
+          this.beforeBreak('add')
+        }
       }
       else if (type == 2) {
         if (this.$route.path=='/OApayInfo') {
@@ -541,39 +925,7 @@ export default {
       else if (type == 3) {
         this.$refs.dataForm.validate(valid => {
           if(valid){
-            const loading = OpenLoading(this, 1)
-            editColl(this.dataForm)
-            .then( res => {
-              loading.close()
-              clearTimeout(this.overloading)
-              if (res.status == 200) {
-                if (this.$route.path=='/OApayInfo') {
-                  this.$router.push({
-                    path: 'OApayInfo',
-                    query:{
-                      id: this.dataForm.id,
-                      pageType: 'check'
-                    }
-                  })
-                } else {
-                  this.$router.push({
-                    path: 'payInfo',
-                    query:{
-                      id: this.dataForm.id,
-                      pageType: 'check'
-                    }
-                  })
-                }
-                this.$message.success('编辑成功！')
-                setTimeout(() => {
-                  this.$router.go(0)
-                },500)
-              } else {
-                loading.close()
-                clearTimeout(this.overloading)
-                this.$message.error('编辑失败：' + res.error.message)
-              }
-            })
+            this.editForm()
           }
         })
       }
@@ -763,8 +1115,6 @@ export default {
     // ***************************************
 
   },
-  watch: {
-  },
 };
 </script>
 
@@ -841,6 +1191,31 @@ export default {
 .confirmed {
   background: url(../../../assets/img/confirm.png) no-repeat;
   background-size: 148px 148px;
+}
+
+.break_input /deep/ .el-input__inner {
+  height: 40px;
+  border: none;
+}
+
+.el-dialog{
+  .breakContent{
+    width: fit-content;
+    margin: 0 auto;
+    span{
+      font-size: 15px;
+      margin-right: 15px;
+    }
+    .suc{
+      color: #67C23A;
+    }
+    .err{
+      color: #F56C6C;
+    }
+    .loading {
+      color: #979797;
+    }
+  }
 }
 
 .OA_listCard {

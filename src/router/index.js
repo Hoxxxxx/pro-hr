@@ -234,102 +234,102 @@ const routes = [{
   // 无形资产管理
   {
     path: '/OAassList',
-    name: 'OA无形资产管理',
+    name: 'oa无形资产管理',
     component: assList,
   },
   {
     path: '/OAassInfo',
-    name: 'OA无形资产详情',
+    name: 'oa无形资产详情',
     component: assInfo,
   },
   // 合同管理
   {
     path: '/OAcontractList',
-    name: '合同列表',
+    name: 'oa合同列表',
     component: contractList,
   },
   {
     path: '/OAcontractInfo',
-    name: '查看合同',
+    name: 'oa查看合同',
     component: contractInfo
   },
   {
     path: '/OAcontractType',
-    name: '合同类型',
+    name: 'oa合同类型',
     component: contractType
   },
   // 员工管理
   {
     path: '/OAstaffManage',
-    name: '员工列表',
+    name: 'oa员工列表',
     component: staffManage
   },
   {
     path: '/OAstaffAdd',
-    name: '新增员工',
+    name: 'oa新增员工',
     component: staffAdd
   },
   {
     path: '/OAstaffMsg',
-    name: '查看员工信息',
+    name: 'oa查看员工信息',
     component: staffMsg
   },
   {
     path: '/OAstaffChange',
-    name: '人员异动表',
+    name: 'oa人员异动表',
     component: staffChange
   },
   // 收款管理
   {
     path: '/OApayStrike',
-    name: '收款冲账单',
+    name: 'oa收款冲账单',
     component: payStrike
   },
   {
     path: '/OApayInvoice',
-    name: '发票申请',
+    name: 'oa发票申请',
     component: payInvoice
   },
   {
     path: '/OApayDeliver',
-    name: '发票申请单',
+    name: 'oa发票申请单',
     component: payDeliver
   },
   {
     path: '/OAbackPayment',
-    name: '回款单管理',
+    name: 'oa回款单管理',
     component: backPayment
   },
   {
     path: '/OApayInfo',
-    name: '新增回款单',
+    name: 'oa新增回款单',
     component: payInfo
   },
   // 财务对账
   {
     path: '/OAdepReceivable',
-    name: '部门应收账款',
+    name: 'oa部门应收账款',
     component: depReceivable
   },
   {
     path: '/OAreceivable',
-    name: '应收账款核对',
+    name: 'oa应收账款核对',
     component: receivable
   },
   {
     path: '/OAincome',
-    name: '收入费用情况',
+    name: 'oa收入费用情况',
     component: income
   },
   // 组织管理
   {
     path: '/OAposition',
-    name: '职位管理',
+    name: 'oa职位管理',
     component: position
   },
   {
     path: '/OAdepartment',
-    name: '部门管理',
+    name: 'oa部门管理',
     component: department
   },
 

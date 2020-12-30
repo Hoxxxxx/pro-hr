@@ -91,3 +91,12 @@ export const BMList = (params) => {
       params
   })
 }
+
+// 获取客户列表
+export const KHList = (params) => {
+  return request.GET(`meta/occs`,
+  {},
+  {
+      params
+  })
+}

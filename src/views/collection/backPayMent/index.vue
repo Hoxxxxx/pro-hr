@@ -23,6 +23,10 @@
                           placeholder="请输入部门编号"
                           style="margin-right: 20px">
         </el-input>
+        <el-input v-model="listParams['filter[ssn]']" 
+                          placeholder="请输入流水号"
+                          style="margin-right: 20px">
+        </el-input>
       </div>
       <div class="btnBox">
         <el-button type="primary" size="medium" @click="getCollList">搜索</el-button>
@@ -136,6 +140,7 @@ export default {
       listParams: { 
         'filter[customer]': '',
         'filter[department]': '',
+        'filter[ssn]': '',
         page: 1, 
         perPage: 10 
       },
@@ -162,9 +167,18 @@ export default {
     //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
   },
   created() {
-    this.getCollList()
+    this.initBreak()
   },
   methods: {
+    // 获取分拆状态
+    initBreak() {
+      // console.log(this.$route)
+      if (this.$route.params.ssn){
+        this.listParams['filter[ssn]'] = this.$route.params.ssn
+        this.showSearch = true
+      }
+      this.getCollList()
+    },
     // **********翻页**********
     handlePageChange(newPage) {
       this.listParams.page = newPage;
@@ -179,6 +193,7 @@ export default {
     re_getCollList() {
       this.listParams["filter[customer]"] = ''
       this.listParams['filter[department]'] = ''
+      this.listParams['filter[ssn]'] = ''
       this.getCollList()
     },
     // 收入列表
