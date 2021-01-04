@@ -281,7 +281,7 @@ export default {
       },
       // 分页
       total: 4,
-      listParams: { name: "", page: 1, pageSize: 10 },
+      listParams: { name: "", page: 1, pageSize: 20 },
     };
   },
   mounted() {

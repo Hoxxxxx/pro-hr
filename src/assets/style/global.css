@@ -76,7 +76,7 @@ dt {
 }
 
 ::-webkit-scrollbar-thumb {
-    background-color: #dddddd;
+    background-color: #d1cece;
     background-clip: padding-box;
     min-height: 28px;
     border-radius: 10px;
