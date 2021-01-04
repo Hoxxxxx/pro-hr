@@ -478,27 +478,9 @@ export default {
   .showSearch {
     margin-left: 20px;
   }
-  .searchCard {
-    border-radius: 10px;
-    height: 80px;
-    margin: 0px 20px 0 20px;
-    .btnBox {
-      width: 180px;
-      float: right;
-      margin-top: -38px;
-      .el-button {
-        height: 40px;
-        margin-bottom: 20px;
-      }
-      .secondary {
-        border: 1px solid #409efd;
-        color: #409efd;
-      }
-    }
-  }
 
   .listCard {
-    margin: 20px 20px 0 20px;
+    margin: 0 20px !important;
     .clearfix {
       display: flex;
       align-items: center;
@@ -509,7 +491,6 @@ export default {
       .tableTitle {
         font-weight: bold;
       }
-
       .btns {
         position: absolute;
         right: 0px;

@@ -1052,62 +1052,7 @@ export default {
   .navBox {
     margin-bottom: 0 !important;
   }
-  .menuList {
-    width: 100%;
-    background: #fff;
-    ul {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 0 20px;
-      li {
-        position: relative;
-        cursor: pointer;
-        width: 80px;
-        height: 40px;
-        font-size: 14px;
-        margin: 0 20px;
-        color: #999999;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        &:first-child {
-          margin-left: 0;
-        }
-        &::after {
-          display: block;
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          height: 4px;
-          width: 100%;
-        }
-        .index {
-          width: 14px;
-          height: 14px;
-          border-radius: 100%;
-          background: #999;
-        }
-        .menuName {
-          line-height: 40px;
-        }
-        &.active {
-          .index {
-            background: #409efd;
-          }
-          .menuName,
-          .count {
-            color: #409efd;
-          }
-          &::after {
-            background: #409efd;
-          }
-        }
-      }
-    }
-  }
+  
 
   .formCard {
     margin: 20px;

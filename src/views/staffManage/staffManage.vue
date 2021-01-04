@@ -59,14 +59,12 @@
               <div class="btnBox">
                 <el-button
                   type="primary"
-                  style="width: 90px"
                   size="medium"
                   @click="search(0)"
                   >搜索</el-button
                 >
                 <el-button
                   class="secondary"
-                  style="width: 90px"
                   size="medium"
                   @click="search(1)"
                   >重置</el-button
@@ -85,51 +83,53 @@
     >
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
-        <span class="tableTitle">员工列表</span>
-        <div class="btns">
-          <el-button type="primary" class="p40" @click="addStaff()"
-            >新增员工</el-button
+        <div class="filterOut">
+          <span class="tableTitle">员工列表</span>
+          <el-button
+            @click="showfilter = !showfilter"
+            type="text"
+            :icon="showfilter ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
+            >列表内容筛选</el-button
           >
-          <el-button class="btn p40" @click="deleteSelected()"
-            >批量删除</el-button
-          >
-          <el-button class="btn p40" @click="exportChange()">导出</el-button>
+          <div class="btns">
+            <el-button type="primary" class="p40" @click="addStaff()"
+              >新增员工</el-button
+            >
+            <el-button class="btn p40" @click="deleteSelected()"
+              >批量删除</el-button
+            >
+            <el-button class="btn p40" @click="exportChange()">导出</el-button>
+          </div>
         </div>
-      </div>
-      <div class="tableFilter">
-        <el-button
-          @click="showfilter = !showfilter"
-          type="text"
-          :icon="showfilter ? 'el-icon-caret-top' : 'el-icon-caret-bottom'"
-          >列表内容筛选</el-button
-        >
-        <el-collapse-transition>
-          <div v-show="showfilter">
-            <div class="checkBoxs">
-              <div>
-                <el-checkbox
-                  :indeterminate="checkedBox.isIndeterminate"
-                  v-model="checkedBox.checkAll"
-                  @change="handleCheckAllChange"
-                  >全选</el-checkbox
-                >
-                <div style="margin: 15px 0"></div>
-                <el-checkbox-group
-                  v-model="checkedBox.checkedCities"
-                  @change="handleCheckedCitiesChange"
-                >
+        <div class="tableFilter">
+          <el-collapse-transition>
+            <div v-show="showfilter">
+              <div class="checkBoxs">
+                <div>
                   <el-checkbox
-                    v-for="(key, value) in checkedBox.cities"
-                    class="checkItem"
-                    :label="key"
-                    :key="value"
-                    >{{ key }}</el-checkbox
+                    :indeterminate="checkedBox.isIndeterminate"
+                    v-model="checkedBox.checkAll"
+                    @change="handleCheckAllChange"
+                    style="margin-bottom:10px;"
+                    >全选</el-checkbox
                   >
-                </el-checkbox-group>
+                  <el-checkbox-group
+                    v-model="checkedBox.checkedCities"
+                    @change="handleCheckedCitiesChange"
+                  >
+                    <el-checkbox
+                      v-for="(key, value) in checkedBox.cities"
+                      class="checkItem"
+                      :label="key"
+                      :key="value"
+                      >{{ key }}</el-checkbox
+                    >
+                  </el-checkbox-group>
+                </div>
               </div>
             </div>
-          </div>
-        </el-collapse-transition>
+          </el-collapse-transition>
+        </div>
       </div>
 
       <!-- 表格区域 -->
@@ -619,7 +619,7 @@ export default {
       fileMark: [],
       // 分页
       total: 0,
-      listParams: { name: "", page: 1, pageSize: 10 },
+      listParams: { name: "", page: 1, pageSize: 20 },
     };
   },
   mounted() {
@@ -1210,71 +1210,20 @@ export default {
 <style lang="less" scoped>
 .staffManage {
   height: 100%;
+  .el-table /deep/ td,
+  .el-table /deep/ th {
+    padding: 4px 0 !important;
+  }
+  .el-table /deep/ th > .cell {
+    padding: 10px 0;
+  }
   .navBox {
     margin-bottom: 0 !important;
   }
   .showSearch {
     margin-left: 20px;
   }
-  .menuList {
-    width: 100%;
-    background: #fff;
-    ul {
-      display: flex;
-      flex-direction: row;
-      align-items: center;
-      padding: 0 20px;
-      li {
-        position: relative;
-        cursor: pointer;
-        width: 80px;
-        height: 40px;
-        font-size: 14px;
-        margin: 0 20px;
-        color: #999999;
-        display: flex;
-        flex-direction: row;
-        align-items: center;
-        justify-content: space-between;
-        &:first-child {
-          margin-left: 0;
-        }
-        &::after {
-          display: block;
-          content: "";
-          position: absolute;
-          left: 0;
-          bottom: 0;
-          height: 4px;
-          width: 100%;
-        }
-        .index {
-          width: 14px;
-          height: 14px;
-          border-radius: 100%;
-          background: #999;
-        }
-        .count {
-          letter-spacing: 1px;
-        }
-        .menuName {
-          line-height: 40px;
-        }
-        &.active {
-          .index {
-            background: #409efd;
-          }
-          .menuName,
-          .count {
-            color: #409efd;
-          }
-          &::after {
-            background: #409efd;
-          }
-        }
-      }
-    }
-  }
+  
   .searchCard {
     border-radius: 10px;
     margin: 0 20px 20px 20px;
@@ -1287,14 +1236,15 @@ export default {
         margin: 0 20px;
       }
       .btnBox {
+        width: 180px;
         position: absolute;
         right: 0;
+        top: 40px;
 
         .el-button {
           height: 40px;
         }
         .secondary {
-          width: 90px;
           border: 1px solid #409efd;
           color: #409efd;
         }
@@ -1457,26 +1407,30 @@ export default {
 .listCard {
   margin: 0 20px;
   .clearfix {
-    display: flex;
-    align-items: center;
-    position: relative;
+    // display: flex;
+    // align-items: center;
+    // position: relative;
   }
   .tableTitleBox {
-    padding: 10px 0;
+    .filterOut {
+      width: 100%;
+      position: relative;
+      .btns {
+        position: absolute;
+        right: 0;
+        top: 0;
+        .btn {
+          color: #409efd;
+          border-color: #409efd;
+        }
+        .p40 {
+          padding: 12px 40px;
+        }
+      }
+    }
     .tableTitle {
       font-weight: bold;
-    }
-
-    .btns {
-      position: absolute;
-      right: 0;
-      .btn {
-        color: #409efd;
-        border-color: #409efd;
-      }
-      .p40 {
-        padding: 12px 40px;
-      }
+      margin-right: 10px;
     }
   }
   .deleteMsg {
@@ -1566,7 +1520,7 @@ export default {
   .checkBoxs {
     display: flex;
     flex-direction: row;
-    margin-bottom: 20px;
+    margin-top: 10px;
     .checkItem {
       margin-bottom: 10px;
     }
@@ -1577,7 +1531,7 @@ export default {
   flex-direction: row;
   flex-wrap: wrap;
   .w56 {
-    width: 70px;
+    width: 68px;
     padding: 0 !important;
     margin-left: 0 !important;
     text-align: center;

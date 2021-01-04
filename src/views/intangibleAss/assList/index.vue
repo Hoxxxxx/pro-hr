@@ -274,30 +274,30 @@ export default {
   }
 }
 .listCard {
-  margin: 20px;
-  .clearfix {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-  .tableTitleBox {
-    .tableTitle {
-      font-weight: bold;
+    margin: 20px;
+    .clearfix {
+      display: flex;
+      align-items: center;
+      position: relative;
     }
-
-    .btns {
-      position: absolute;
-      right: 0px;
-      .btn {
-        color: #409efd;
-        border-color: #409efd;
+    .tableTitleBox {
+      padding: 10px 0;
+      .tableTitle {
+        font-weight: bold;
       }
-      .p40 {
-        padding: 12px 40px;
+      .btns {
+        position: absolute;
+        right: 0px;
+        .btn {
+          color: #409efd;
+          border-color: #409efd;
+        }
+        .p40 {
+          padding: 12px 40px;
+        }
       }
     }
   }
-}
 .extraBtns {
   width: 100%;
   margin-top: 30px;

@@ -1,3 +1,86 @@
 .elInput {
   width: 430px;
 }
+
+.menuList {
+  width: 100%;
+  background: #fff;
+  ul {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    padding: 0 20px;
+    li {
+      position: relative;
+      cursor: pointer;
+      width: 80px;
+      height: 30px;
+      font-size: 14px;
+      margin: 0 20px;
+      color: #999999;
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      &:first-child {
+        margin-left: 0;
+      }
+      &::after {
+        display: block;
+        content: "";
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        height: 2px;
+        width: 100%;
+      }
+      .index {
+        width: 14px;
+        height: 14px;
+        border-radius: 100%;
+        background: #999;
+      }
+      .menuName {
+        line-height: 40px;
+      }
+      &.active {
+        .index {
+          background: #409efd;
+        }
+        .menuName,
+        .count {
+          color: #409efd;
+        }
+        &::after {
+          background: #409efd;
+        }
+      }
+    }
+  }
+}
+
+.searchCard {
+  border-radius: 10px!important;
+  height: 80px;
+  margin: 0px 20px 20px 20px;
+  .btnBox {
+    width: 180px;
+    float: right;
+    margin-top: -38px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    .el-button {
+      width: 80px;
+      height: 40px;
+    }
+    .secondary {
+      border: 1px solid #409efd;
+      color: #409efd;
+    }
+  }
+}
+
+.listCard{
+  margin: 0 20px;
+}

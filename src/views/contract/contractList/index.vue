@@ -293,7 +293,7 @@ export default {
 .searchCard {
   border-radius: 10px;
   height: 80px;
-  margin: 0px 20px 0 20px;
+  margin: 0px 20px 20px 20px;
   .serchBox {
     width: 600px;
     display: flex;
@@ -302,9 +302,12 @@ export default {
     width: 180px;
     float: right;
     margin-top: -38px;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
     .el-button {
+      width: 80px;
       height: 40px;
-      margin-bottom: 20px;
     }
     .secondary {
       border: 1px solid #409efd;
@@ -313,30 +316,30 @@ export default {
   }
 }
 .listCard {
-  margin: 20px;
-  .clearfix {
-    display: flex;
-    align-items: center;
-    position: relative;
-  }
-  .tableTitleBox {
-    .tableTitle {
-      font-weight: bold;
+    margin: 0 20px !important;
+    .clearfix {
+      display: flex;
+      align-items: center;
+      position: relative;
     }
-
-    .btns {
-      position: absolute;
-      right: 0px;
-      .btn {
-        color: #409efd;
-        border-color: #409efd;
+    .tableTitleBox {
+      padding: 10px 0;
+      .tableTitle {
+        font-weight: bold;
       }
-      .p40 {
-        padding: 12px 40px;
+      .btns {
+        position: absolute;
+        right: 0px;
+        .btn {
+          color: #409efd;
+          border-color: #409efd;
+        }
+        .p40 {
+          padding: 12px 40px;
+        }
       }
     }
   }
-}
 .extraBtns {
   width: 100%;
   margin-top: 30px;
