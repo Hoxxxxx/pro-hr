@@ -631,8 +631,6 @@ export default {
             addContract(this.dataForm)
             .then( res => {
               if (res.status == 200) {
-                loading.close()
-                clearTimeout(this.overloading)
                 // this.dataForm = res.data
                 this.$message.success('新增成功！')
                 setTimeout(() => {
@@ -643,10 +641,10 @@ export default {
                   }
                 },500)
               } else {
-                loading.close()
-                clearTimeout(this.overloading)
                 this.$message.error('新增失败：' + res.error.message)
               }
+              loading.close()
+              clearTimeout(this.overloading)
             })
           }
         })
@@ -667,8 +665,6 @@ export default {
             editContract(this.dataForm)
             .then( res => {
               if (res.status == 200) {
-                loading.close()
-                clearTimeout(this.overloading)
                 // this.dataForm = res.data
                 this.$message.success('编辑成功！')
                 setTimeout(() => {
@@ -679,10 +675,10 @@ export default {
                   }
                 },500)
               } else {
-                loading.close()
-                clearTimeout(this.overloading)
                 this.$message.error('编辑失败：' + res.error.message)
               }
+              loading.close()
+              clearTimeout(this.overloading)
             })
           }
         })

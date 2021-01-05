@@ -217,6 +217,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 // api
@@ -380,6 +381,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ROLES_API.deleteRoles({}, val).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -387,6 +389,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -407,6 +411,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ROLES_API.deleteRoles(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -414,6 +419,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -432,49 +439,48 @@ export default {
       this.ids = temp;
     },
     extraBtnClick(type) {
-      switch (type) {
-        case 0:
-          this.showAddPop = false;
-          break;
-        case 1:
-          let params = {
-            name: this.addParams.roleName,
-            permission: this.getCurrentAddNode(),
-            menu: this.getCurrentMenuNode(),
-          };
-          ROLES_API.addRoles(params).then((res) => {
-            if (res.status == 200) {
-              this.showAddPop = false;
-              this.$message.success("添加成功");
-              this.rolesList();
-            }
-            // 新增成功过后需要清空已选中的节点
-            this.$refs.addCodeTree.setCheckedNodes([]);
-            this.$refs.addMenuTree.setCheckedNodes([]);
-          });
-          break;
-        case 2:
-          this.showEditPop = false;
-          break;
-        case 3:
-          let params_edit = {
-            name: this.editParams.roleName,
-            permission: this.getCurrentEditNode(),
-            menu: this.getCurrentEditMenu(),
-          };
-          ROLES_API.editRoles(params_edit, this.editId).then((res) => {
-            if (res.status == 200) {
-              this.showEditPop = false;
-              this.$message.success("修改成功");
-              this.rolesList();
-            }
-            // 编辑成功过后需要清空已选中的节点
-            this.$refs.editCodeTree.setCheckedNodes([]);
-            this.$refs.editMenuTree.setCheckedNodes([]);
-          });
-          break;
-        default:
-          break;
+      if (type == 0) {
+        this.showAddPop = false;
+      } else if (type == 1) {
+        const loading = OpenLoading(this, 1)
+        let params = {
+          name: this.addParams.roleName,
+          permission: this.getCurrentAddNode(),
+          menu: this.getCurrentMenuNode(),
+        };
+        ROLES_API.addRoles(params).then((res) => {
+          if (res.status == 200) {
+            this.showAddPop = false;
+            this.$message.success("添加成功");
+            this.rolesList();
+          }
+          // 新增成功过后需要清空已选中的节点
+          this.$refs.addCodeTree.setCheckedNodes([]);
+          this.$refs.addMenuTree.setCheckedNodes([]);
+          loading.close()
+          clearTimeout(this.overloading)
+        });
+      } else if (type == 2) {
+        this.showEditPop = false;
+      } else if (type == 3) {
+        const loading = OpenLoading(this, 1)
+        let params_edit = {
+          name: this.editParams.roleName,
+          permission: this.getCurrentEditNode(),
+          menu: this.getCurrentEditMenu(),
+        };
+        ROLES_API.editRoles(params_edit, this.editId).then((res) => {
+          if (res.status == 200) {
+            this.showEditPop = false;
+            this.$message.success("修改成功");
+            this.rolesList();
+          }
+          // 编辑成功过后需要清空已选中的节点
+          this.$refs.editCodeTree.setCheckedNodes([]);
+          this.$refs.editMenuTree.setCheckedNodes([]);
+          loading.close()
+          clearTimeout(this.overloading)
+        });
       }
     },
     // 新增时获取已选中的节点

@@ -912,6 +912,7 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           STAFFS_API.deleteStaff({}, val).then((res) => {
             if (res.status == 200) {
               this.$message({
@@ -922,12 +923,15 @@ export default {
             } else {
               this.$message.error(res.error);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {});
     },
     // 离职
     departure() {
+      const loading = OpenLoading(this, 1)
       let params = {
         staff_id: this.tempId,
         turnover_type: this.depart,
@@ -949,6 +953,8 @@ export default {
             type: "warning",
           });
         }
+        loading.close()
+        clearTimeout(this.overloading)
       });
     },
     // 转正
@@ -982,6 +988,7 @@ export default {
         } else if (!params.summary) {
           this.$message.error("请填写工作总结");
         } else {
+          const loading = OpenLoading(this, 1)
           STAFFS_API.positive(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("转正成功！");
@@ -990,12 +997,15 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         }
       }
     },
     // 开通账号
     openAccount() {
+      const loading = OpenLoading(this, 1)
       let id = this.tempId;
       let params = {
         account_name: this.name_openUse,
@@ -1016,10 +1026,13 @@ export default {
             type: "warning",
           });
         }
+        loading.close()
+        clearTimeout(this.overloading)
       });
     },
     // 停用账号
     closeAccount() {
+      const loading = OpenLoading(this, 1)
       TY(this.tempId).then((res) => {
         if (res.status == 200) {
           this.$message({
@@ -1035,6 +1048,8 @@ export default {
             type: "warning",
           });
         }
+        loading.close()
+        clearTimeout(this.overloading)
       });
     },
     // 分类人数统计
@@ -1090,6 +1105,7 @@ export default {
           if (params.ids.length == 0) {
             this.$message.warning("未选择员工");
           } else {
+            const loading = OpenLoading(this, 1)
             STAFFS_API.deleteStaff(params).then((res) => {
               if (res.status == 200) {
                 this.$message.success("删除成功！");
@@ -1097,6 +1113,8 @@ export default {
               } else {
                 this.$message.error("删除失败！");
               }
+              loading.close()
+              clearTimeout(this.overloading)
             });
           }
         })

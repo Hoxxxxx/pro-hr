@@ -96,45 +96,46 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>职位名称：</span>
-              <el-input
-                style="width: 400px"
-                v-model="positionName"
-                placeholder="请输入职位名称"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级职位：</span>
-              <el-select
-                style="width: 400px"
-                v-model="position"
-                placeholder="请选择上级职位"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in position_options"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>职位描述：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入职位描述"
-                v-model="positionMsg"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
+      <el-dialog 
+        title="新增职位"
+        :visible.sync="showAddPop" 
+        width="668px">
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="职位名称" prop="positionName">
+            <el-input
+              v-model="addParams.positionName"
+              class="elInput"
+              placeholder="请输入职位名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级职位" prop="position">
+            <el-select
+              v-model="addParams.position"
+              placeholder="请选择上级职位"
+              class="elInput"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="(item, index) in position_options"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="职位描述" prop="positionMsg">
+            <el-input
+              type="textarea"
+              class="elInput"
+              autosize
+              placeholder="请输入职位描述"
+              v-model="addParams.positionMsg"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -151,45 +152,46 @@
       </el-dialog>
 
       <!-- 编辑职位弹窗 -->
-      <el-dialog :visible.sync="showEditPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>职位名称：</span>
-              <el-input
-                style="width: 400px"
-                v-model="positionName"
-                placeholder="请输入职位名称"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级职位：</span>
-              <el-select
-                style="width: 400px"
-                v-model="position"
-                placeholder="请选择上级职位"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in position_options"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>职位描述：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入职位描述"
-                v-model="positionMsg"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
+      <el-dialog 
+        title="编辑职位"
+        :visible.sync="showEditPop" 
+        width="668px">
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="editParams" 
+                        label-width="110px">
+          <el-form-item label="职位名称" prop="positionName">
+            <el-input
+              v-model="addParams.positionName"
+              class="elInput"
+              placeholder="请输入职位名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级职位" prop="position">
+            <el-select
+              v-model="addParams.position"
+              placeholder="请选择上级职位"
+              class="elInput"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="(item, index) in position_options"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="职位描述" prop="positionMsg">
+            <el-input
+              type="textarea"
+              class="elInput"
+              autosize
+              placeholder="请输入职位描述"
+              v-model="addParams.positionMsg"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -209,6 +211,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { POSI_API } from "@/api/positions";
 import { renderTime } from "@/utils/function.js";
@@ -245,9 +248,22 @@ export default {
       ],
       viewsList: [],
       // 新增角色的弹窗中的数据
-      positionName: "",
-      position: "", //上级部门
-      positionMsg: "", //部门描述
+      addParams: {
+        positionName: "",
+        position: "", //上级部门
+        positionMsg: "", //部门描述
+      },
+      addRules: {
+        positionName:[
+          { required: true, message: '请输入职位名称', trigger: 'blur' },
+        ],
+        position:[
+          { required: true, message: '请选择上级职位', trigger: 'change' },
+        ],
+        // positionMsg:[
+        //   { required: true, message: '请输入职位描述', trigger: 'blur' },
+        // ]
+      },
       showAddPop: false, //是否显示弹窗
       showEditPop: false, //是否显示弹窗
       position_options: [{ id: 0, name: "无" }],
@@ -323,6 +339,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           POSI_API.deletePosi({}, val).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -330,6 +347,8 @@ export default {
             } else {
               this.$message.error("删除成功！");
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -344,13 +363,14 @@ export default {
       let params = {
         ids: this.ids,
       };
-      console.log(params);
+      // console.log(params);
       this.$confirm("确认删除选中的职位?", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           POSI_API.deleteIds(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -358,6 +378,8 @@ export default {
             } else {
               this.$message.error("删除失败！");
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -372,15 +394,15 @@ export default {
       switch (type) {
         case 0:
           this.showAddPop = true;
-          this.positionName = "";
-          this.position = "";
-          this.positionMsg = "";
+          this.addParams.positionName = "";
+          this.addParams.position = "";
+          this.addParams.positionMsg = "";
           break;
         case 1:
           this.showEditPop = true;
-          this.positionName = val.name;
-          this.position = val.pid;
-          this.positionMsg = val.description;
+          this.addParams.positionName = val.name;
+          this.addParams.position = val.pid;
+          this.addParams.positionMsg = val.description;
           this.editId = val.id;
           break;
         default:
@@ -393,42 +415,56 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          let params = {
-            name: this.positionName,
-            pid: this.position,
-            description: this.positionMsg,
-          };
-          POSI_API.addPosi(params).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("添加成功！");
-              this.getPositionsList();
-              this.showAddPop = false;
-            } else {
-              this.$message.error("添加失败！");
+          this.$refs.addParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              let params = {
+                name: this.addParams.positionName,
+                pid: this.addParams.position,
+                description: this.addParams.positionMsg,
+              };
+              POSI_API.addPosi(params).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("添加成功！");
+                  this.getPositionsList();
+                  this.showAddPop = false;
+                } else {
+                  this.$message.error("添加失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         case 2:
           this.showEditPop = false;
           break;
         case 3:
-          let paramsEdit = {
-            name: this.positionName,
-            pid: this.position,
-            description: this.positionMsg,
-          };
-          POSI_API.editPosi(paramsEdit, this.editId).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("修改成功！");
-              this.getPositionsList();
-              this.showEditPop = false;
-            } else {
-              this.$message.error("修改失败！");
+          this.$refs.editParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              let paramsEdit = {
+                name: this.addParams.positionName,
+                pid: this.addParams.position,
+                description: this.addParams.positionMsg,
+              };
+              POSI_API.editPosi(paramsEdit, this.editId).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("修改成功！");
+                  this.getPositionsList();
+                  this.showEditPop = false;
+                } else {
+                  this.$message.error("修改失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         default:
-          break;
+        break;
       }
     },
     handleSelectionChange(val) {
@@ -542,6 +578,12 @@ export default {
       flex-direction: row;
       justify-content: space-between;
     }
+  }
+}
+
+.el-dialog{
+  .elInput{
+    width: 430px !important;
   }
 }
 

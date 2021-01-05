@@ -143,47 +143,47 @@
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>员工姓名：</span>
-              <el-input
-                style="width: 400px"
-                v-model="addParams.name"
-                placeholder="请输入姓名"
-              ></el-input>
-            </li>
-            <li>
-              <span>异动类型：</span>
-              <el-select
-                style="width: 400px"
-                v-model="addParams.type"
-                placeholder="请选择异动类型"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in adStatus"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>备注：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入备注"
-                maxlength="50"
-                show-word-limit
-                v-model="addParams.remark"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
+      <el-dialog 
+        :visible.sync="showAddPop" 
+        width="668px">
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="员工姓名" prop="name">
+            <el-input
+              v-model="addParams.name"
+              class="elInput"
+              placeholder="请输入姓名"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="异动类型" prop="type">
+            <el-select
+              style="width: 100%"
+              v-model="addParams.type"
+              placeholder="请选择异动类型"
+              class="elInput"
+            >
+              <el-option
+                v-for="(item, index) in adStatus"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="备注" prop="remark">
+            <el-input
+              type="textarea"
+              class="elInput"
+              autosize
+              placeholder="请输入备注"
+              maxlength="50"
+              show-word-limit
+              v-model="addParams.remark"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -274,6 +274,17 @@ export default {
         name: "",
         type: "",
         remark: "",
+      },
+      addRules: {
+        name:[
+          { required: true, message: '请输入姓名', trigger: 'blur' },
+        ],
+        type:[
+          { required: true, message: '请选择异动类型', trigger: 'change' },
+        ],
+        // remark:[
+        //   { required: true, message: '请输入备注', trigger: 'blur' },
+        // ]
       },
       showAddPop: false, //是否显示弹窗
       searchData: {
@@ -389,18 +400,25 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          STAFFS_API.addChange(this.addParams).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("添加成功！");
-              this.getChangeList();
-              this.showAddPop = false;
-            } else {
-              this.$message.error("添加失败！");
+          this.$refs.addParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              STAFFS_API.addChange(this.addParams).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("添加成功！");
+                  this.getChangeList();
+                  this.showAddPop = false;
+                } else {
+                  this.$message.error("添加失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         default:
-          break;
+        break;
       }
     },
     // watch pagesize change

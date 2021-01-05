@@ -240,6 +240,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { strikeList, strikeDetail } from "@/api/reconciliation";
 export default {

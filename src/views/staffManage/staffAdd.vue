@@ -742,6 +742,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { mapState } from "vuex";
 import { STAFFS_API } from "@/api/staffs";
@@ -1087,6 +1088,7 @@ export default {
         if (this.saveType == "edit") {
           this.$refs["ruleForm"].validate((valid) => {
             if (valid) {
+              const loading = OpenLoading(this, 1)
               STAFFS_API.changeStaff(this.ruleForm, this.staffId).then(
                 (res) => {
                   if (res.status == 200) {
@@ -1097,6 +1099,8 @@ export default {
                   } else {
                     this.$message.error(res.error.message);
                   }
+                  loading.close()
+                  clearTimeout(this.overloading)
                 }
               );
             } else {
@@ -1116,6 +1120,7 @@ export default {
         } else {
           this.$refs["ruleForm"].validate((valid) => {
             if (valid) {
+              const loading = OpenLoading(this, 1)
               STAFFS_API.addStaff(this.ruleForm).then((res) => {
                 if (res.status == 200) {
                   this.$message.success("添加成功！");
@@ -1125,6 +1130,8 @@ export default {
                 } else {
                   this.$message.error(res.error.message);
                 }
+                loading.close()
+                clearTimeout(this.overloading)
               });
             } else {
               this.$nextTick(() => {

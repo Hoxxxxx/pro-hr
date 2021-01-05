@@ -157,6 +157,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 // api
 import { BASE_API } from "@/api/baseApi";
@@ -316,6 +317,7 @@ export default {
       }
     },
     save() {
+      const loading = OpenLoading(this, 1)
       let params = {
         card_is_enabled: this.IDcard,
         laborcontract_is_enabled: this.contract,
@@ -362,6 +364,8 @@ export default {
         } else {
           this.$message.error("设置失败！");
         }
+        loading.close()
+        clearTimeout(this.overloading)
       });
     },
   },

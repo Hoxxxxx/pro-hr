@@ -96,54 +96,53 @@
         style="margin-top: 20px; margin-bottom: 20px; float: right"
       ></el-pagination>
 
-      <!-- 新增管理员弹窗 -->
-      <el-dialog :visible.sync="showAddPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>部门名称：</span>
-              <el-input
-                style="width: 400px"
-                v-model="departName"
-                placeholder="请输入部门名称"
-              ></el-input>
-            </li>
-            <li>
-              <span>部门负责人：</span>
-              <el-input
-                style="width: 400px"
-                v-model="chargerName"
-                placeholder="请输入部门负责人"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级部门：</span>
-              <el-select
-                style="width: 400px"
-                v-model="depart"
-                placeholder="请选择上级部门"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in depart_options"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>部门描述：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入部门描述"
-                v-model="departMsg"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
+      <!-- 新增部门弹窗 -->
+      <el-dialog 
+        title="新增部门"
+        :visible.sync="showAddPop" 
+        width="668px">
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="部门名称" prop="departName">
+            <el-input
+              v-model="addParams.departName"
+              class="elInput"
+              placeholder="请输入部门名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="部门负责人" prop="chargerName">
+            <el-input
+              v-model="addParams.chargerName"
+              class="elInput"
+              placeholder="请输入部门负责人"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级部门" prop="depart">
+            <el-select
+              v-model="addParams.depart"
+              class="elInput"
+              placeholder="请选择上级部门"
+            >
+              <el-option
+                v-for="(item, index) in depart_options"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="部门描述" prop="departMsg">
+            <el-input
+              type="textarea"
+              class="elInput"
+              autosize
+              placeholder="请输入部门描述"
+              v-model="addParams.departMsg"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -159,53 +158,53 @@
         </div>
       </el-dialog>
       <!-- 编辑管理员弹窗 -->
-      <el-dialog :visible.sync="showEditPop" width="600px" top="20vh" center>
-        <div class="departure">
-          <ul class="popExtraList">
-            <li>
-              <span>部门名称：</span>
-              <el-input
-                style="width: 400px"
-                v-model="departName"
-                placeholder="请输入部门名称"
-              ></el-input>
-            </li>
-            <li>
-              <span>部门负责人：</span>
-              <el-input
-                style="width: 400px"
-                v-model="chargerName"
-                placeholder="请输入部门负责人"
-              ></el-input>
-            </li>
-            <li>
-              <span>上级部门：</span>
-              <el-select
-                style="width: 400px"
-                v-model="depart"
-                placeholder="请选择上级部门"
-                class="elInput"
-              >
-                <el-option
-                  v-for="(item, index) in depart_options"
-                  :key="index"
-                  :label="item.name"
-                  :value="item.id"
-                ></el-option>
-              </el-select>
-            </li>
-            <li>
-              <span>部门描述：</span>
-              <el-input
-                type="textarea"
-                style="width: 400px"
-                autosize
-                placeholder="请输入部门描述"
-                v-model="departMsg"
-              ></el-input>
-            </li>
-          </ul>
-        </div>
+      <el-dialog 
+        title="编辑部门"
+        :visible.sync="showEditPop" 
+        width="668px">
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="editParams" 
+                        label-width="110px">
+          <el-form-item label="部门名称" prop="departName">
+            <el-input
+              v-model="addParams.departName"
+              class="elInput"
+              placeholder="请输入部门名称"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="部门负责人" prop="chargerName">
+            <el-input
+              v-model="addParams.chargerName"
+              class="elInput"
+              placeholder="请输入部门负责人"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级部门" prop="depart">
+            <el-select
+              v-model="addParams.depart"
+              class="elInput"
+              placeholder="请选择上级部门"
+              style="width: 100%"
+            >
+              <el-option
+                v-for="(item, index) in depart_options"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              ></el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="部门描述" prop="departMsg">
+            <el-input
+              type="textarea"
+              class="elInput"
+              autosize
+              placeholder="请输入部门描述"
+              v-model="addParams.departMsg"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -225,6 +224,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 // api
 import { DEPART_API } from "@/api/department";
@@ -259,13 +259,29 @@ export default {
       viewsList: [],
       ids: [], //批量删除
       // 新增角色的弹窗中的数据
-      departName: "",
-      chargerName: "",
+      addParams: {
+        departName: "",
+        chargerName: "",
+        depart: "", //上级部门
+        departMsg: "", //部门描述
+      }, 
+      addRules: {
+        departName:[
+          { required: true, message: '请输入部门名称', trigger: 'blur' },
+        ],
+        chargerName:[
+          { required: true, message: '请输入部门负责人', trigger: 'blur' },
+        ],
+        depart:[
+          { required: true, message: '请选择上级部门', trigger: 'change' },
+        ],
+        // departMsg:[
+        //   { required: true, message: '请输入部门描述', trigger: 'blur' },
+        // ]
+      },
       showAddPop: false, //是否显示弹窗
       showEditPop: false,
       depart_options: [{ id: 0, name: "无" }],
-      depart: "", //上级部门
-      departMsg: "", //部门描述
       editId: "",
       // 分页
       total: 4,
@@ -333,6 +349,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           DEPART_API.deleteDeparts({}, val).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -340,6 +357,8 @@ export default {
             } else {
               this.$message.error("删除成功！");
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -361,6 +380,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           DEPART_API.deleteIds(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -368,6 +388,8 @@ export default {
             } else {
               this.$message.error("删除成功！");
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -382,18 +404,18 @@ export default {
       switch (type) {
         case 0:
           this.showAddPop = true;
-          this.departName = "";
-          this.chargerName = "";
-          this.depart = "";
-          this.departMsg = "";
+          this.addParams.departName = "";
+          this.addParams.chargerName = "";
+          this.addParams.depart = "";
+          this.addParams.departMsg = "";
           break;
         case 1:
           this.showEditPop = true;
           this.editId = val.id;
-          this.departName = val.name;
-          this.chargerName = val.manager_name;
-          this.depart = val.pid;
-          this.departMsg = val.description;
+          this.addParams.departName = val.name;
+          this.addParams.chargerName = val.manager_name;
+          this.addParams.depart = val.pid;
+          this.addParams.departMsg = val.description;
           break;
         default:
           break;
@@ -405,44 +427,58 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          let params = {
-            name: this.departName,
-            manager_name: this.chargerName,
-            pid: this.depart,
-            description: this.departMsg,
-          };
-          DEPART_API.addDeparts(params).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("添加成功！");
-              this.getDepartmentList();
-              this.showAddPop = false;
-            } else {
-              this.$message.error("添加失败！");
+          this.$refs.addParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              let params = {
+                name: this.addParams.departName,
+                manager_name: this.addParams.chargerName,
+                pid: this.addParams.depart,
+                description: this.addParams.departMsg,
+              };
+              DEPART_API.addDeparts(params).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("添加成功！");
+                  this.getDepartmentList();
+                  this.showAddPop = false;
+                } else {
+                  this.$message.error("添加失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         case 2:
           this.showEditPop = false;
           break;
         case 3:
-          let paramsEdit = {
-            name: this.departName,
-            manager_name: this.chargerName,
-            pid: this.depart,
-            description: this.departMsg,
-          };
-          DEPART_API.editDeparts(paramsEdit, this.editId).then((res) => {
-            if (res.status == 200) {
-              this.$message.success("修改成功！");
-              this.getDepartmentList();
-              this.showEditPop = false;
-            } else {
-              this.$message.error("修改失败！");
+          this.$refs.editParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              let paramsEdit = {
+                name: this.addParams.departName,
+                manager_name: this.addParams.chargerName,
+                pid: this.addParams.depart,
+                description: this.addParams.departMsg,
+              };
+              DEPART_API.editDeparts(paramsEdit, this.editId).then((res) => {
+                if (res.status == 200) {
+                  this.$message.success("修改成功！");
+                  this.getDepartmentList();
+                  this.showEditPop = false;
+                } else {
+                  this.$message.error("修改失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         default:
-          break;
+        break;
       }
     },
     handleSelectionChange(val) {
@@ -555,6 +591,12 @@ export default {
       flex-direction: row;
       justify-content: space-between;
     }
+  }
+}
+
+.el-dialog{
+  .elInput{
+    width: 430px !important;
   }
 }
 

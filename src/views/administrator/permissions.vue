@@ -70,44 +70,45 @@
 
       <!-- 新增权限弹窗 -->
       <el-dialog
+        title="新增权限"
         :visible.sync="showAddPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="20vh"
-        center
+        width="668px"
       >
-        <div class="nameInput">
-          <span>权限名称</span>
-          <el-input
-            v-model="addParams.title"
-            placeholder="请输入权限名称"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput">
-          <span class="title">上级权限</span>
-          <el-select
-            v-model="addParams.pid"
-            class="elInput"
-            placeholder="请选择上级权限"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.pers"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="权限名称" prop="title">
+            <el-input
+              v-model="addParams.title"
+              placeholder="请输入权限名称"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级权限" prop="pid">
+            <el-select
+              v-model="addParams.pid"
+              class="elInput"
+              placeholder="请选择上级权限"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="nameInput">
-          <span>标题</span>
-          <el-input
-            v-model="addParams.name"
-            placeholder="请输入标题"
-            class="elInput"
-          ></el-input>
-        </div>
+              <el-option
+                v-for="(item, index) in fixedData.pers"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标题" prop="name">
+            <el-input
+              v-model="addParams.name"
+              placeholder="请输入标题"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -125,44 +126,45 @@
 
       <!-- 编辑权限弹窗 -->
       <el-dialog
+        title="编辑权限"
         :visible.sync="showEditPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="20vh"
-        center
+        width="668px"
       >
-        <div class="nameInput">
-          <span>权限名称</span>
-          <el-input
-            v-model="editParams.title"
-            placeholder="请输入权限名称"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput">
-          <span class="title">上级权限</span>
-          <el-select
-            v-model="editParams.pid"
-            class="elInput"
-            placeholder="请选择上级权限"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.pers"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
+        <el-form :model="editParams" 
+                        :rules="addRules" 
+                        ref="editParams" 
+                        label-width="110px">
+          <el-form-item label="权限名称" prop="title">
+            <el-input
+              v-model="editParams.title"
+              placeholder="请输入权限名称"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级权限" prop="pid">
+            <el-select
+              v-model="editParams.pid"
+              class="elInput"
+              placeholder="请选择上级权限"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="nameInput">
-          <span>标题</span>
-          <el-input
-            v-model="editParams.name"
-            placeholder="请输入标题"
-            class="elInput"
-          ></el-input>
-        </div>
+              <el-option
+                v-for="(item, index) in fixedData.pers"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="标题" prop="name">
+            <el-input
+              v-model="editParams.name"
+              placeholder="请输入标题"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -182,6 +184,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 // api
@@ -226,6 +229,17 @@ export default {
         name: "", //标题（权限）
         title: "", //权限名称
         pid: 0, //上级权限id
+      },
+      addRules: {
+        title:[
+          { required: true, message: '请输入权限名称', trigger: 'blur' },
+        ],
+        pid:[
+          { required: true, message: '请选择上级权限', trigger: 'blur' },
+        ],
+        name:[
+          { required: true, message: '请输入标题', trigger: 'blur' },
+        ]
       },
       showAddPop: false, //是否显示弹窗
       permissionsData: [],
@@ -326,6 +340,7 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           PERMISSION_API.deletePermission({}, val.id).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -333,6 +348,8 @@ export default {
             } else {
               this.$message.error("删除失败！");
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -353,6 +370,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ROLES_API.deleteRoles(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -360,6 +378,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -386,39 +406,46 @@ export default {
       this.ids = temp;
     },
     extraBtnClick(type) {
-      switch (type) {
-        case 0:
-          this.showAddPop = false;
-          break;
-        case 1:
-          PERMISSION_API.addPermission(this.addParams).then((res) => {
-            if (res.status == 200) {
-              this.showAddPop = false;
-              this.$message.success("添加成功");
-              this.getPermissions();
-            } else {
-              this.$message.error("添加失败！");
-            }
-          });
-          break;
-        case 2:
-          this.showEditPop = false;
-          break;
-        case 3:
-          PERMISSION_API.editPermission(this.editParams, this.editId).then(
-            (res) => {
+      if (type == 0) {
+        this.showAddPop = false;
+      } else if (type == 1) {
+        this.$refs.addParams.validate(valid => {
+          if(valid){
+            const loading = OpenLoading(this, 1)
+            PERMISSION_API.addPermission(this.addParams).then((res) => {
               if (res.status == 200) {
-                this.showEditPop = false;
-                this.$message.success("修改成功");
+                this.showAddPop = false;
+                this.$message.success("添加成功");
                 this.getPermissions();
               } else {
-                this.$message.error("修改失败！");
+                this.$message.error("添加失败！");
               }
-            }
-          );
-          break;
-        default:
-          break;
+              loading.close()
+              clearTimeout(this.overloading)
+            });
+          }
+        })
+      } else if (type == 2) {
+        this.showEditPop = false;
+      } else if (type == 3) {
+        this.$refs.editParams.validate(valid => {
+          if(valid){
+            const loading = OpenLoading(this, 1)
+            PERMISSION_API.editPermission(this.editParams, this.editId).then(
+              (res) => {
+                if (res.status == 200) {
+                  this.showEditPop = false;
+                  this.$message.success("修改成功");
+                  this.getPermissions();
+                } else {
+                  this.$message.error("修改失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              }
+            );
+          }
+        })
       }
     },
     // watch pagesize change

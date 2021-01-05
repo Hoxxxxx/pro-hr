@@ -152,23 +152,23 @@
 
       <!-- 新增管理员弹窗 -->
       <el-dialog
+        title="新增管理员"
         :visible.sync="showAddPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="35vh"
-        center
+        width="668px"
       >
-        <ul class="popExtraList">
-          <li>
-            <span>用户名称</span>
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="用户名称" prop="name">
             <el-input
               v-model="addParams.name"
               class="elInput"
               placeholder="请输入用户名称"
             ></el-input>
-          </li>
-          <li>
-            <span>选择员工</span>
+          </el-form-item>
+          <el-form-item label="员工" prop="staff_id">
             <el-select
               v-model="addParams.staff_id"
               placeholder="请选择员工"
@@ -181,9 +181,8 @@
                 :value="staff.id"
               ></el-option>
             </el-select>
-          </li>
-          <li>
-            <span>选择角色</span>
+          </el-form-item>
+          <el-form-item label="角色" prop="role_ids">
             <el-select
               multiple
               v-model="addParams.role_ids"
@@ -197,8 +196,8 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-          </li>
-        </ul>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -216,23 +215,23 @@
 
       <!-- 编辑管理员弹窗 -->
       <el-dialog
+        title="编辑管理员"
         :visible.sync="showEditPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="35vh"
-        center
+        width="668px"
       >
-        <ul class="popExtraList">
-          <li>
-            <span>用户名称</span>
+        <el-form :model="editParams" 
+                        :rules="addRules" 
+                        ref="editParams" 
+                        label-width="110px">
+          <el-form-item label="用户名称" prop="name">
             <el-input
               v-model="editParams.name"
               class="elInput"
               placeholder="请输入用户名称"
             ></el-input>
-          </li>
-          <li>
-            <span>选择员工</span>
+          </el-form-item>
+          <el-form-item label="员工" prop="staff_id">
             <el-select
               v-model="editParams.staff_id"
               placeholder="请选择员工"
@@ -245,9 +244,8 @@
                 :value="staff.id"
               ></el-option>
             </el-select>
-          </li>
-          <li>
-            <span>选择角色</span>
+          </el-form-item>
+          <el-form-item label="角色" prop="role_ids">
             <el-select
               multiple
               v-model="editParams.role_ids"
@@ -261,8 +259,8 @@
                 :value="item.id"
               ></el-option>
             </el-select>
-          </li>
-        </ul>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -282,6 +280,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 // api
 import { ADMINS_API } from "@/api/adminsApi";
@@ -324,6 +323,17 @@ export default {
         name: "", //用户名
         role_ids: "", //角色
         staff_id: "", //员工
+      },
+      addRules: {
+        name:[
+          { required: true, message: '请输入用户名', trigger: 'blur' },
+        ],
+        role_ids:[
+          { required: true, message: '请选择角色', trigger: 'blur' },
+        ],
+        staff_id:[
+          { required: true, message: '请选择员工', trigger: 'blur' },
+        ]
       },
       staffList: [], //员工列表
       roles: [], //角色列表
@@ -453,25 +463,39 @@ export default {
     },
     extraBtnClick(type) {
       if (type == 1) {
-        ADMINS_API.addAdmins(this.addParams).then((res) => {
-          if (res.status == 200) {
-            this.$message.success("添加成功！");
-            this.getAdminsList();
-            this.showAddPop = false;
-          } else {
-            this.$message.error(res.error.message);
+        this.$refs.addParams.validate(valid => {
+          if(valid){
+            const loading = OpenLoading(this, 1)
+            ADMINS_API.addAdmins(this.addParams).then((res) => {
+              if (res.status == 200) {
+                this.$message.success("添加成功！");
+                this.getAdminsList();
+                this.showAddPop = false;
+              } else {
+                this.$message.error(res.error.message);
+              }
+              loading.close()
+              clearTimeout(this.overloading)
+            });
           }
-        });
+        })
       } else if (type == 3) {
-        ADMINS_API.editAdmins(this.editParams, this.editID).then((res) => {
-          if (res.status == 200) {
-            this.$message.success("修改成功！");
-            this.getAdminsList();
-            this.showEditPop = false;
-          } else {
-            this.$message.error(res.error.message);
+        this.$refs.editParams.validate(valid => {
+          if(valid){
+            const loading = OpenLoading(this, 1)
+            ADMINS_API.editAdmins(this.editParams, this.editID).then((res) => {
+              if (res.status == 200) {
+                this.$message.success("修改成功！");
+                this.getAdminsList();
+                this.showEditPop = false;
+              } else {
+                this.$message.error(res.error.message);
+              }
+              loading.close()
+              clearTimeout(this.overloading)
+            });
           }
-        });
+        })
       } else {
         this.addParams = {
           name: "", //用户名
@@ -518,6 +542,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ADMINS_API.deleteAdmins({}, val).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -525,6 +550,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -545,6 +572,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ADMINS_API.deleteAdmins(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -552,6 +580,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {

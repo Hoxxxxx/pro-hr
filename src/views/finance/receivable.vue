@@ -131,6 +131,7 @@
         <el-form-item label="选择年份" prop="year">
           <el-date-picker
             v-model="uploadData.year"
+            class="elInput"
             type="year"
             placeholder="请选择年份"
             format="yyyy 年"
@@ -143,9 +144,7 @@
         <el-form-item label="选择账期" prop="quarter">
           <el-select v-model="uploadData.quarter" 
                           placeholder="请选择账期"
-                          style="width: 360px;
-                                    margin: 0 20px 10px 0;
-                                    border-radius: 4px;">
+                          class="elInput">
             <el-option
                 v-for="item in allQuaList"
                 :key="item"
@@ -155,7 +154,8 @@
           </el-select>
         </el-form-item>
         <el-form-item label="选择部门" prop="department_id">
-          <div class="selectbox">
+          <div class="selectbox elInput" 
+                style="border-radius: 4px;">
             <div class="selector" @click="selectDialog('BM')">
               {{uploadData.department}}
             </div>
@@ -224,10 +224,11 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import SelectData from "@/components/selectData";
 //api
-import { receivablesInfo, receivablesList, addReceivables, checkReceivables } from '@/api/reconciliation'
+import { receivablesInfo, receivablesList, addReceivables, checkReceivable0000000000000000000s } from '@/api/reconciliation'
 import { testBtnAuth } from '@/utils/permission'
 
 export default {
@@ -520,6 +521,7 @@ export default {
       } else if (type == 1) {
         this.$refs.uploadRef.validate(valid => {
           if(valid){
+            const loading = OpenLoading(this, 1)
             addReceivables(this.uploadData)
             .then( res => {
               if (res.status == 200) {
@@ -533,6 +535,8 @@ export default {
               } else {
                 this.$message.error("上传失败：" + res.error.message);
               }
+              loading.close()
+              clearTimeout(this.overloading)
             })
           }
         })
@@ -579,6 +583,7 @@ export default {
       this.addDialogVisiable = false
     },
     arr_Sure() {
+      const loading = OpenLoading(this, 1)
       this.addDialogVisiable = false
       this.searchData.searchLoading = true
       const params = []
@@ -599,6 +604,8 @@ export default {
         } else {
           this.$message.error("对账失败：" + res.error.message);
         }
+        loading.close()
+        clearTimeout(this.overloading)
       })
     },
     // 提交对账
@@ -617,6 +624,7 @@ export default {
         })
       })
       if (params.length !== 0) {
+        const loading = OpenLoading(this, 1)
         this.searchData.searchLoading = true
         checkReceivables(params)
         .then(res=> {
@@ -627,6 +635,8 @@ export default {
           } else {
             this.$message.error("对账失败：" + res.error.message);
           }
+          loading.close()
+          clearTimeout(this.overloading)
         })
       } else {
         this.$message.info('未变更对账信息！')

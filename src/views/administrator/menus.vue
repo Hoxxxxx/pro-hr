@@ -50,67 +50,70 @@
           </el-table-column>
         </el-table>
       </div>
+
+
+      <!-- 新增菜单弹窗 -->
       <el-dialog
+        title="新增菜单"
         :visible.sync="showAddPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="20vh"
-        center
+        width="668px"
       >
-        <div class="nameInput">
-          <span>菜单名称</span>
-          <el-input
-            v-model="addParams.name"
-            placeholder="请输入菜单名称"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput">
-          <span class="title">上级菜单</span>
-          <el-select
-            v-model="addParams.pid"
-            class="elInput"
-            placeholder="请选择上级菜单"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.pers"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
+        <el-form :model="addParams" 
+                        :rules="addRules" 
+                        ref="addParams" 
+                        label-width="110px">
+          <el-form-item label="菜单名称" prop="name">
+            <el-input
+              v-model="addParams.name"
+              placeholder="请输入菜单名称"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级菜单" prop="pid">
+            <el-select
+              v-model="addParams.pid"
+              class="elInput"
+              placeholder="请选择上级菜单"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="nameInput">
-          <span>菜单路由</span>
-          <el-input
-            v-model="addParams.url"
-            placeholder="请输入菜单路由"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput" v-if="addParams.pid == 0">
-          <span class="title">菜单ICON</span>
-          <el-select
-            v-model="addParams.icon"
-            class="elInput"
-            placeholder="请选择菜单ICON"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.icons"
-              :key="index"
-              :label="item.name"
-              :value="item.name"
+              <el-option
+                v-for="(item, index) in fixedData.pers"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="菜单路由" prop="url">
+            <el-input
+              v-model="addParams.url"
+              placeholder="请输入菜单路由"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="菜单ICON" prop="icon" v-if="addParams.pid == 0">
+            <el-select
+              v-model="addParams.icon"
+              class="elInput"
+              placeholder="请选择菜单ICON"
             >
-              <div class="iconBox">
-                <span style="float: left">{{ item.name }}</span>
-                <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
-                  :class="item.name"
-                ></i>
-              </div>
-            </el-option>
-          </el-select>
-        </div>
+              <el-option
+                v-for="(item, index) in fixedData.icons"
+                :key="index"
+                :label="item.name"
+                :value="item.name"
+              >
+                <div class="iconBox">
+                  <span style="float: left">{{ item.name }}</span>
+                  <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
+                    :class="item.name"
+                  ></i>
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(0)"
@@ -128,66 +131,66 @@
 
       <!-- 编辑菜单弹窗 -->
       <el-dialog
+        title="编辑菜单"
         :visible.sync="showEditPop"
         :close-on-click-modal="false"
-        width="600px"
-        top="20vh"
-        center
+        width="668px"
       >
-        <div class="nameInput">
-          <span>菜单名称</span>
-          <el-input
-            v-model="editParams.name"
-            placeholder="请输入菜单名称"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput">
-          <span class="title">上级菜单</span>
-          <el-select
-            v-model="editParams.pid"
-            class="elInput"
-            placeholder="请选择上级菜单"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.pers"
-              :key="index"
-              :label="item.name"
-              :value="item.id"
+        <el-form :model="editParams" 
+                        :rules="addRules" 
+                        ref="editParams" 
+                        label-width="110px">
+          <el-form-item label="菜单名称" prop="name">
+            <el-input
+              v-model="editParams.name"
+              placeholder="请输入菜单名称"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="上级菜单" prop="pid">
+            <el-select
+              v-model="editParams.pid"
+              class="elInput"
+              placeholder="请选择上级菜单"
             >
-            </el-option>
-          </el-select>
-        </div>
-        <div class="nameInput">
-          <span>菜单路由</span>
-          <el-input
-            v-model="editParams.url"
-            placeholder="请输入菜单路由"
-            class="elInput"
-          ></el-input>
-        </div>
-        <div class="nameInput" v-if="editParams.pid == 0">
-          <span class="title">菜单ICON</span>
-          <el-select
-            v-model="editParams.icon"
-            class="elInput"
-            placeholder="请选择菜单ICON"
-          >
-            <el-option
-              v-for="(item, index) in fixedData.icons"
-              :key="index"
-              :label="item.name"
-              :value="item.name"
+              <el-option
+                v-for="(item, index) in fixedData.pers"
+                :key="index"
+                :label="item.name"
+                :value="item.id"
+              >
+              </el-option>
+            </el-select>
+          </el-form-item>
+          <el-form-item label="菜单路由" prop="url">
+            <el-input
+              v-model="editParams.url"
+              placeholder="请输入菜单路由"
+              class="elInput"
+            ></el-input>
+          </el-form-item>
+          <el-form-item label="菜单ICON" prop="icon" v-if="editParams.pid == 0">
+            <el-select
+              v-model="editParams.icon"
+              class="elInput"
+              placeholder="请选择菜单ICON"
             >
-              <div class="iconBox">
-                <span style="float: left">{{ item.name }}</span>
-                <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
-                  :class="item.name"
-                ></i>
-              </div>
-            </el-option>
-          </el-select>
-        </div>
+              <el-option
+                v-for="(item, index) in fixedData.icons"
+                :key="index"
+                :label="item.name"
+                :value="item.name"
+              >
+                <div class="iconBox">
+                  <span style="float: left">{{ item.name }}</span>
+                  <i style="float: right; color: #8492a6; font-size: 24px; line-height:34px"
+                    :class="item.name"
+                  ></i>
+                </div>
+              </el-option>
+            </el-select>
+          </el-form-item>
+        </el-form>
         <div class="extraBtns">
           <div>
             <el-button style="width: 95px" @click="extraBtnClick(2)"
@@ -207,6 +210,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 // api
@@ -268,6 +272,20 @@ export default {
         url: "", //
         pid: 0, //上级菜单id
         icon: "",
+      },
+      addRules: {
+        name:[
+          { required: true, message: '请输入菜单名称', trigger: 'blur' },
+        ],
+        pid:[
+          { required: true, message: '请选择上级菜单', trigger: 'change' },
+        ],
+        url:[
+          { required: true, message: '请输入菜单路由', trigger: 'blur' },
+        ],
+        icon:[
+          { required: true, message: '请选择菜单ICON', trigger: 'change' },
+        ]
       },
       showAddPop: false, //是否显示弹窗
       menusData: [],
@@ -359,6 +377,7 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           MENUS_API.deleteMenu({}, val.id).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -366,6 +385,8 @@ export default {
             } else {
               this.$message.error("删除失败！");
             }
+            loading.close()
+            clearTimeout(this.overloading)  
           });
         })
         .catch(() => {
@@ -386,6 +407,7 @@ export default {
         type: "warning",
       })
         .then(() => {
+          const loading = OpenLoading(this, 1)
           ROLES_API.deleteRoles(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -393,6 +415,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
+            loading.close()
+            clearTimeout(this.overloading)
           });
         })
         .catch(() => {
@@ -424,30 +448,44 @@ export default {
           this.showAddPop = false;
           break;
         case 1:
-          MENUS_API.addMenu(this.addParams).then((res) => {
-            if (res.status == 200) {
-              this.showAddPop = false;
-              this.$message.success("添加成功");
-              this.getMenus();
-            } else {
-              this.$message.error("添加失败！");
+          this.$refs.addParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              MENUS_API.addMenu(this.addParams).then((res) => {
+                if (res.status == 200) {
+                  this.showAddPop = false;
+                  this.$message.success("添加成功");
+                  this.getMenus();
+                } else {
+                  this.$message.error("添加失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         case 2:
           this.showEditPop = false;
           break;
         case 3:
-          MENUS_API.editMenu(this.editParams, this.editId).then((res) => {
-            if (res.status == 200) {
-              this.showEditPop = false;
-              this.$message.success("修改成功");
-              this.getMenus();
-            } else {
-              this.$message.error("修改失败！");
+          this.$refs.editParams.validate(valid => {
+            if(valid){
+              const loading = OpenLoading(this, 1)
+              MENUS_API.editMenu(this.editParams, this.editId).then((res) => {
+                if (res.status == 200) {
+                  this.showEditPop = false;
+                  this.$message.success("修改成功");
+                  this.getMenus();
+                } else {
+                  this.$message.error("修改失败！");
+                }
+                loading.close()
+                clearTimeout(this.overloading)
+              });
             }
-          });
-          break;
+          })
+        break;
         default:
           break;
       }

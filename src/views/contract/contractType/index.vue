@@ -91,7 +91,7 @@
 
     <!-- 新增弹窗 -->
     <el-dialog 
-      title="上传应收账款"
+      :title="dialogType == 'add'?'新增合同类型':'编辑合同类型'"
       :visible.sync="showDialog"
       width="668px">
       <el-form :model="addForm" 
@@ -99,13 +99,13 @@
                       ref="uploadRef" 
                       label-width="110px">
         <el-form-item label="合同类型名称" prop="name">
-          <el-input v-model="addForm.name"></el-input>
+          <el-input v-model="addForm.name" class="elInput"></el-input>
         </el-form-item>
         <el-form-item label="合同类型编号" prop="number">
-          <el-input v-model="addForm.number"></el-input>
+          <el-input v-model="addForm.number" class="elInput"></el-input>
         </el-form-item>
         <el-form-item label="备注" prop="comment">
-          <el-input v-model="addForm.comment"></el-input>
+          <el-input v-model="addForm.comment" class="elInput"></el-input>
         </el-form-item>
       </el-form>
       <div class="extraBtns">
@@ -275,34 +275,48 @@ export default {
       }
     },
     sureAdd() {
-      this.showDialog = false
-      this.searchData.searchLoading = true
-      addType(this.addForm)
-      .then( res => {
-        if (res.status == 200) {
-          this.$message.success('新增成功！')
-          this.getContractType()
-        } else {
-          this.$message.error('新增失败：' + res.error.message)
-          this.searchData.searchLoading = false
-        }
+      this.$refs.uploadRef.validate(valid => {
+          if(valid){
+            const loading = OpenLoading(this, 1)
+            this.showDialog = false
+            this.searchData.searchLoading = true
+            addType(this.addForm)
+            .then( res => {
+              if (res.status == 200) {
+                this.$message.success('新增成功！')
+                this.getContractType()
+              } else {
+                this.$message.error('新增失败：' + res.error.message)
+                this.searchData.searchLoading = false
+              }
+              loading.close()
+              clearTimeout(this.overloading)
+            })
+            this.cancelAdd()
+          }
       })
-      this.cancelAdd()
     },
     sureEdit(id) {
-      this.showDialog = false
-      this.searchData.searchLoading = true
-      editType(this.addForm)
-      .then( res => {
-        if (res.status == 200) {
-          this.$message.success('编辑成功！')
-          this.getContractType()
-        } else {
-          this.$message.error('编辑失败：' + res.error.message)
-          this.searchData.searchLoading = false
+      this.$refs.uploadRef.validate(valid => {
+        if(valid){
+          const loading = OpenLoading(this, 1)
+          this.showDialog = false
+          this.searchData.searchLoading = true
+          editType(this.addForm)
+          .then( res => {
+            if (res.status == 200) {
+              this.$message.success('编辑成功！')
+              this.getContractType()
+            } else {
+              this.$message.error('编辑失败：' + res.error.message)
+              this.searchData.searchLoading = false
+            }
+            loading.close()
+            clearTimeout(this.overloading)
+          })
+          this.cancelAdd()
         }
       })
-      this.cancelAdd()
     },
     delTypeItem(id){
       this.$confirm('此操作将永久删除该合同类型, 是否继续?', '提示', {

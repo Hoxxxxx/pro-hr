@@ -626,6 +626,7 @@
 </template>
 
 <script>
+import { OpenLoading } from "@/utils/utils.js";
 import navBar from "@/components/navBar/navBar";
 import { renderTime } from "@/utils/function.js";
 import { STAFFS_API } from "@/api/staffs";
