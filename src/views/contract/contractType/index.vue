@@ -85,7 +85,7 @@
         :page-size="listParams.perPage"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-        style="margin-top: 20px; margin-bottom: 20px; float: right"
+        style="margin:10px 0; float: right"
       ></el-pagination>
     </el-card>
 

@@ -139,7 +139,7 @@
         :page-size="listParams.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-        style="margin-top: 20px; margin-bottom: 20px; float: right"
+        style="margin:10px 0; float: right"
       ></el-pagination>
 
       <!-- 新增管理员弹窗 -->
@@ -292,7 +292,7 @@ export default {
       },
       // 分页
       total: 4,
-      listParams: { name: "", page: 1, pageSize: 10 },
+      listParams: { name: "", page: 1, pageSize: 20 },
     };
   },
   mounted() {
