@@ -672,18 +672,32 @@ export default {
       this.dataSelect.choosedData = [];
       switch (type) {
         case "KH":
-          let filter_KH = [{ label: "", model_key_search: "keyword" }];
+          let filter_KH = [{ label: "", model_key_search: "keyword" },
+          {
+              label: "",
+              model_key_search: "occ06",
+              disabled: true,
+              value: "1",
+              hide: true,
+            },];
           this.dataSelect.filter = filter_KH;
-          this.dataSelect.searchType = "single"
+          this.dataSelect.searchType = "mixed"
           this.dataSelect.editType = "entry"
           this.dataSelect.searchApi = "meta/occs";
           this.dataSelect.headList = this.tableHead.head_KH;
           this.dataSelect.dialogTitle = "客户列表";
         break;
         case "break_KH":
-          let filter_break_KH = [{ label: "", model_key_search: "keyword" }];
+          let filter_break_KH = [{ label: "", model_key_search: "keyword" },
+          {
+              label: "",
+              model_key_search: "occ06",
+              disabled: true,
+              value: "1",
+              hide: true,
+            },];
           this.dataSelect.filter = filter_break_KH;
-          this.dataSelect.searchType = "single"
+          this.dataSelect.searchType = "mixed"
           this.dataSelect.editType = "entry"
           this.dataSelect.searchApi = "meta/occs";
           this.dataSelect.headList = this.tableHead.head_KH;
