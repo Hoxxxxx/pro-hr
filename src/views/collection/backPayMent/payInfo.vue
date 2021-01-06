@@ -211,20 +211,6 @@
                   align="center"
                 >
                   <template slot-scope="scope">
-                    <!-- <el-select 
-                      class="break_input" 
-                      v-model="scope.row.customer" 
-                      filterable
-                      placeholder="请选择客户" 
-                      @focus="handleFocus"
-                      :disabled="pageType == 'check'">
-                      <el-option
-                        v-for="item in KH_options"
-                        :key="item.occ01"
-                        :label="item.occ01 + ' ' + item.occ02"
-                        :value="item.occ01">
-                      </el-option>
-                    </el-select> -->
                     <div v-if="pageType=='check'" class="editNot" style="height:40px">
                       {{scope.row.customer_show}}
                     </div>
@@ -309,6 +295,13 @@
           </span>
           <span class="suc" v-if="!eachRes[index].reqLoading && eachRes[index].trans=='suc'">审核成功</span>
           <span class="err" v-if="!eachRes[index].reqLoading && eachRes[index].trans=='err'">审核失败</span>
+          <el-button 
+            v-if="!eachRes[index].reqLoading && eachRes[index].trans=='err'"
+            class="reTrans" 
+            type="text"
+            @click="reTrans(item, index)">
+            重新审核<i class="el-icon-refresh-left"></i>
+          </el-button>
         </p>
       </div>
       <span slot="footer" class="dialog-footer" v-if="breakFinish">
@@ -517,22 +510,27 @@ export default {
       this.breakUp = !this.breakUp
       if (event == true) {
         this.breakTable = [{
+          id: '',
           customer: '',
           amount: ''
         },
         {
+          id: '',
           customer: '',
           amount: ''
         },
         {
+          id: '',
           customer: '',
           amount: ''
         },
         {
+          id: '',
           customer: '',
           amount: ''
         },
         {
+          id: '',
           customer: '',
           amount: ''
         }]
@@ -565,6 +563,7 @@ export default {
     // 添加一行
     addRow() {
       let data = {
+        id: '', //id
         customer: '', // 客户
         amount: '', // 金额
       };
@@ -805,8 +804,9 @@ export default {
               this.eachRes[index].reqLoading = false
               this.eachRes[index].break = true
               this.dataForm.id = res.data.id
+              this.resList[index].id = res.data.id
               // 审核
-              transAdd(this.dataForm.id)
+              transAdd(this.resList[index].id)
               .then( res => {
                 if (res.status == 200) {
                   this.eachRes[index].trans = 'suc'
@@ -908,6 +908,27 @@ export default {
             }
           }
         }
+      })
+    },
+
+    // 分拆审核失败重新审核
+    reTrans(item,index) {
+      // console.log('index', index)
+      // console.log('item', item)
+      this.breakFinish = false
+      this.eachRes[index].trans = 'loading'
+      // 审核
+      transAdd(item.id)
+      .then( res => {
+        if (res.status == 200) {
+          this.eachRes[index].trans = 'suc'
+        } else {
+          this.eachRes[index].trans = 'err'
+          this.$message.error(`分拆${index}审核失败：` + res.error.message)
+        }
+        // console.log(index, this.eachRes[index].trans)
+        // 分拆结束
+        this.breakFinish = true
       })
     },
     
@@ -1227,6 +1248,9 @@ export default {
     }
     .err{
       color: #F56C6C;
+    }
+    .reTrans{
+      color: #E6A23C;
     }
     .loading {
       color: #979797;
