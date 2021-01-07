@@ -425,7 +425,7 @@
               <span class="label point">工作总结</span>
               <el-input
                 type="textarea"
-                :rows="10"
+                :rows="6"
                 placeholder="请输入内容"
                 minlength="30"
                 v-model="positiveData.conclusion"
