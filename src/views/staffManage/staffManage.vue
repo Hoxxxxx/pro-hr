@@ -1298,7 +1298,7 @@ export default {
           }
           .elInput {
             width: 200px;
-            flex: 1 1 auto;
+            flex: 1;
           }
           .elInput {
             border-radius: 4px;
@@ -1344,6 +1344,7 @@ export default {
           .labelBox {
             width: 120px;
             text-align: left;
+            margin-right: 12px;
             .label {
               letter-spacing: 1px;
               color: #f56c6c;
