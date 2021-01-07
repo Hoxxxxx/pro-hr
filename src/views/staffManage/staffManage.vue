@@ -1340,15 +1340,15 @@ export default {
           margin-right: 120px;
           .elInput {
             width: 370px;
+            flex: 1;
           }
           .labelBox {
-            width: 120px;
+            width: 116px;
             text-align: left;
-            margin-right: 12px;
             .label {
               letter-spacing: 1px;
               color: #f56c6c;
-              font-size: 16px;
+              font-size: 14px;
               font-weight: bold;
               margin-right: 2px;
             }
@@ -1376,7 +1376,7 @@ export default {
         width: 120px;
         margin-right: 2px;
         letter-spacing: 1px;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         margin-right: 12px;
       }
