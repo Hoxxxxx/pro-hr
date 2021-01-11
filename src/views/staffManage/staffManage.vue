@@ -425,7 +425,7 @@
               <span class="label point">工作总结</span>
               <el-input
                 type="textarea"
-                :rows="10"
+                :rows="6"
                 placeholder="请输入内容"
                 minlength="30"
                 v-model="positiveData.conclusion"
@@ -1298,7 +1298,7 @@ export default {
           }
           .elInput {
             width: 200px;
-            flex: 1 1 auto;
+            flex: 1;
           }
           .elInput {
             border-radius: 4px;
@@ -1340,14 +1340,15 @@ export default {
           margin-right: 120px;
           .elInput {
             width: 370px;
+            flex: 1;
           }
           .labelBox {
-            width: 120px;
+            width: 116px;
             text-align: left;
             .label {
               letter-spacing: 1px;
               color: #f56c6c;
-              font-size: 16px;
+              font-size: 14px;
               font-weight: bold;
               margin-right: 2px;
             }
@@ -1375,7 +1376,7 @@ export default {
         width: 120px;
         margin-right: 2px;
         letter-spacing: 1px;
-        font-size: 16px;
+        font-size: 14px;
         font-weight: bold;
         margin-right: 12px;
       }
