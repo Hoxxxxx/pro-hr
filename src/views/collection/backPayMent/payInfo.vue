@@ -231,6 +231,16 @@
                     <el-input class="break_input" v-model="scope.row.amount" :disabled="pageType == 'check'"></el-input>
                   </template>
                 </el-table-column>
+                <el-table-column
+                  prop="summary"
+                  label="摘要"
+                  min-width="130px"
+                  align="center"
+                >
+                  <template slot-scope="scope">
+                    <el-input class="break_input" v-model="scope.row.summary" :disabled="pageType == 'check'"></el-input>
+                  </template>
+                </el-table-column>
               </el-table>
             </el-col>
           </el-row>
@@ -512,27 +522,32 @@ export default {
         this.breakTable = [{
           id: '',
           customer: '',
-          amount: ''
+          amount: '',
+          summary: ''
         },
         {
           id: '',
           customer: '',
-          amount: ''
+          amount: '',
+          summary: ''
         },
         {
           id: '',
           customer: '',
-          amount: ''
+          amount: '',
+          summary: ''
         },
         {
           id: '',
           customer: '',
-          amount: ''
+          amount: '',
+          summary: ''
         },
         {
           id: '',
           customer: '',
-          amount: ''
+          amount: '',
+          summary: ''
         }]
         flag ? this.breakUp = true : this.breakUp = false
       }
@@ -565,7 +580,8 @@ export default {
       let data = {
         id: '', //id
         customer: '', // 客户
-        amount: '', // 金额
+        amount: '', // 金额,
+        summary: '' //摘要
       };
       this.breakTable.push(data);
     },
@@ -725,6 +741,7 @@ export default {
           case "break_KH":
             this.breakTable[this.rowIndex].customer = val[0].occ01;
             this.breakTable[this.rowIndex].customer_show = val[0].occ02;
+            this.breakTable[this.rowIndex].summary = '收到客户' + val[0].occ01.substring(0,6) + '货款';
           break;
           default:
           return;
@@ -798,6 +815,7 @@ export default {
           this.dataForm.customer = item.customer
           this.dataForm.customer_show = item.customer_show
           this.dataForm.amount = item.amount
+          this.dataForm.summary = item.summary
           addCollList(this.dataForm)
           .then( res => {
             if (res.status == 200) {
