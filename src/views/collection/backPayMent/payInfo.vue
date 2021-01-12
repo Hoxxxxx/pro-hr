@@ -741,7 +741,7 @@ export default {
           case "break_KH":
             this.breakTable[this.rowIndex].customer = val[0].occ01;
             this.breakTable[this.rowIndex].customer_show = val[0].occ02;
-            this.breakTable[this.rowIndex].summary = '收到客户' + val[0].occ02.substring(0,6) + '货款';
+            this.breakTable[this.rowIndex].summary = '收到' + val[0].occ02.substring(0,6) + '货款';
           break;
           default:
           return;
