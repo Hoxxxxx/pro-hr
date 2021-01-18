@@ -810,7 +810,6 @@ export default {
             tempHead.push(temp);
           }
           this.headList = tempHead;
-          console.log(this.headList);
           this.total = res.data[0].total;
           let that = this;
           this.$nextTick(() => {
