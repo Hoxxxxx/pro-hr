@@ -1,8 +1,8 @@
 <template>
   <div class="staffManage">
-    <nav-Bar :breadList="breadList"></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAsystem'" :breadList="breadList"></nav-Bar>
     <!-- 表格 -->
-    <el-card class="listCard">
+    <el-card class="listCard" :class="$route.path=='/OAsystem'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">提醒设置</span>
@@ -473,5 +473,15 @@ export default {
   .mr10 {
     margin-right: 10px;
   }
+}
+
+.OA_listCard {
+  margin: 0 !important;
+}
+.OA_showSearch {
+  margin-left: 0 !important;
+}
+.OA_searchCard {
+  margin: 0 0 20px 0 !important;
 }
 </style>

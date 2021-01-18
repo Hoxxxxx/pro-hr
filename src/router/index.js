@@ -231,6 +231,12 @@ const routes = [{
   
 
   // 全屏
+  // 权限管理
+  {
+    path: '/OAsystem',
+    name: '系统设置',
+    component: system
+  },
   // 无形资产管理
   {
     path: '/OAassList',
