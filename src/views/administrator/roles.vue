@@ -125,6 +125,7 @@
               node-key="id"
               @getCurrentNode="getCurrentAddNode"
               :props="defaultProps"
+              :check-on-click-node="true"
               ref="addCodeTree"
               :label="title"
             ></el-tree>
@@ -183,6 +184,7 @@
               @getCurrentNode="getCurrentEditNode"
               ref="editCodeTree"
               :props="defaultProps"
+              :check-on-click-node="true"
               :label="title"
             ></el-tree>
           </div>
