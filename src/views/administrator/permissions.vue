@@ -75,13 +75,15 @@
         :close-on-click-modal="false"
         width="668px"
       >
-        <el-form :model="addParams" 
-                        :rules="addRules" 
-                        ref="addParams" 
-                        label-width="110px">
-          <el-form-item label="权限名称" prop="title">
+        <el-form
+          :model="addParams"
+          :rules="addRules"
+          ref="addParams"
+          label-width="110px"
+        >
+          <el-form-item label="权限名称" prop="name">
             <el-input
-              v-model="addParams.title"
+              v-model="addParams.name"
               placeholder="请输入权限名称"
               class="elInput"
             ></el-input>
@@ -101,9 +103,9 @@
               </el-option>
             </el-select>
           </el-form-item>
-          <el-form-item label="标题" prop="name">
+          <el-form-item label="标题" prop="title">
             <el-input
-              v-model="addParams.name"
+              v-model="addParams.title"
               placeholder="请输入标题"
               class="elInput"
             ></el-input>
@@ -131,13 +133,15 @@
         :close-on-click-modal="false"
         width="668px"
       >
-        <el-form :model="editParams" 
-                        :rules="addRules" 
-                        ref="editParams" 
-                        label-width="110px">
-          <el-form-item label="权限名称" prop="title">
+        <el-form
+          :model="editParams"
+          :rules="addRules"
+          ref="editParams"
+          label-width="110px"
+        >
+          <el-form-item label="权限名称" prop="name">
             <el-input
-              v-model="editParams.title"
+              v-model="editParams.name"
               placeholder="请输入权限名称"
               class="elInput"
             ></el-input>
@@ -159,7 +163,7 @@
           </el-form-item>
           <el-form-item label="标题" prop="name">
             <el-input
-              v-model="editParams.name"
+              v-model="editParams.title"
               placeholder="请输入标题"
               class="elInput"
             ></el-input>
@@ -231,23 +235,17 @@ export default {
         pid: 0, //上级权限id
       },
       addRules: {
-        title:[
-          { required: true, message: '请输入权限名称', trigger: 'blur' },
-        ],
-        pid:[
-          { required: true, message: '请选择上级权限', trigger: 'blur' },
-        ],
-        name:[
-          { required: true, message: '请输入标题', trigger: 'blur' },
-        ]
+        name: [{ required: true, message: "请输入权限名称", trigger: "blur" }],
+        pid: [{ required: true, message: "请选择上级权限", trigger: "blur" }],
+        title: [{ required: true, message: "请输入标题", trigger: "blur" }],
       },
       showAddPop: false, //是否显示弹窗
       permissionsData: [],
       // 编辑权限的弹窗
       showEditPop: false,
       editParams: {
-        name: "", //标题（权限）
-        title: "", //权限名称
+        name: "", // 权限名称
+        title: "", // 标题（权限）
         pid: "", //上级权限id
       },
       editId: "", //编辑时选中的id
@@ -260,17 +258,19 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      this.tableHeight = window.innerHeight - this.$refs.persTable.$el.offsetTop - 50;
+      this.tableHeight =
+        window.innerHeight - this.$refs.persTable.$el.offsetTop - 50;
       // console.log( this.tableHeight)
       // 监听窗口大小变化
       let self = this;
-      window.onresize = function() {
-        self.tableHeight = window.innerHeight - self.$refs.persTable.$el.offsetTop - 50
-      }
-    })  
+      window.onresize = function () {
+        self.tableHeight =
+          window.innerHeight - self.$refs.persTable.$el.offsetTop - 50;
+      };
+    });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
-    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度　
-    
+    //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
+
     this.getPermissions();
   },
   methods: {
@@ -292,8 +292,8 @@ export default {
           this.recursive(res.data, resArr);
           this.fixedData.pers = [...this.fixedData.pers, ...resArr];
           this.viewsList = res.data;
-        }else{
-          this.$message.error('权限列表获取失败！')
+        } else {
+          this.$message.error("权限列表获取失败！");
           this.searchData.viewsList_searchLoading = false;
         }
       });
@@ -340,7 +340,7 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
-          const loading = OpenLoading(this, 1)
+          const loading = OpenLoading(this, 1);
           PERMISSION_API.deletePermission({}, val.id).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -348,8 +348,8 @@ export default {
             } else {
               this.$message.error("删除失败！");
             }
-            loading.close()
-            clearTimeout(this.overloading)
+            loading.close();
+            clearTimeout(this.overloading);
           });
         })
         .catch(() => {
@@ -370,7 +370,7 @@ export default {
         type: "warning",
       })
         .then(() => {
-          const loading = OpenLoading(this, 1)
+          const loading = OpenLoading(this, 1);
           ROLES_API.deleteRoles(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("删除成功！");
@@ -378,8 +378,8 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
-            loading.close()
-            clearTimeout(this.overloading)
+            loading.close();
+            clearTimeout(this.overloading);
           });
         })
         .catch(() => {
@@ -409,9 +409,9 @@ export default {
       if (type == 0) {
         this.showAddPop = false;
       } else if (type == 1) {
-        this.$refs.addParams.validate(valid => {
-          if(valid){
-            const loading = OpenLoading(this, 1)
+        this.$refs.addParams.validate((valid) => {
+          if (valid) {
+            const loading = OpenLoading(this, 1);
             PERMISSION_API.addPermission(this.addParams).then((res) => {
               if (res.status == 200) {
                 this.showAddPop = false;
@@ -420,17 +420,17 @@ export default {
               } else {
                 this.$message.error("添加失败！");
               }
-              loading.close()
-              clearTimeout(this.overloading)
+              loading.close();
+              clearTimeout(this.overloading);
             });
           }
-        })
+        });
       } else if (type == 2) {
         this.showEditPop = false;
       } else if (type == 3) {
-        this.$refs.editParams.validate(valid => {
-          if(valid){
-            const loading = OpenLoading(this, 1)
+        this.$refs.editParams.validate((valid) => {
+          if (valid) {
+            const loading = OpenLoading(this, 1);
             PERMISSION_API.editPermission(this.editParams, this.editId).then(
               (res) => {
                 if (res.status == 200) {
@@ -440,12 +440,12 @@ export default {
                 } else {
                   this.$message.error("修改失败！");
                 }
-                loading.close()
-                clearTimeout(this.overloading)
+                loading.close();
+                clearTimeout(this.overloading);
               }
             );
           }
-        })
+        });
       }
     },
     // watch pagesize change

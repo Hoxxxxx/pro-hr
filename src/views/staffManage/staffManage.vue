@@ -57,16 +57,10 @@
                 ></el-input>
               </div>
               <div class="btnBox">
-                <el-button
-                  type="primary"
-                  size="medium"
-                  @click="search(0)"
+                <el-button type="primary" size="medium" @click="search(0)"
                   >搜索</el-button
                 >
-                <el-button
-                  class="secondary"
-                  size="medium"
-                  @click="search(1)"
+                <el-button class="secondary" size="medium" @click="search(1)"
                   >重置</el-button
                 >
               </div>
@@ -110,7 +104,7 @@
                     :indeterminate="checkedBox.isIndeterminate"
                     v-model="checkedBox.checkAll"
                     @change="handleCheckAllChange"
-                    style="margin-bottom:10px;"
+                    style="margin-bottom: 10px"
                     >全选</el-checkbox
                   >
                   <el-checkbox-group
@@ -197,7 +191,7 @@
             </template>
           </el-table-column>
           <el-table-column
-            :label="viewsList.length > 0 ? '操作' : ''"
+            label="操作"
             width="230px"
             align="center"
             fixed="right"
@@ -478,7 +472,7 @@
         :page-size="listParams.pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="total"
-        style="margin:10px 0; float: right"
+        style="margin: 10px 0; float: right"
       ></el-pagination>
     </el-card>
   </div>
@@ -636,6 +630,25 @@ export default {
     });
     //this.$refs.table.$el.offsetTop：表格距离浏览器的高度
     //50表示你想要调整的表格距离底部的高度（你可以自己随意调整），因为我们一般都有放分页组件的，所以需要给它留一个高度
+    this.headList = [
+      { label: "员工姓名", prop: "name" },
+      { label: "工号", prop: "job_number" },
+      { label: "部门", prop: "department" },
+      { label: "职位", prop: "position" },
+      { label: "员工性质", prop: "type" },
+      { label: "司龄", prop: "company_age" },
+      { label: "工龄", prop: "work_age" },
+      {
+        label: "年龄",
+        prop: "age",
+      },
+      { label: "转正时间", prop: "positive_time" },
+      {
+        label: "手机号",
+        prop: "mobile",
+      },
+      { label: "账号是否开通", prop: "status" },
+    ];
     this.getStaffList();
     this.getFields(); //获取筛选字字段
     this.staffCount(); //获取分类统计
@@ -733,7 +746,7 @@ export default {
     // 获取员工列表
     getStaffList() {
       this.searchData.viewsList_searchLoading = true;
-      this.headList = [];
+      // this.headList = [];
       this.viewsList = [];
       let params = {
         type: this.listType,
@@ -912,7 +925,7 @@ export default {
         closeOnClickModal: false,
       })
         .then(() => {
-          const loading = OpenLoading(this, 1)
+          const loading = OpenLoading(this, 1);
           STAFFS_API.deleteStaff({}, val).then((res) => {
             if (res.status == 200) {
               this.$message({
@@ -923,15 +936,15 @@ export default {
             } else {
               this.$message.error(res.error);
             }
-            loading.close()
-            clearTimeout(this.overloading)
+            loading.close();
+            clearTimeout(this.overloading);
           });
         })
         .catch(() => {});
     },
     // 离职
     departure() {
-      const loading = OpenLoading(this, 1)
+      const loading = OpenLoading(this, 1);
       let params = {
         staff_id: this.tempId,
         turnover_type: this.depart,
@@ -953,8 +966,8 @@ export default {
             type: "warning",
           });
         }
-        loading.close()
-        clearTimeout(this.overloading)
+        loading.close();
+        clearTimeout(this.overloading);
       });
     },
     // 转正
@@ -988,7 +1001,7 @@ export default {
         } else if (!params.summary) {
           this.$message.error("请填写工作总结");
         } else {
-          const loading = OpenLoading(this, 1)
+          const loading = OpenLoading(this, 1);
           STAFFS_API.positive(params).then((res) => {
             if (res.status == 200) {
               this.$message.success("转正成功！");
@@ -997,15 +1010,15 @@ export default {
             } else {
               this.$message.error(res.error.message);
             }
-            loading.close()
-            clearTimeout(this.overloading)
+            loading.close();
+            clearTimeout(this.overloading);
           });
         }
       }
     },
     // 开通账号
     openAccount() {
-      const loading = OpenLoading(this, 1)
+      const loading = OpenLoading(this, 1);
       let id = this.tempId;
       let params = {
         account_name: this.name_openUse,
@@ -1026,13 +1039,13 @@ export default {
             type: "warning",
           });
         }
-        loading.close()
-        clearTimeout(this.overloading)
+        loading.close();
+        clearTimeout(this.overloading);
       });
     },
     // 停用账号
     closeAccount() {
-      const loading = OpenLoading(this, 1)
+      const loading = OpenLoading(this, 1);
       TY(this.tempId).then((res) => {
         if (res.status == 200) {
           this.$message({
@@ -1048,8 +1061,8 @@ export default {
             type: "warning",
           });
         }
-        loading.close()
-        clearTimeout(this.overloading)
+        loading.close();
+        clearTimeout(this.overloading);
       });
     },
     // 分类人数统计
@@ -1105,7 +1118,7 @@ export default {
           if (params.ids.length == 0) {
             this.$message.warning("未选择员工");
           } else {
-            const loading = OpenLoading(this, 1)
+            const loading = OpenLoading(this, 1);
             STAFFS_API.deleteStaff(params).then((res) => {
               if (res.status == 200) {
                 this.$message.success("删除成功！");
@@ -1113,8 +1126,8 @@ export default {
               } else {
                 this.$message.error("删除失败！");
               }
-              loading.close()
-              clearTimeout(this.overloading)
+              loading.close();
+              clearTimeout(this.overloading);
             });
           }
         })
@@ -1241,7 +1254,7 @@ export default {
   .showSearch {
     margin-left: 20px;
   }
-  
+
   .searchCard {
     border-radius: 10px;
     margin: 0 20px 20px 20px;
