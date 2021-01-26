@@ -48,7 +48,7 @@
           ></el-table-column>
           <el-table-column label="操作" width="160px" align="center" fixed="right">
             <template slot-scope="scope">
-              <el-button type="text" @click="view(scope.row.id)"
+              <el-button type="text" @click="getCustDetail(scope.row.id)"
                 >查看详情</el-button
               >
             </template>
@@ -238,12 +238,9 @@ export default {
       this.listParams.page = newPage;
       this.getCustomersList();
     },
-    view(val) {
-      this.dialogVisible = true;
-      this.getCustDetail(val);
-    },
     // 获取发票详情
     getCustDetail(id) {
+      const loading = OpenLoading(this, 1)
       this.detailList = []
       this.detail = {}
       this.searchData.detailList_searchLoading = true;
@@ -252,9 +249,13 @@ export default {
           this.detailList = res.data[0].banks;
           this.detail = res.data[0];
           this.searchData.detailList_searchLoading = false;
+          // open
+          this.dialogVisible = true;
         } else {
           this.$message.error("列表获取失败！");
         }
+        loading.close()
+        clearTimeout(this.overloading)
       });
     },
   },
