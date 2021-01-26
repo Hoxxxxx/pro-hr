@@ -76,7 +76,7 @@
         width="1200px"
       >
 
-        <!-- 银行信息 -->
+        <!-- 客户信息 -->
         <div style="margin-bottom: 10px">
           <div class="form_line">
             <div class="titlebox bdNone brNone">创建日期</div>
@@ -106,43 +106,37 @@
           </div>
         </div>
 
-        <el-table
-          :data="detailList"
-          v-loading = "searchData.detailList_searchLoading"
-          element-loading-background = "rgba(0, 0, 0, 0.5)"
-          element-loading-text = "数据正在加载中"
-          element-loading-spinner = "el-icon-loading"
-          style="width: 100%"
-          height="300px"
-          :header-cell-style="{ background: '#F3F5F9', color: '#333333' }"
-          :cell-style="{ background: '#FCFDFF', color: '#666666' }"
-        >
-          <el-table-column
-            align="center"
-            label="银行账号"
-            prop="bank_code"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="开户行"
-            prop="bank"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="账户名称"
-            prop="bank_account"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="客户编号"
-            prop="supplier_code"
-          ></el-table-column>
-          <el-table-column
-            align="center"
-            label="是否默认选中"
-            prop="is_default"
-          ></el-table-column>
-        </el-table>
+        <!-- 开票信息 -->
+        <div style="margin-bottom: 10px">
+          <div class="form_line">
+            <div class="titlebox bdNone brNone">名称</div>
+            <div class="infobox selectbox last_row brNone bdNone">
+              {{ detail.name }}
+            </div>
+            <div class="titlebox bdNone brNone">纳税人识别号</div>
+            <div class="infobox bdNone brNone">
+              {{ detail.tax_number }}
+            </div>
+            <div class="titlebox bdNone brNone">地址</div>
+            <div class="infobox selectbox last_row bdNone">
+              {{ detail.address }}
+            </div>
+          </div>
+          <div class="form_line">
+            <div class="titlebox brNone">银行账号</div>
+            <div class="infobox selectbox last_row brNone">
+              {{ detail.bank_code }}
+            </div>
+            <div class="titlebox brNone">开户行</div>
+            <div class="infobox selectbox last_row brNone">
+              {{ detail.bank }}
+            </div>
+            <div class="titlebox brNone">电话</div>
+            <div class="infobox selectbox last_row">
+              {{ detail.phone }}
+            </div>
+          </div>
+        </div>
 
         <span slot="footer" class="dialog-footer">
           <el-button
