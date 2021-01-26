@@ -1,9 +1,9 @@
 <template>
   <div class="staffManage">
-    <nav-Bar v-if="$route.path !== '/OAsuppliers'" :breadList="breadList" ></nav-Bar>
+    <nav-Bar v-if="$route.path !== '/OAcustomers'" :breadList="breadList" ></nav-Bar>
 
     <!-- 表格 -->
-    <el-card class="listCard" :class="$route.path=='/OAsuppliers'?'OA_listCard':''">
+    <el-card class="listCard" :class="$route.path=='/OAcustomers'?'OA_listCard':''">
       <!-- 卡片提头 -->
       <div slot="header" class="clearfix tableTitleBox">
         <span class="tableTitle">客户列表</span>

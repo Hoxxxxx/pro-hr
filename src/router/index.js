@@ -361,6 +361,17 @@ const routes = [{
     name: '部门管理',
     component: department
   },
+  // 签约方管理
+  {
+    path: '/OAsuppliers',
+    name: '供应商列表',
+    component: suppliers
+  },
+  {
+    path: '/OAcustomers',
+    name: '客户列表',
+    component: customers
+  },
 
 
 
