@@ -35,6 +35,9 @@ const contractType = () => import('@/views/contract/contractType/index')
 // 无形资产
 const assList = () => import('@/views/intangibleAss/assList/index')
 const assInfo = () => import('@/views/intangibleAss/assList/assInfo')
+// 签约方管理
+const suppliers = () => import('@/views/signing/suppliers/list')
+const customers = () => import('@/views/signing/customers/list')
 
 
 
@@ -225,6 +228,26 @@ const routes = [{
         path: 'assInfo',
         name: '无形资产详情',
         component: assInfo,
+      },
+    ]
+  },
+  // 无形资产管理
+  // 收款管理
+  {
+    path: '/signing',
+    name: "签约方管理",
+    component: Home,
+    redirect: '/signing/suppliers',
+    children: [
+      {
+        path: 'suppliers',
+        name: '供应商列表',
+        component: suppliers
+      },
+      {
+        path: 'customers',
+        name: '客户列表',
+        component: customers
       },
     ]
   },

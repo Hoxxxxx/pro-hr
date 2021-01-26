@@ -34,7 +34,7 @@ export function validEmail(email) {
  * @returns {Boolean}
  */
 export function validPositiveInt(str) {
-  const reg = /^[1-9]+[0-9]*$/
+  const reg = /^[1-9]\d*$/
   return reg.test(str)
 }
 
@@ -44,7 +44,7 @@ export function validPositiveInt(str) {
  * @returns {Boolean}
  */
 export function validInt(str) {
-  const reg = /^(0|[1-9][0-9]*|-[1-9][0-9]*)$/
+  const reg = /^-?[1-9]\d*$/
   return reg.test(str)
 }
 
